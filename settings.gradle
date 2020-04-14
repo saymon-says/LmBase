@@ -1,0 +1,2 @@
+rootProject.name='LmBase'
+include ':app'
