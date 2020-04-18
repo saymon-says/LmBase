@@ -4,7 +4,8 @@
     <item
         android:id="@+id/nav_home"
         android:title="Домой"
-        android:icon="@drawable/connection"/>
+        android:icon="@drawable/connection"
+        />
     <item
         android:id="@+id/nav_tor_list"
         android:title="Тороговые"
@@ -17,5 +18,6 @@
     <item
         android:id="@+id/nav_logout"
         android:title="Выйти"
-        android:icon="@drawable/effort"/>
+        android:icon="@drawable/effort"
+        />
 </menu>
