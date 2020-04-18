@@ -54,10 +54,10 @@ public class RegisterActivity extends AppCompatActivity {
 		if(emailRegisterUser.length() < 3) {
 			Toast.makeText(this, "Email слишком короткий", Toast.LENGTH_LONG).show();
 		}
-		else if(passwordRegisterUser.length() < 3) {
+		else if(passwordRegisterUser.length() < 6) {
 			Toast.makeText(this, "Пароль слишком короткий", Toast.LENGTH_LONG).show();
 		}
-		else if(confirmPasswordRegisterUser.length() < 3) {
+		else if(confirmPasswordRegisterUser.length() < 6) {
 			Toast.makeText(this, "Пароль слишком короткий", Toast.LENGTH_LONG).show();
 		}
 		else if(!passwordRegisterUser.equals(confirmPasswordRegisterUser)) {
