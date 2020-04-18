@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +12,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,10 +21,14 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private Toolbar mToolbar;
 
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav);
@@ -37,6 +44,23 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null) {
+            SendUserToLoginActivity();
+        }
+    }
+
+    private void SendUserToLoginActivity() {
+
+        Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(loginActivity);
+        finish();
     }
 
     private void UserMenuSElector(MenuItem item) {
