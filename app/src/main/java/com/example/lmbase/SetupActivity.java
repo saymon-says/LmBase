@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -85,10 +86,12 @@ public class SetupActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if(dataSnapshot.exists()) {
-					String image = Objects.requireNonNull(dataSnapshot.child("userpic").getValue()).toString();
-					Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
+					if(dataSnapshot.hasChild("userpic")) {
+						String image = dataSnapshot.child("userpic").getValue().toString();
+						Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
+					}
 				} else {
-					Toast.makeText(SetupActivity.this, "Please select profile image first.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(SetupActivity.this, "Сначала выбери аватар", Toast.LENGTH_LONG).show();
 				}
 			}
 

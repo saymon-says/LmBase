@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,55 +20,93 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private Toolbar mToolbar;
+	private DrawerLayout drawerLayout;
+	private NavigationView navigationView;
+	private Toolbar mToolbar;
+	private CircleImageView navUserpic;
+	private TextView navUserName;
 
-    private FirebaseAuth mAuth;
-    private DatabaseReference usersRef;
+	private FirebaseAuth mAuth;
+	private DatabaseReference usersRef;
+	private String currentUserId;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
 
-        mAuth = FirebaseAuth.getInstance();
-        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+		mAuth = FirebaseAuth.getInstance();
+		currentUserId = mAuth.getCurrentUser().getUid();
+		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav);
-        View navView = navigationView.inflateHeaderView(R.layout.heade_nav);
-        mToolbar = findViewById(R.id.main_page_toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Домашняя страница");
+		drawerLayout = findViewById(R.id.drawer_layout);
+		navigationView = findViewById(R.id.nav);
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                UserMenuSElector(item);
-                return false;
-            }
-        });
-    }
+		View navView = navigationView.inflateHeaderView(R.layout.heade_nav);
+		navUserName = navView.findViewById(R.id.nav_username);
+		navUserpic = navView.findViewById(R.id.profile_image);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+		mToolbar = findViewById(R.id.main_page_toolbar);
+		setSupportActionBar(mToolbar);
+		getSupportActionBar().setTitle("Домашняя страница");
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null) {
-            SendUserToLoginActivity();
-        } else {
-        	CheckUserInBase();
+		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if(dataSnapshot.exists()) {
+					if(dataSnapshot.hasChild("fullname")) {
+						String fullname = dataSnapshot.child("fullname").getValue().toString();
+						navUserName.setText(fullname);
+					} else {
+						Toast.makeText(MainActivity.this, "Нужно добавить ФИО", Toast.LENGTH_LONG).show();
+					}
+					if (dataSnapshot.hasChild("userpic")) {
+						String userPic = dataSnapshot.child("userpic").getValue().toString();
+						Picasso.get().load(userPic).placeholder(R.drawable.anonymous).into(navUserpic);
+					} else {
+						Toast.makeText(MainActivity.this, "Добавь аватар", Toast.LENGTH_LONG).show();
+					}
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
+		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+			@Override
+			public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+				UserMenuSElector(item);
+				return false;
+			}
+		});
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		FirebaseUser currentUser = mAuth.getCurrentUser();
+		if(currentUser == null) {
+			SendUserToLoginActivity();
+		} else {
+			CheckUserInBase();
 		}
-    }
+	}
 
 	private void CheckUserInBase() {
-    	final String currentUserId = mAuth.getCurrentUser().getUid();
-    	usersRef.addValueEventListener(new ValueEventListener() {
+		final String currentUserId = mAuth.getCurrentUser().getUid();
+		usersRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if(!dataSnapshot.hasChild(currentUserId)) {
@@ -90,29 +129,29 @@ public class MainActivity extends AppCompatActivity {
 
 	private void SendUserToLoginActivity() {
 
-        Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(loginActivity);
-        finish();
-    }
+		Intent loginActivity = new Intent(MainActivity.this, LoginActivity.class);
+		startActivity(loginActivity);
+		finish();
+	}
 
-    private void UserMenuSElector(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_home:
-                Toast.makeText(this, "Домой", Toast.LENGTH_LONG).show();
-                break;
+	private void UserMenuSElector(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.nav_home:
+				Toast.makeText(this, "Домой", Toast.LENGTH_LONG).show();
+				break;
 
-            case R.id.nav_tor_list:
-                Toast.makeText(this, "Список торговых", Toast.LENGTH_LONG).show();
-                break;
+			case R.id.nav_tor_list:
+				Toast.makeText(this, "Список торговых", Toast.LENGTH_LONG).show();
+				break;
 
-            case R.id.nav_static:
-                Toast.makeText(this, "Статистика", Toast.LENGTH_LONG).show();
-                break;
+			case R.id.nav_static:
+				Toast.makeText(this, "Статистика", Toast.LENGTH_LONG).show();
+				break;
 
-            case R.id.nav_logout:
-                mAuth.signOut();
-                SendUserToLoginActivity();
-                break;
-        }
-    }
+			case R.id.nav_logout:
+				mAuth.signOut();
+				SendUserToLoginActivity();
+				break;
+		}
+	}
 }
