@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,7 +30,6 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -134,18 +132,18 @@ public class SetupActivity extends AppCompatActivity {
 									final String downloadUrl = uri.toString();
 									userRef.child("userpic").setValue(downloadUrl)
 											.addOnCompleteListener(new OnCompleteListener<Void>() {
-										@Override
-										public void onComplete(@NonNull Task<Void> task) {
-											if (task.isSuccessful()) {
-												Toast.makeText(SetupActivity.this, "Фото загружено", Toast.LENGTH_LONG).show();
-												progressDialog.dismiss();
-											} else {
-												String message = task.getException().toString();
-												Toast.makeText(SetupActivity.this, "Ошибка" + message, Toast.LENGTH_LONG).show();
-												progressDialog.dismiss();
-											}
-										}
-									});
+												@Override
+												public void onComplete(@NonNull Task<Void> task) {
+													if (task.isSuccessful()) {
+														Toast.makeText(SetupActivity.this, "Фото загружено", Toast.LENGTH_LONG).show();
+														progressDialog.dismiss();
+													} else {
+														String message = task.getException().toString();
+														Toast.makeText(SetupActivity.this, "Ошибка" + message, Toast.LENGTH_LONG).show();
+														progressDialog.dismiss();
+													}
+												}
+											});
 								}
 							});
 						}

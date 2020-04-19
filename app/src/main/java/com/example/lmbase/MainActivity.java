@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-				UserMenuSElector(item);
+				UserMenuSelector(item);
 				return false;
 			}
 		});
@@ -134,10 +134,11 @@ public class MainActivity extends AppCompatActivity {
 		finish();
 	}
 
-	private void UserMenuSElector(MenuItem item) {
+	private void UserMenuSelector(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.nav_home:
-				Toast.makeText(this, "Домой", Toast.LENGTH_LONG).show();
+			case R.id.nav_add_workshift:
+				SendUserToOrderList();
+				Toast.makeText(this, "Добавить смену", Toast.LENGTH_LONG).show();
 				break;
 
 			case R.id.nav_tor_list:
@@ -153,5 +154,10 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void SendUserToOrderList() {
+		Intent orderListIntent = new Intent(MainActivity.this, OrderListActivity.class);
+		startActivity(orderListIntent);
 	}
 }

@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/nav_home"
-        android:title="Домой"
+        android:id="@+id/nav_add_workshift"
+        android:title="Добавить смену"
         android:icon="@drawable/connection"
         />
     <item
