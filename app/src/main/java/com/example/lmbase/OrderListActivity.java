@@ -26,8 +26,6 @@ public class OrderListActivity extends AppCompatActivity {
 	private RecyclerView listOrders;
 
 	private DatabaseReference ordersRef;
-	private FirebaseAuth mAuth;
-	String currentUserId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +40,6 @@ public class OrderListActivity extends AppCompatActivity {
 		linearLayoutManager.setStackFromEnd(true);
 		listOrders.setLayoutManager(linearLayoutManager);
 
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders");
 	}
 
@@ -83,9 +79,7 @@ public class OrderListActivity extends AppCompatActivity {
 
 		public OrdersViewHolder(@NonNull View itemView) {
 			super(itemView);
-
 			bayout = itemView.findViewById(R.id.bayot);
 		}
 	}
-
 }

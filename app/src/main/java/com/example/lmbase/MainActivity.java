@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
 				break;
 
 			case R.id.nav_tor_list:
+				SendUserToUserListActivity();
 				Toast.makeText(this, "Список торговых", Toast.LENGTH_LONG).show();
 				break;
 
@@ -154,6 +155,11 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void SendUserToUserListActivity() {
+		Intent orderListIntent = new Intent(MainActivity.this, UserListActivity.class);
+		startActivity(orderListIntent);
 	}
 
 	private void SendUserToOrderList() {
