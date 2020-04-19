@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -35,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
 	private TextView navUserName;
 
 	private FirebaseAuth mAuth;
-	private DatabaseReference usersRef;
-	private String currentUserId;
+	private DatabaseReference usersRef, ordersRef;
+	private String currentUserId, currentDateOrderList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders List");
 
 		drawerLayout = findViewById(R.id.drawer_layout);
 		navigationView = findViewById(R.id.nav);
@@ -137,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 	private void UserMenuSelector(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.nav_add_workshift:
-				SendUserToOrderList();
+				ValidateAddOrderList();
 				Toast.makeText(this, "Добавить смену", Toast.LENGTH_LONG).show();
 				break;
 
@@ -155,6 +161,38 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void ValidateAddOrderList() {
+		Calendar calendarDate = Calendar.getInstance();
+		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+		currentDateOrderList = currentDate.format(calendarDate.getTime());
+
+		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if(dataSnapshot.exists()) {
+					HashMap hashMap = new HashMap();
+					hashMap.put("UID", currentUserId);
+					ordersRef.child(currentDateOrderList).child(currentUserId).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+						@Override
+						public void onComplete(@NonNull Task task) {
+							if(task.isSuccessful()) {
+								SendUserToOrderList();
+								Toast.makeText(MainActivity.this, "Смена создана", Toast.LENGTH_LONG).show();
+							} else  {
+								Toast.makeText(MainActivity.this, "Ошибочка", Toast.LENGTH_LONG).show();
+							}
+						}
+					});
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
 	}
 
 	private void SendUserToUserListActivity() {

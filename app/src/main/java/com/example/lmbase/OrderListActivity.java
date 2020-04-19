@@ -20,11 +20,16 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class OrderListActivity extends AppCompatActivity {
 
 	private TextView DateWorkShift, CountPointer;
 	private RecyclerView listOrders;
+	private String currentUserId, currentDateOrderList;
 
+	private FirebaseAuth mAuth;
 	private DatabaseReference ordersRef;
 
 	@Override
@@ -40,13 +45,19 @@ public class OrderListActivity extends AppCompatActivity {
 		linearLayoutManager.setStackFromEnd(true);
 		listOrders.setLayoutManager(linearLayoutManager);
 
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders");
+		mAuth = FirebaseAuth.getInstance();
+		currentUserId = mAuth.getCurrentUser().getUid();
+		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders List").child(currentUserId);
+
+		Calendar calendarDate = Calendar.getInstance();
+		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+		currentDateOrderList = currentDate.format(calendarDate.getTime());
+		DateWorkShift.setText(currentDateOrderList);
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-
 		DisplayAllUserOrders();
 	}
 
