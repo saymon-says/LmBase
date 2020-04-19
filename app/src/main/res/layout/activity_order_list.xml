@@ -5,33 +5,25 @@
     android:layout_height="match_parent"
     tools:context=".OrderListActivity">
 
-    <LinearLayout
-        android:id="@+id/order_bar"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal">
+    <include
+        layout="@layout/app_bar_layout"
+        android:id="@+id/orders_page_toolbar"
+        >
+    </include>
 
-        <TextView
-            android:id="@+id/date_workshift"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Data workshift"
-            android:textSize="26sp"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="10dp"
-            />
-        <TextView
-            android:id="@+id/count_pointer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CounterPoint"
-            android:textSize="26sp"
-            android:layout_marginLeft="10dp"
-            />
-    </LinearLayout>
+    <Button
+        android:id="@+id/add_order"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/add"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="15dp"
+        android:focusableInTouchMode="false"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_of_orders"
-        android:layout_below="@+id/order_bar"
+        android:layout_below="@+id/orders_page_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

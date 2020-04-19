@@ -1,20 +1,47 @@
 package com.example.lmbase;
 
 public class Orders {
-	Integer bayout;
+	String numberOrder, priceOrder, bayoutOrder, uid;
+
+	public Orders(String numberOrder, String priceOrder, String bayoutOrder, String uid) {
+		this.numberOrder = numberOrder;
+		this.priceOrder = priceOrder;
+		this.bayoutOrder = bayoutOrder;
+		this.uid = uid;
+	}
 
 	public Orders() {
 	}
 
-	public Integer getBayout() {
-		return bayout;
+	public String getNumberOrder() {
+		return numberOrder;
 	}
 
-	public void setBayout(Integer bayout) {
-		this.bayout = bayout;
+	public void setNumberOrder(String numberOrder) {
+		this.numberOrder = numberOrder;
 	}
 
-	public Orders(Integer bayout) {
-		this.bayout = bayout;
+	public String getPriceOrder() {
+		return priceOrder;
+	}
+
+	public void setPriceOrder(String priceOrder) {
+		this.priceOrder = priceOrder;
+	}
+
+	public String getBayoutOrder() {
+		return bayoutOrder;
+	}
+
+	public void setBayoutOrder(String bayoutOrder) {
+		this.bayoutOrder = bayoutOrder;
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 }

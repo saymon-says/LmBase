@@ -143,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
 	private void UserMenuSelector(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.nav_add_workshift:
-				ValidateAddOrderList();
-				Toast.makeText(this, "Добавить смену", Toast.LENGTH_LONG).show();
+				SendUserToOrderList();
+				Toast.makeText(this, "Поехали...", Toast.LENGTH_LONG).show();
 				break;
 
 			case R.id.nav_tor_list:
@@ -161,38 +161,6 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
-	}
-
-	private void ValidateAddOrderList() {
-		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
-		currentDateOrderList = currentDate.format(calendarDate.getTime());
-
-		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if(dataSnapshot.exists()) {
-					HashMap hashMap = new HashMap();
-					hashMap.put("UID", currentUserId);
-					ordersRef.child(currentDateOrderList).child(currentUserId).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
-						@Override
-						public void onComplete(@NonNull Task task) {
-							if(task.isSuccessful()) {
-								SendUserToOrderList();
-								Toast.makeText(MainActivity.this, "Смена создана", Toast.LENGTH_LONG).show();
-							} else  {
-								Toast.makeText(MainActivity.this, "Ошибочка", Toast.LENGTH_LONG).show();
-							}
-						}
-					});
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
 	}
 
 	private void SendUserToUserListActivity() {
