@@ -1,27 +1,25 @@
 package com.example.lmbase;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -58,7 +56,7 @@ public class OrderListActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentDateOrderList).child(currentUserId);
+		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List");
 
 		addBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -86,11 +84,12 @@ public class OrderListActivity extends AppCompatActivity {
 				.build();
 
 		FirebaseRecyclerAdapter<Orders, OrdersViewHolder> adapter = new FirebaseRecyclerAdapter<Orders, OrdersViewHolder>(options) {
+			@SuppressLint("SetTextI18n")
 			@Override
 			protected void onBindViewHolder(@NonNull OrdersViewHolder holder, int position, @NonNull Orders model) {
-				holder.numberOrder.setText(model.getNumberOrder());
-				holder.priceOrder.setText(model.getPriceOrder());
-				holder.bayoutOrder.setText(model.getBayoutOrder());
+				holder.numberOrder.setText("Номер заказа: " + model.getNumberOrder());
+				holder.priceOrder.setText("Стоимость заказа: " + model.getPriceOrder());
+				holder.bayoutOrder.setText("Выкуп: " + model.getBayoutOrder());
 			}
 
 			@NonNull

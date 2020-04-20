@@ -1,8 +1,5 @@
 package com.example.lmbase;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,13 +7,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,7 +45,7 @@ public class AddOrderActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentDateOrderList).child(currentUserId);
+		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List");
 
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -77,7 +73,7 @@ public class AddOrderActivity extends AppCompatActivity {
 				SendUserToOrderListAtivity();
 				Toast.makeText(AddOrderActivity.this, "Заказ добавлен в список", Toast.LENGTH_SHORT).show();
 			}
-	});
+		});
 	}
 
 	private void SendUserToOrderListAtivity() {
