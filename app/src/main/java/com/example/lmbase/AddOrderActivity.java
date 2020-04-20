@@ -45,7 +45,7 @@ public class AddOrderActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List");
+		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentDateOrderList);
 
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -67,7 +67,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		orderMap.put("bayoutOrder", bayoutOrderInt);
 		orderMap.put("uid", currentUserId);
 		orderMap.put("date", currentDateOrderList);
-		ordersRef.child(numberOrderInt).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {
+		ordersRef.child(currentUserId).child(numberOrderInt).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {
 				SendUserToOrderListAtivity();

@@ -42,7 +42,7 @@ public class OrderListActivity extends AppCompatActivity {
 		addBtn = findViewById(R.id.add_order);
 		listOrders = findViewById(R.id.list_of_orders);
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-		linearLayoutManager.setReverseLayout(true);
+		linearLayoutManager.setReverseLayout(false);
 		linearLayoutManager.setStackFromEnd(true);
 		listOrders.setLayoutManager(linearLayoutManager);
 
@@ -56,7 +56,7 @@ public class OrderListActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List");
+		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentDateOrderList).child(currentUserId);
 
 		addBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
