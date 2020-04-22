@@ -16,12 +16,18 @@
             layout="@layout/app_bar_layout"
             android:id="@+id/main_page_toolbar">
         </include>
-
-        <FrameLayout
-            android:id="@+id/main_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </FrameLayout>
+        <TextView
+            android:id="@+id/orders_count"
+            android:layout_below="@id/main_page_toolbar"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text=""
+            android:textSize="100sp"
+            android:textAlignment="center"
+            android:background="@drawable/input"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            />
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView

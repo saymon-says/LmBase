@@ -37,10 +37,10 @@ public class MainActivity extends AppCompatActivity {
 	private NavigationView navigationView;
 	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
-	private TextView navUserName;
+	private TextView navUserName, ordersCount;
 
 	private FirebaseAuth mAuth;
-	private DatabaseReference usersRef, ordersRef;
+	private DatabaseReference usersRef, ordersRef, ordersCountRef;
 	private String currentUserId, currentDateOrderList;
 
 	@Override
@@ -50,11 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
+
+		Calendar calendarDate = Calendar.getInstance();
+		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		currentDateOrderList = currentDate.format(calendarDate.getTime());
+
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders List");
+		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
 		navigationView = findViewById(R.id.nav);
+		ordersCount = findViewById(R.id.orders_count);
 
 		View navView = navigationView.inflateHeaderView(R.layout.heade_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
@@ -80,6 +87,23 @@ public class MainActivity extends AppCompatActivity {
 					} else {
 						Toast.makeText(MainActivity.this, "Добавь аватар", Toast.LENGTH_LONG).show();
 					}
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
+		ordersCountRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if(dataSnapshot.exists()) {
+					String countOfOrders = String.valueOf(dataSnapshot.getChildrenCount());
+					ordersCount.setText(countOfOrders);
+				} else {
+					Toast.makeText(MainActivity.this, "Заказов еще нет", Toast.LENGTH_LONG).show();
 				}
 			}
 

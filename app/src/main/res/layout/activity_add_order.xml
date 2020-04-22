@@ -141,23 +141,26 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginTop="10dp"
             >
             <EditText
                 android:id="@+id/price_order"
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
                 android:background="@drawable/input"
                 android:hint="Стоимость заказа"
                 android:inputType="number"
                 android:padding="10dp" />
             <EditText
                 android:id="@+id/bayout_order"
-                android:layout_width="150dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/input"
                 android:hint="Выкуп"
                 android:inputType="number"
@@ -171,7 +174,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_first"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/button"
         android:text="Добавить заказ" />
 

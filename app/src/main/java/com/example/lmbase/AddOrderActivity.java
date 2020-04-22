@@ -8,12 +8,16 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,11 +30,11 @@ public class AddOrderActivity extends AppCompatActivity {
 	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
-	private String resultDelivery = "3";
+	private String resultDelivery;
 	private Integer deliveryVariant = 0;
 	private float resultPercentOrder;
 
-	private DatabaseReference ordersRef;
+	private DatabaseReference ordersRef, ordersCountRef;
 	private FirebaseAuth mAuth;
 	private String currentDateOrderList;
 
@@ -53,12 +57,16 @@ public class AddOrderActivity extends AppCompatActivity {
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
+		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 
+		if(radioGroupOrder.getCheckedRadioButtonId() == R.id.usually_order) {
+			setUpDelivery();
+		}
 		radioGroupOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				switch (checkedId) {
-					case R.id.usually_order: resultDelivery = "3";
+					case R.id.usually_order: setUpDelivery();
 						break;
 					case R.id.sdd_order: resultDelivery = "7";
 						break;
@@ -66,7 +74,6 @@ public class AddOrderActivity extends AppCompatActivity {
 			}
 		});
 
-		radioGroupDelivery.check(R.id.usually_delivery);
 		radioGroupDelivery.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -99,6 +106,31 @@ public class AddOrderActivity extends AppCompatActivity {
 							break;
 					}
 				}
+			}
+		});
+	}
+
+	private void setUpDelivery() {
+		ordersCountRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if(dataSnapshot.exists()) {
+					int countOfOrders = (int) dataSnapshot.getChildrenCount();
+					if (0 < countOfOrders && countOfOrders < 3 ) {
+						resultDelivery = "3";
+					} else if (3 <= countOfOrders && countOfOrders < 5) {
+						resultDelivery = "4";
+					} else {
+						resultDelivery = "7";
+					}
+				} else {
+					resultDelivery = "3";
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
 			}
 		});
 	}
@@ -166,12 +198,12 @@ public class AddOrderActivity extends AppCompatActivity {
 		ordersRef.child(currentDateOrderList).child(numberOrderStr).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {
-				SendUserToOrderListAсtivity();
+				SendUserToOrderListActivity();
 			}
 		});
 	}
 
-	private void SendUserToOrderListAсtivity() {
+	private void SendUserToOrderListActivity() {
 		Intent orderListIntent = new Intent(AddOrderActivity.this, OrderListActivity.class);
 		startActivity(orderListIntent);
 	}
