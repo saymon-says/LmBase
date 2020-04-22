@@ -23,10 +23,11 @@ public class AddOrderActivity extends AppCompatActivity {
 
 	private EditText numberOrder, priceOrder, bayouOrder;
 	private Button addButton;
-	private RadioGroup radioGroup;
+	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
 	private String resultDelivery = "3";
+	private Integer deliveryVariant = 0;
 	private float resultPercentOrder;
 
 	private DatabaseReference ordersRef;
@@ -45,21 +46,36 @@ public class AddOrderActivity extends AppCompatActivity {
 		numberOrder = findViewById(R.id.number_order);
 		priceOrder = findViewById(R.id.price_order);
 		bayouOrder = findViewById(R.id.bayout_order);
-		radioGroup = findViewById(R.id.group_radio_type_order);
+		radioGroupOrder = findViewById(R.id.group_radio_type_order);
+		radioGroupDelivery = findViewById(R.id.group_radio_type_delivery);
 		addButton = findViewById(R.id.add_button);
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
 
-		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+		radioGroupOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				checkedId = group.getCheckedRadioButtonId();
 				switch (checkedId) {
 					case R.id.usually_order: resultDelivery = "3";
 						break;
 					case R.id.sdd_order: resultDelivery = "7";
+						break;
+				}
+			}
+		});
+
+		radioGroupDelivery.check(R.id.usually_delivery);
+		radioGroupDelivery.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+					case R.id.usually_delivery: deliveryVariant = 0;
+						break;
+					case R.id.partner_delivery: deliveryVariant = 1;
+						break;
+					case R.id.econom_delivery: deliveryVariant = 2;
 						break;
 				}
 			}
@@ -73,10 +89,36 @@ public class AddOrderActivity extends AppCompatActivity {
 				} else if (Integer.parseInt(bayouOrder.getText().toString()) > Integer.parseInt(priceOrder.getText().toString())) {
 					Toast.makeText(AddOrderActivity.this, "Космический выкуп!", Toast.LENGTH_LONG).show();
 				} else {
-					calculateResultPoint();
+					switch (deliveryVariant) {
+						case 0: calculateResultPoint();
+							break;
+						case 1: calculateResultPointPartner();
+							break;
+						case 2: resultPoint = "3";
+							addOrderInOrderList();
+							break;
+					}
 				}
 			}
 		});
+	}
+
+	private void calculateResultPointPartner() {
+
+		numberOrderStr = numberOrder.getText().toString();
+		priceOrderStr = priceOrder.getText().toString();
+		bayoutOrderStr = bayouOrder.getText().toString();
+
+		resultPercentOrder = Float.parseFloat(bayoutOrderStr)/ Float.parseFloat(priceOrderStr) * 100;
+		if(0 < resultPercentOrder && resultPercentOrder < 30) {
+			resultPoint = "3";
+		} else if(30 <= resultPercentOrder && resultPercentOrder <= 100) {
+			resultPoint = "5";
+		} else {
+			resultPoint = "0";
+			Toast.makeText(this, "Какая-то хрень!", Toast.LENGTH_LONG).show();
+		}
+		addOrderInOrderList();
 	}
 
 	private void calculateResultPoint() {
@@ -108,6 +150,10 @@ public class AddOrderActivity extends AppCompatActivity {
 	}
 
 	private void addOrderInOrderList() {
+
+		numberOrderStr = numberOrder.getText().toString();
+		priceOrderStr = priceOrder.getText().toString();
+		bayoutOrderStr = bayouOrder.getText().toString();
 
 		HashMap orderMap = new HashMap();
 		orderMap.put("numberOrder", numberOrderStr);
