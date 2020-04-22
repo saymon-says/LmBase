@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="wrap_content"
     >
-
-    <TextView
-        android:id="@+id/number_order"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:text="Номер заказа"
-        android:fontFamily="@font/roboto_medium"
-        android:layout_marginLeft="20dp"
-        />
     <LinearLayout
-        android:layout_below="@id/number_order"
+        android:id="@+id/orerder_hats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        >
+        <TextView
+            android:id="@+id/number_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Номер заказа"
+            android:fontFamily="@font/roboto_medium"
+            android:layout_margin="5dp"
+            />
+        <TextView
+            android:id="@+id/delivery_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Балл доставки"
+            android:fontFamily="@font/roboto_medium"
+android:layout_margin="5dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_below="@id/orerder_hats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -24,27 +41,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Стоимость заказа"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:fontFamily="@font/roboto_medium"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             />
         <TextView
             android:id="@+id/bayout_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Выкуплено"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:fontFamily="@font/roboto_medium"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             />
         <TextView
             android:id="@+id/point_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Баллы выкупа"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:fontFamily="@font/roboto_medium"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             />
     </LinearLayout>
 </RelativeLayout>

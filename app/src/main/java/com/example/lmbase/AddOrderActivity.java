@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,9 +23,11 @@ public class AddOrderActivity extends AppCompatActivity {
 
 	private EditText numberOrder, priceOrder, bayouOrder;
 	private Button addButton;
+	private RadioGroup radioGroup;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
-	private double resultPercentOrder;
+	String resultDelivery = "3";
+	private float resultPercentOrder;
 
 	private DatabaseReference ordersRef;
 	private FirebaseAuth mAuth;
@@ -43,11 +45,25 @@ public class AddOrderActivity extends AppCompatActivity {
 		numberOrder = findViewById(R.id.number_order);
 		priceOrder = findViewById(R.id.price_order);
 		bayouOrder = findViewById(R.id.bayout_order);
+		radioGroup = findViewById(R.id.group_radio_type_order);
 		addButton = findViewById(R.id.add_button);
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
+
+		radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				checkedId = group.getCheckedRadioButtonId();
+				switch (checkedId) {
+					case R.id.usually_order: resultDelivery = "3";
+						break;
+					case R.id.sdd_order: resultDelivery = "7";
+						break;
+				}
+			}
+		});
 
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -69,7 +85,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		priceOrderStr = priceOrder.getText().toString();
 		bayoutOrderStr = bayouOrder.getText().toString();
 
-		resultPercentOrder = Math.floor(Integer.valueOf(bayoutOrderStr) * 100 / Integer.valueOf(priceOrderStr));
+		resultPercentOrder = Float.parseFloat(bayoutOrderStr)/ Float.parseFloat(priceOrderStr) * 100;
 		if(0 < resultPercentOrder && resultPercentOrder < 20) {
 			resultPoint = "2";
 		} else if(20 <= resultPercentOrder && resultPercentOrder < 30) {
@@ -88,7 +104,7 @@ public class AddOrderActivity extends AppCompatActivity {
 			resultPoint = "0";
 			Toast.makeText(this, "Какая-то хрень!", Toast.LENGTH_LONG).show();
 		}
-				addOrderInOrderList();
+		addOrderInOrderList();
 	}
 
 	private void addOrderInOrderList() {
@@ -100,6 +116,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		orderMap.put("uid", currentUserId);
 		orderMap.put("date", currentDateOrderList);
 		orderMap.put("point", resultPoint);
+		orderMap.put("delivery", resultDelivery);
 		ordersRef.child(currentDateOrderList).child(numberOrderStr).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {

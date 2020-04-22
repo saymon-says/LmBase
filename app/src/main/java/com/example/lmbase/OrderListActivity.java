@@ -52,7 +52,7 @@ public class OrderListActivity extends AppCompatActivity {
 
 		mToolbar = findViewById(R.id.orders_page_toolbar);
 		setSupportActionBar(mToolbar);
-		getSupportActionBar().setTitle("Список заказов на: " + currentDateOrderList);
+		getSupportActionBar().setTitle("Заказы на: " + currentDateOrderList);
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
@@ -87,10 +87,11 @@ public class OrderListActivity extends AppCompatActivity {
 			@SuppressLint("SetTextI18n")
 			@Override
 			protected void onBindViewHolder(@NonNull OrdersViewHolder holder, int position, @NonNull Orders model) {
-				holder.numberOrder.setText("Номер заказа: " + model.getNumberOrder());
-				holder.priceOrder.setText("Стоимость заказа: " + model.getPriceOrder());
+				holder.numberOrder.setText("Заказ: " + model.getNumberOrder());
+				holder.priceOrder.setText("Стоимость: " + model.getPriceOrder());
 				holder.bayoutOrder.setText("Выкуп: " + model.getBayoutOrder());
 				holder.pointOrder.setText("Балл выкупа :" + model.getPoint());
+				holder.deliveryOrder.setText("Доставка :" + model.getDelivery());
 			}
 
 			@NonNull
@@ -106,7 +107,7 @@ public class OrderListActivity extends AppCompatActivity {
 	}
 
 	public static class OrdersViewHolder extends RecyclerView.ViewHolder {
-		TextView numberOrder, priceOrder, bayoutOrder, pointOrder;
+		TextView numberOrder, priceOrder, bayoutOrder, pointOrder, deliveryOrder;
 
 		public OrdersViewHolder(@NonNull View itemView) {
 			super(itemView);
@@ -114,6 +115,7 @@ public class OrderListActivity extends AppCompatActivity {
 			priceOrder = itemView.findViewById(R.id.price_order);
 			bayoutOrder = itemView.findViewById(R.id.bayout_order);
 			pointOrder = itemView.findViewById(R.id.point_order);
+			deliveryOrder = itemView.findViewById(R.id.delivery_order);
 		}
 	}
 }
