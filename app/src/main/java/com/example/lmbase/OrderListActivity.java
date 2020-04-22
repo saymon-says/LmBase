@@ -47,7 +47,7 @@ public class OrderListActivity extends AppCompatActivity {
 		listOrders.setLayoutManager(linearLayoutManager);
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		mToolbar = findViewById(R.id.orders_page_toolbar);
@@ -56,7 +56,7 @@ public class OrderListActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentDateOrderList).child(currentUserId);
+		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 
 		addBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -90,6 +90,7 @@ public class OrderListActivity extends AppCompatActivity {
 				holder.numberOrder.setText("Номер заказа: " + model.getNumberOrder());
 				holder.priceOrder.setText("Стоимость заказа: " + model.getPriceOrder());
 				holder.bayoutOrder.setText("Выкуп: " + model.getBayoutOrder());
+				holder.pointOrder.setText("Балл выкупа :" + model.getPoint());
 			}
 
 			@NonNull
@@ -105,13 +106,14 @@ public class OrderListActivity extends AppCompatActivity {
 	}
 
 	public static class OrdersViewHolder extends RecyclerView.ViewHolder {
-		TextView numberOrder, priceOrder, bayoutOrder;
+		TextView numberOrder, priceOrder, bayoutOrder, pointOrder;
 
 		public OrdersViewHolder(@NonNull View itemView) {
 			super(itemView);
 			numberOrder = itemView.findViewById(R.id.number_order);
 			priceOrder = itemView.findViewById(R.id.price_order);
 			bayoutOrder = itemView.findViewById(R.id.bayout_order);
+			pointOrder = itemView.findViewById(R.id.point_order);
 		}
 	}
 }

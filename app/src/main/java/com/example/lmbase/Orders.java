@@ -1,16 +1,25 @@
 package com.example.lmbase;
 
 public class Orders {
-	String numberOrder, priceOrder, bayoutOrder, uid;
+	String numberOrder, priceOrder, bayoutOrder, uid, point;
 
-	public Orders(String numberOrder, String priceOrder, String bayoutOrder, String uid) {
+	public Orders(String numberOrder, String priceOrder, String bayoutOrder, String uid, String point) {
 		this.numberOrder = numberOrder;
 		this.priceOrder = priceOrder;
 		this.bayoutOrder = bayoutOrder;
 		this.uid = uid;
+		this.point = point;
 	}
 
 	public Orders() {
+	}
+
+	public String getPoint() {
+		return point;
+	}
+
+	public void setPoint(String point) {
+		this.point = point;
 	}
 
 	public String getNumberOrder() {
