@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,5 +87,11 @@ public class UserListActivity extends AppCompatActivity {
 			userfullname = itemView.findViewById(R.id.user_fullname_list);
 			userpic = itemView.findViewById(R.id.userpic_list);
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
 	}
 }

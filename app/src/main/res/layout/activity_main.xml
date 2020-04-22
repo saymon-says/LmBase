@@ -7,7 +7,7 @@
     android:id="@+id/drawer_layout"
     tools:context=".MainActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
+    tools:openDrawer="end"
     >
 
 
@@ -20,9 +20,12 @@
             layout="@layout/app_bar_layout"
             android:id="@+id/main_page_toolbar">
         </include>
+        <RelativeLayout
+            android:layout_below="@id/main_page_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <TextView
             android:id="@+id/orders_count"
-            android:layout_below="@id/main_page_toolbar"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:text=""
@@ -32,6 +35,18 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
             />
+
+            <TextView
+                android:id="@+id/workshift_count"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="200dp"
+                android:background="@drawable/input"
+                android:text=""
+                android:textAlignment="center"
+                android:textSize="100sp" />
+        </RelativeLayout>
     </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView

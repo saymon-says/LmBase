@@ -118,4 +118,10 @@ public class OrderListActivity extends AppCompatActivity {
 			deliveryOrder = itemView.findViewById(R.id.delivery_order);
 		}
 	}
+
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
 }

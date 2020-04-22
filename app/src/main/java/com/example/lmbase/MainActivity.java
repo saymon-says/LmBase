@@ -14,8 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,8 +26,6 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -39,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
 	private NavigationView navigationView;
 	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
-	private TextView navUserName, ordersCount;
+	private TextView navUserName, ordersCount, workshiftCount;
 
 	private FirebaseAuth mAuth;
-	private DatabaseReference usersRef, ordersRef, ordersCountRef;
+	private DatabaseReference usersRef, ordersRef, ordersCountRef, workshiftCountRef;
 	private String currentUserId, currentDateOrderList;
 
 	@Override
@@ -60,10 +56,12 @@ public class MainActivity extends AppCompatActivity {
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders List");
 		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
+		workshiftCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
 		navigationView = findViewById(R.id.nav);
 		ordersCount = findViewById(R.id.orders_count);
+		workshiftCount = findViewById(R.id.workshift_count);
 
 		View navView = navigationView.inflateHeaderView(R.layout.heade_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
@@ -119,6 +117,23 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		workshiftCountRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					String countOfWorkShift = String.valueOf(dataSnapshot.getChildrenCount());
+					workshiftCount.setText(countOfWorkShift);
+				} else {
+					Toast.makeText(MainActivity.this, "В этом месяце нет смен", Toast.LENGTH_LONG).show();
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -145,7 +160,8 @@ public class MainActivity extends AppCompatActivity {
 		if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
 			drawerLayout.closeDrawer(GravityCompat.START);
 		} else {
-			super.onBackPressed();
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
 		}
 	}
 
