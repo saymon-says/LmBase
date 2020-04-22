@@ -26,7 +26,7 @@ public class AddOrderActivity extends AppCompatActivity {
 	private RadioGroup radioGroup;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
-	String resultDelivery = "3";
+	private String resultDelivery = "3";
 	private float resultPercentOrder;
 
 	private DatabaseReference ordersRef;
