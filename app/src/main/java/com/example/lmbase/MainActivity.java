@@ -8,8 +8,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -70,12 +72,16 @@ public class MainActivity extends AppCompatActivity {
 		mToolbar = findViewById(R.id.main_page_toolbar);
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setTitle("Домашняя страница");
+		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+				this, drawerLayout, mToolbar, R.string.open_navigation, R.string.close_navigation);
+		drawerLayout.addDrawerListener(toggle);
+		toggle.syncState();
 
 		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if(dataSnapshot.exists()) {
-					if(dataSnapshot.hasChild("fullname")) {
+				if (dataSnapshot.exists()) {
+					if (dataSnapshot.hasChild("fullname")) {
 						String fullname = dataSnapshot.child("fullname").getValue().toString();
 						navUserName.setText(fullname);
 					} else {
@@ -99,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 		ordersCountRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if(dataSnapshot.exists()) {
+				if (dataSnapshot.exists()) {
 					String countOfOrders = String.valueOf(dataSnapshot.getChildrenCount());
 					ordersCount.setText(countOfOrders);
 				} else {
@@ -127,10 +133,19 @@ public class MainActivity extends AppCompatActivity {
 		super.onStart();
 
 		FirebaseUser currentUser = mAuth.getCurrentUser();
-		if(currentUser == null) {
+		if (currentUser == null) {
 			SendUserToLoginActivity();
 		} else {
 			CheckUserInBase();
+		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+			drawerLayout.closeDrawer(GravityCompat.START);
+		} else {
+			super.onBackPressed();
 		}
 	}
 
@@ -139,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 		usersRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if(!dataSnapshot.hasChild(currentUserId)) {
+				if (!dataSnapshot.hasChild(currentUserId)) {
 					SendUserToSetupActivity();
 				}
 			}
