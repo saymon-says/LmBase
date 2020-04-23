@@ -1,4 +1,4 @@
-package com.example.lmbase;
+package com.example.lmbase.Class;
 
 public class Orders {
 	String numberOrder, priceOrder, bayoutOrder, uid, point, delivery;

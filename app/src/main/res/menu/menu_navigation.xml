@@ -6,9 +6,13 @@
         android:icon="@drawable/connection"
         android:title="Перейти в смену" />
     <item
-        android:id="@+id/nav_tor_list"
+        android:id="@+id/nav_for_list"
         android:icon="@drawable/research"
         android:title="Торговые" />
+    <item
+        android:id="@+id/nav_for_workshift"
+        android:icon="@drawable/research"
+        android:title="Смены" />
     <item
         android:id="@+id/nav_logout"
         android:icon="@drawable/effort"

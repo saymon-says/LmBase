@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +27,7 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 	private TextView navUserName, ordersCount, workshiftCount, deliveryCount, bayoutCount, pointCount;
 
 	private FirebaseAuth mAuth;
-	private DatabaseReference usersRef, ordersRef, ordersCountRef, workshiftCountRef;
+	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef;
 	private String currentUserId, currentDateOrderList;
 
 	@Override
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
+		pointerRef = FirebaseDatabase.getInstance().getReference().child("Pointers List");
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders List");
 		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
@@ -225,12 +228,17 @@ public class MainActivity extends AppCompatActivity {
 		switch (item.getItemId()) {
 			case R.id.nav_add_workshift:
 				SendUserToOrderList();
-				Toast.makeText(this, "Поехали...", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "Поехали...", Toast.LENGTH_SHORT).show();
 				break;
 
-			case R.id.nav_tor_list:
+			case R.id.nav_for_list:
 				SendUserToUserListActivity();
-				Toast.makeText(this, "Список торговых", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "Список торговых", Toast.LENGTH_SHORT).show();
+				break;
+
+			case R.id.nav_for_workshift:
+				UpdateDataBaseWorkShift();
+				Toast.makeText(this, "Список смен в этом месяце", Toast.LENGTH_SHORT).show();
 				break;
 
 			case R.id.nav_logout:
@@ -240,13 +248,33 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	private void UpdateDataBaseWorkShift() {
+
+		String resultPoint = pointCount.getText().toString();
+		HashMap workshiftMap = new HashMap();
+		workshiftMap.put("uid", currentUserId);
+		workshiftMap.put("date", currentDateOrderList);
+		workshiftMap.put("resultPoint", resultPoint);
+		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap).addOnSuccessListener(new OnSuccessListener() {
+			@Override
+			public void onSuccess(Object o) {
+				SendUserToWorkshiftActivity();
+			}
+		});
+	}
+
+	private void SendUserToWorkshiftActivity() {
+		Intent workshiiftIntent = new Intent(this, WorkShiftListActivity.class);
+		startActivity(workshiiftIntent);
+	}
+
 	private void SendUserToUserListActivity() {
-		Intent orderListIntent = new Intent(MainActivity.this, UserListActivity.class);
+		Intent orderListIntent = new Intent(this, UserListActivity.class);
 		startActivity(orderListIntent);
 	}
 
 	private void SendUserToOrderList() {
-		Intent orderListIntent = new Intent(MainActivity.this, OrderListActivity.class);
+		Intent orderListIntent = new Intent(this, OrderListActivity.class);
 		startActivity(orderListIntent);
 	}
 }
