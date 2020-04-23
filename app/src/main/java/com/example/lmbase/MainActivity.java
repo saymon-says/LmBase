@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 		bayoutCount = findViewById(R.id.bayout_count);
 		pointCount = findViewById(R.id.point_count);
 
-		View navView = navigationView.inflateHeaderView(R.layout.heade_nav);
+		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
 		navUserpic = navView.findViewById(R.id.profile_image);
 
