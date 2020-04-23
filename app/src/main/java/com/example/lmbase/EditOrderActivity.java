@@ -34,7 +34,6 @@ public class EditOrderActivity extends AppCompatActivity {
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
 	private String resultDelivery, typeDelivery, typeOrder;
 	private Integer deliveryVariant = 0;
-	//	private long counterOrders = 0;
 	private float resultPercentOrder;
 
 	private DatabaseReference editOrderRef, ordersCountRef, ordersRef;
@@ -181,13 +180,12 @@ public class EditOrderActivity extends AppCompatActivity {
 	}
 
 	private void setUpDelivery() {
-		ordersCountRef.addValueEventListener(new ValueEventListener() {
+		editOrderRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
-//					counterOrders = dataSnapshot.getChildrenCount();
-					int countOfOrders = (int) dataSnapshot.getChildrenCount();
-					if (0 < countOfOrders && countOfOrders < 15) {
+					int countOfOrders = Integer.parseInt(dataSnapshot.child("counter").getValue().toString());
+					if (0 <= countOfOrders && countOfOrders < 15) {
 						resultDelivery = "3";
 					} else if (15 <= countOfOrders && countOfOrders < 29) {
 						resultDelivery = "4";
@@ -195,7 +193,6 @@ public class EditOrderActivity extends AppCompatActivity {
 						resultDelivery = "7";
 					}
 				} else {
-//					counterOrders = 0;
 					resultDelivery = "3";
 				}
 			}
