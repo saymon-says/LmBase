@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -124,6 +125,7 @@ public class OrderListActivity extends AppCompatActivity {
 
 	public static class OrdersViewHolder extends RecyclerView.ViewHolder {
 		TextView numberOrder, priceOrder, bayoutOrder, pointOrder, deliveryOrder;
+		ImageView orderImage;
 
 		public OrdersViewHolder(@NonNull View itemView) {
 			super(itemView);
@@ -132,6 +134,7 @@ public class OrderListActivity extends AppCompatActivity {
 			bayoutOrder = itemView.findViewById(R.id.bayout_order);
 			pointOrder = itemView.findViewById(R.id.point_order);
 			deliveryOrder = itemView.findViewById(R.id.delivery_order);
+			orderImage = itemView.findViewById(R.id.image_order);
 		}
 	}
 

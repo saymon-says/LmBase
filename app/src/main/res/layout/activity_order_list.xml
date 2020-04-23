@@ -6,25 +6,22 @@
     tools:context=".OrderListActivity">
 
     <include
-        layout="@layout/app_bar_layout"
         android:id="@+id/orders_page_toolbar"
-        >
-    </include>
+        layout="@layout/app_bar_layout"></include>
 
     <Button
         android:id="@+id/add_order"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:background="@drawable/add"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="15dp"
-        android:focusableInTouchMode="false"/>
+        android:background="@drawable/add"
+        android:focusableInTouchMode="false" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_of_orders"
-        android:layout_below="@+id/orders_page_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:layout_below="@+id/orders_page_toolbar" />
 </RelativeLayout>
