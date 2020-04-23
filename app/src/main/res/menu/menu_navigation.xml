@@ -3,21 +3,14 @@
 
     <item
         android:id="@+id/nav_add_workshift"
-        android:title="Перейти в смену"
         android:icon="@drawable/connection"
-        />
+        android:title="Перейти в смену" />
     <item
         android:id="@+id/nav_tor_list"
-        android:title="Тороговые"
-        android:icon="@drawable/research"/>
-    <item
-        android:id="@+id/nav_static"
-        android:title="Статистика"
-        android:icon="@drawable/statistics"
-        />
+        android:icon="@drawable/research"
+        android:title="Торговые" />
     <item
         android:id="@+id/nav_logout"
-        android:title="Выйти"
         android:icon="@drawable/effort"
-        />
+        android:title="Выйти" />
 </menu>

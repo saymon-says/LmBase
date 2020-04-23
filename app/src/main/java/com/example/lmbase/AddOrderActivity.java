@@ -101,7 +101,11 @@ public class AddOrderActivity extends AppCompatActivity {
 							break;
 						case 1: calculateResultPointPartner();
 							break;
-						case 2: resultPoint = "3";
+						case 2: if(!bayouOrder.getText().toString().equals("0")) {
+							resultPoint = "3";
+						} else {
+							resultPoint = "0";
+						}
 							addOrderInOrderList();
 							break;
 					}

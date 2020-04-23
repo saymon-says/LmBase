@@ -26,6 +26,8 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 	private NavigationView navigationView;
 	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
-	private TextView navUserName, ordersCount, workshiftCount;
+	private TextView navUserName, ordersCount, workshiftCount, deliveryCount, bayoutCount, pointCount;
 
 	private FirebaseAuth mAuth;
 	private DatabaseReference usersRef, ordersRef, ordersCountRef, workshiftCountRef;
@@ -62,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
 		navigationView = findViewById(R.id.nav);
 		ordersCount = findViewById(R.id.orders_count);
 		workshiftCount = findViewById(R.id.workshift_count);
+		deliveryCount = findViewById(R.id.delivery_count);
+		bayoutCount = findViewById(R.id.bayout_count);
+		pointCount = findViewById(R.id.point_count);
 
 		View navView = navigationView.inflateHeaderView(R.layout.heade_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
@@ -69,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
 		mToolbar = findViewById(R.id.main_page_toolbar);
 		setSupportActionBar(mToolbar);
-		getSupportActionBar().setTitle("Домашняя страница");
+		Objects.requireNonNull(getSupportActionBar()).setTitle("Статистика");
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawerLayout, mToolbar, R.string.open_navigation, R.string.close_navigation);
 		drawerLayout.addDrawerListener(toggle);
@@ -104,10 +109,32 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
+					int resultDelivery = 0;
+					for (DataSnapshot ds : dataSnapshot.getChildren()) {
+						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						Object delivery = map.get("delivery");
+						int dValue = Integer.parseInt(String.valueOf(delivery));
+						resultDelivery += dValue;
+						deliveryCount.setText(String.valueOf(resultDelivery));
+					}
+					int resultBuyout = 0;
+					for (DataSnapshot ds : dataSnapshot.getChildren()) {
+						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						Object buyout = map.get("point");
+						int bValue = Integer.parseInt(String.valueOf(buyout));
+						resultBuyout += bValue;
+						bayoutCount.setText(String.valueOf(resultBuyout));
+					}
+					int resultPoint = resultBuyout + resultDelivery;
+					pointCount.setText(String.valueOf(resultPoint));
 					String countOfOrders = String.valueOf(dataSnapshot.getChildrenCount());
 					ordersCount.setText(countOfOrders);
 				} else {
 					Toast.makeText(MainActivity.this, "Заказов еще нет", Toast.LENGTH_LONG).show();
+					ordersCount.setText("0");
+					pointCount.setText("0");
+					bayoutCount.setText("0");
+					deliveryCount.setText("0");
 				}
 			}
 
@@ -124,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 					String countOfWorkShift = String.valueOf(dataSnapshot.getChildrenCount());
 					workshiftCount.setText(countOfWorkShift);
 				} else {
+					workshiftCount.setText("0");
 					Toast.makeText(MainActivity.this, "В этом месяце нет смен", Toast.LENGTH_LONG).show();
 				}
 			}
@@ -203,10 +231,6 @@ public class MainActivity extends AppCompatActivity {
 			case R.id.nav_tor_list:
 				SendUserToUserListActivity();
 				Toast.makeText(this, "Список торговых", Toast.LENGTH_LONG).show();
-				break;
-
-			case R.id.nav_static:
-				Toast.makeText(this, "Статистика", Toast.LENGTH_LONG).show();
 				break;
 
 			case R.id.nav_logout:

@@ -1,51 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
-    tools:context=".MainActivity"
     android:fitsSystemWindows="true"
-    tools:openDrawer="end"
-    >
-
+    tools:context=".MainActivity"
+    tools:openDrawer="end">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <include
-            layout="@layout/app_bar_layout"
-            android:id="@+id/main_page_toolbar">
-        </include>
+            android:id="@+id/main_page_toolbar"
+            layout="@layout/app_bar_layout"></include>
+
         <RelativeLayout
-            android:layout_below="@id/main_page_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/orders_count"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:text=""
-            android:textSize="100sp"
-            android:textAlignment="center"
-            android:background="@drawable/input"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            />
+            android:layout_height="match_parent"
+            android:layout_below="@id/main_page_toolbar">
+
+            <TextView
+                android:id="@+id/text_orders_count"
+                android:layout_below="@id/main_page_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="21dp"
+                android:layout_marginTop="20dp"
+                android:text="Количество заказов:"
+                tools:ignore="NotSibling" />
+
+            <TextView
+                android:id="@+id/orders_count"
+                android:layout_below="@id/text_orders_count"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input"
+                android:textAlignment="center"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="80sp" />
+
+            <TextView
+                android:id="@+id/text_workshift_count"
+                android:layout_below="@id/main_page_toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="210dp"
+                android:layout_marginTop="20dp"
+                android:text="Количество смен:"
+                tools:ignore="NotSibling" />
 
             <TextView
                 android:id="@+id/workshift_count"
+                android:layout_below="@+id/text_workshift_count"
                 android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="195dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginStart="200dp"
                 android:background="@drawable/input"
-                android:text=""
                 android:textAlignment="center"
-                android:textSize="100sp" />
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="80sp" />
+
+            <TextView
+                android:id="@+id/text_delivery_count"
+                android:layout_below="@id/orders_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:text="Доставка сегодня:" />
+
+            <TextView
+                android:id="@+id/delivery_count"
+                android:layout_below="@id/text_delivery_count"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input"
+                android:textAlignment="center"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="80sp" />
+
+            <TextView
+                android:id="@+id/text_bayout_count"
+                android:layout_below="@id/workshift_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="220dp"
+                android:layout_marginTop="20dp"
+                android:text="Выкуп сегодня:" />
+
+            <TextView
+                android:id="@+id/bayout_count"
+                android:layout_below="@id/text_bayout_count"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="195dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input"
+                android:textAlignment="center"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="80sp" />
+
+            <TextView
+                android:id="@+id/text_result_count"
+                android:layout_below="@id/delivery_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="133dp"
+                android:layout_marginTop="20dp"
+                android:text="Баллы сегодня:" />
+
+            <TextView
+                android:id="@+id/point_count"
+                android:layout_below="@id/text_result_count"
+                android:layout_width="150dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="110dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input"
+                android:textAlignment="center"
+                android:fontFamily="@font/roboto_medium"
+                android:textSize="80sp" />
         </RelativeLayout>
     </RelativeLayout>
 
