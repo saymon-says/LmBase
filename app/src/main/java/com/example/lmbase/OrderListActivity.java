@@ -102,7 +102,10 @@ public class OrderListActivity extends AppCompatActivity {
 				holder.itemView.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						
+						Intent editOrderIntent = new Intent(OrderListActivity.this, EditOrderActivity.class);
+						editOrderIntent.putExtra("orderKey", orderKey);
+						startActivity(editOrderIntent);
+
 					}
 				});
 			}

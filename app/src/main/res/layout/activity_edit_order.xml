@@ -1,9 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EditOrderActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/layout_first"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Форма для изменения заказа"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/number_order"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:background="@drawable/input"
+            android:hint="Номер заказа"
+            android:inputType="number"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Выберите тип доставки:"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/delimiter" />
+
+        <RadioGroup
+            android:id="@+id/group_radio_type_order"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/usually_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:drawableLeft="@drawable/usually_order"
+                android:padding="5dp"
+                android:text="  Обычный заказ" />
+
+            <RadioButton
+                android:id="@+id/sdd_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/sdd_order"
+                android:padding="5dp"
+                android:text="  СДД заказ" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Выберите тип заказа"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/delimiter" />
+
+        <RadioGroup
+            android:id="@+id/group_radio_type_delivery"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:padding="5dp">
+
+            <RadioButton
+                android:id="@+id/usually_delivery"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:drawableLeft="@drawable/lamoda_order"
+                android:padding="3dp"
+                android:text=" Lamoda" />
+
+            <RadioButton
+                android:id="@+id/partner_delivery"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/partner_order"
+                android:padding="3dp"
+                android:text=" Партнер" />
+
+            <RadioButton
+                android:id="@+id/econom_delivery"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/econom_order"
+                android:padding="3dp"
+                android:text="  Эконом" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/roboto_medium"
+            android:text="Введите необходимые данные"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="300dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/delimiter" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/price_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/input"
+                android:hint="Стоимость заказа"
+                android:inputType="number"
+                android:padding="10dp" />
+
+            <EditText
+                android:id="@+id/bayout_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/input"
+                android:hint="Выкуп"
+                android:inputType="number"
+                android:padding="10dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_first"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/button"
+        android:text="Обновить заказ" />
+
+</RelativeLayout>

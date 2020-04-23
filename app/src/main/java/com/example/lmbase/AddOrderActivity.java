@@ -30,7 +30,7 @@ public class AddOrderActivity extends AppCompatActivity {
 	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
-	private String resultDelivery;
+	private String resultDelivery, typeOrder, typeDelivery;
 	private Integer deliveryVariant = 0;
 	private long counterOrders = 0;
 	private float resultPercentOrder;
@@ -61,6 +61,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 
 		if (radioGroupOrder.getCheckedRadioButtonId() == R.id.usually_order) {
+			typeOrder = "usually";
 			setUpDelivery();
 		}
 		radioGroupOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -68,27 +69,36 @@ public class AddOrderActivity extends AppCompatActivity {
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				switch (checkedId) {
 					case R.id.usually_order:
+						typeOrder = "usually";
 						setUpDelivery();
 						break;
 					case R.id.sdd_order:
+						typeOrder = "sdd";
 						resultDelivery = "7";
 						break;
 				}
 			}
 		});
 
+		if(radioGroupDelivery.getCheckedRadioButtonId() == R.id.usually_delivery){
+			deliveryVariant = 0;
+			typeDelivery = "usually";
+		}
 		radioGroupDelivery.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				switch (checkedId) {
 					case R.id.usually_delivery:
 						deliveryVariant = 0;
+						typeDelivery = "usually";
 						break;
 					case R.id.partner_delivery:
 						deliveryVariant = 1;
+						typeDelivery = "partner";
 						break;
 					case R.id.econom_delivery:
 						deliveryVariant = 2;
+						typeDelivery = "economy";
 						break;
 				}
 			}
@@ -130,9 +140,9 @@ public class AddOrderActivity extends AppCompatActivity {
 				if (dataSnapshot.exists()) {
 					counterOrders = dataSnapshot.getChildrenCount();
 					int countOfOrders = (int) dataSnapshot.getChildrenCount();
-					if (0 < countOfOrders && countOfOrders < 3) {
+					if (0 < countOfOrders && countOfOrders < 15) {
 						resultDelivery = "3";
-					} else if (3 <= countOfOrders && countOfOrders < 5) {
+					} else if (15 <= countOfOrders && countOfOrders < 29) {
 						resultDelivery = "4";
 					} else {
 						resultDelivery = "7";
@@ -211,6 +221,8 @@ public class AddOrderActivity extends AppCompatActivity {
 		orderMap.put("counter", counterOrders);
 		orderMap.put("point", resultPoint);
 		orderMap.put("delivery", resultDelivery);
+		orderMap.put("typeOrder", typeOrder);
+		orderMap.put("typeDelivery", typeDelivery);
 		ordersRef.child(currentDateOrderList).child(numberOrderStr).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {
