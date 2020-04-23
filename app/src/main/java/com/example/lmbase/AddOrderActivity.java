@@ -94,22 +94,6 @@ public class AddOrderActivity extends AppCompatActivity {
 			}
 		});
 
-		ordersCountRef.addValueEventListener(new ValueEventListener() {
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.exists()) {
-					counterOrders = dataSnapshot.getChildrenCount();
-				} else {
-					counterOrders = 0;
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
-
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -144,6 +128,7 @@ public class AddOrderActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
+					counterOrders = dataSnapshot.getChildrenCount();
 					int countOfOrders = (int) dataSnapshot.getChildrenCount();
 					if (0 < countOfOrders && countOfOrders < 3) {
 						resultDelivery = "3";
@@ -153,6 +138,7 @@ public class AddOrderActivity extends AppCompatActivity {
 						resultDelivery = "7";
 					}
 				} else {
+					counterOrders = 0;
 					resultDelivery = "3";
 				}
 			}

@@ -51,9 +51,6 @@ public class WorkShiftListActivity extends AppCompatActivity {
 		SimpleDateFormat currentDate = new SimpleDateFormat("MMM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
-		Date curent = Calendar.getInstance().getTime();
-		System.out.println(curent);
-
 		mToolbar = findViewById(R.id.workshift_page_toolbar);
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setTitle("Смены за " + currentDateOrderList);

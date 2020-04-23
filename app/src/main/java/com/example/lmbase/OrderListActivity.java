@@ -90,11 +90,21 @@ public class OrderListActivity extends AppCompatActivity {
 			@SuppressLint("SetTextI18n")
 			@Override
 			protected void onBindViewHolder(@NonNull OrdersViewHolder holder, int position, @NonNull Orders model) {
+
+				final String orderKey = getRef(position).getKey();
+
 				holder.numberOrder.setText("Заказ: " + model.getNumberOrder());
 				holder.priceOrder.setText("Стоимость: " + model.getPriceOrder());
 				holder.bayoutOrder.setText("Выкуп: " + model.getBayoutOrder());
 				holder.pointOrder.setText("БВ :" + model.getPoint());
 				holder.deliveryOrder.setText("БД :" + model.getDelivery());
+
+				holder.itemView.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						
+					}
+				});
 			}
 
 			@NonNull
