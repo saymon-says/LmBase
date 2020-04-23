@@ -45,7 +45,7 @@ public class WorkShiftListActivity extends AppCompatActivity {
 		listWorkshifts.setLayoutManager(linearLayoutManager);
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("MM-yyyy");
+		SimpleDateFormat currentDate = new SimpleDateFormat("MMM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		mToolbar = findViewById(R.id.workshift_page_toolbar);
