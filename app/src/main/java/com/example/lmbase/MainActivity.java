@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef;
-	private String currentUserId, currentDateOrderList;
+	private String currentUserId, currentDateOrderList, currentDateSortList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
 		Calendar calendarDate = Calendar.getInstance();
 		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		SimpleDateFormat currentDateSort = new SimpleDateFormat("ddMMyyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
+		currentDateSortList = currentDateSort.format(calendarDate.getTime());
 
 		pointerRef = FirebaseDatabase.getInstance().getReference().child("Pointers List");
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 					String countOfOrders = String.valueOf(dataSnapshot.getChildrenCount());
 					ordersCount.setText(countOfOrders);
 				} else {
-					Toast.makeText(MainActivity.this, "Заказов еще нет", Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, "Пока по нулям..", Toast.LENGTH_SHORT).show();
 					ordersCount.setText("0");
 					pointCount.setText("0");
 					bayoutCount.setText("0");
@@ -155,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
 					workshiftCount.setText(countOfWorkShift);
 				} else {
 					workshiftCount.setText("0");
-					Toast.makeText(MainActivity.this, "В этом месяце нет смен", Toast.LENGTH_LONG).show();
 				}
 			}
 
@@ -253,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
 		String resultPoint = pointCount.getText().toString();
 		HashMap workshiftMap = new HashMap();
 		workshiftMap.put("uid", currentUserId);
+		workshiftMap.put("dateSort", Integer.parseInt(currentDateSortList));
 		workshiftMap.put("date", currentDateOrderList);
 		workshiftMap.put("resultPoint", resultPoint);
 		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap).addOnSuccessListener(new OnSuccessListener() {

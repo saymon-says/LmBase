@@ -3,6 +3,7 @@ package com.example.lmbase;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +15,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lmbase.Class.WorkShifts;
+import com.example.lmbase.Model.WorkShifts;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class WorkShiftListActivity extends AppCompatActivity {
 
@@ -48,6 +51,9 @@ public class WorkShiftListActivity extends AppCompatActivity {
 		SimpleDateFormat currentDate = new SimpleDateFormat("MMM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
+		Date curent = Calendar.getInstance().getTime();
+		System.out.println(curent);
+
 		mToolbar = findViewById(R.id.workshift_page_toolbar);
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setTitle("Смены за " + currentDateOrderList);
@@ -71,8 +77,9 @@ public class WorkShiftListActivity extends AppCompatActivity {
 
 	private void DisplayAllWorkShifts() {
 
+		Query query = workshiftRef.orderByChild("dateSort");
 		FirebaseRecyclerOptions<WorkShifts> options = new FirebaseRecyclerOptions.Builder<WorkShifts>()
-				.setQuery(workshiftRef, WorkShifts.class)
+				.setQuery(query, WorkShifts.class)
 				.build();
 
 		FirebaseRecyclerAdapter<WorkShifts, WorkShiftListActivity.WorkShiftsViewHolder> adapter =

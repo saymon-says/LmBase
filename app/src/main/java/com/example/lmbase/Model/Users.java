@@ -1,4 +1,4 @@
-package com.example.lmbase.Class;
+package com.example.lmbase.Model;
 
 public class Users {
 	String alias, fullname, userpic;

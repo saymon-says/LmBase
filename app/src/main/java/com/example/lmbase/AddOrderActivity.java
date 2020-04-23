@@ -32,6 +32,7 @@ public class AddOrderActivity extends AppCompatActivity {
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
 	private String resultDelivery;
 	private Integer deliveryVariant = 0;
+	private long counterOrders = 0;
 	private float resultPercentOrder;
 
 	private DatabaseReference ordersRef, ordersCountRef;
@@ -59,16 +60,18 @@ public class AddOrderActivity extends AppCompatActivity {
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
 		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 
-		if(radioGroupOrder.getCheckedRadioButtonId() == R.id.usually_order) {
+		if (radioGroupOrder.getCheckedRadioButtonId() == R.id.usually_order) {
 			setUpDelivery();
 		}
 		radioGroupOrder.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				switch (checkedId) {
-					case R.id.usually_order: setUpDelivery();
+					case R.id.usually_order:
+						setUpDelivery();
 						break;
-					case R.id.sdd_order: resultDelivery = "7";
+					case R.id.sdd_order:
+						resultDelivery = "7";
 						break;
 				}
 			}
@@ -78,34 +81,56 @@ public class AddOrderActivity extends AppCompatActivity {
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				switch (checkedId) {
-					case R.id.usually_delivery: deliveryVariant = 0;
+					case R.id.usually_delivery:
+						deliveryVariant = 0;
 						break;
-					case R.id.partner_delivery: deliveryVariant = 1;
+					case R.id.partner_delivery:
+						deliveryVariant = 1;
 						break;
-					case R.id.econom_delivery: deliveryVariant = 2;
+					case R.id.econom_delivery:
+						deliveryVariant = 2;
 						break;
 				}
+			}
+		});
+
+		ordersCountRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					counterOrders = dataSnapshot.getChildrenCount();
+				} else {
+					counterOrders = 0;
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
 			}
 		});
 
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if((numberOrder.length() == 0) || (priceOrder.length() == 0) || (bayouOrder.length() == 0)) {
+				if ((numberOrder.length() == 0) || (priceOrder.length() == 0) || (bayouOrder.length() == 0)) {
 					Toast.makeText(AddOrderActivity.this, "Проверь данные!", Toast.LENGTH_LONG).show();
 				} else if (Integer.parseInt(bayouOrder.getText().toString()) > Integer.parseInt(priceOrder.getText().toString())) {
 					Toast.makeText(AddOrderActivity.this, "Космический выкуп!", Toast.LENGTH_LONG).show();
 				} else {
 					switch (deliveryVariant) {
-						case 0: calculateResultPoint();
+						case 0:
+							calculateResultPoint();
 							break;
-						case 1: calculateResultPointPartner();
+						case 1:
+							calculateResultPointPartner();
 							break;
-						case 2: if(!bayouOrder.getText().toString().equals("0")) {
-							resultPoint = "3";
-						} else {
-							resultPoint = "0";
-						}
+						case 2:
+							if (!bayouOrder.getText().toString().equals("0")) {
+								resultPoint = "3";
+							} else {
+								resultPoint = "0";
+							}
 							addOrderInOrderList();
 							break;
 					}
@@ -118,9 +143,9 @@ public class AddOrderActivity extends AppCompatActivity {
 		ordersCountRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if(dataSnapshot.exists()) {
+				if (dataSnapshot.exists()) {
 					int countOfOrders = (int) dataSnapshot.getChildrenCount();
-					if (0 < countOfOrders && countOfOrders < 3 ) {
+					if (0 < countOfOrders && countOfOrders < 3) {
 						resultDelivery = "3";
 					} else if (3 <= countOfOrders && countOfOrders < 5) {
 						resultDelivery = "4";
@@ -145,10 +170,10 @@ public class AddOrderActivity extends AppCompatActivity {
 		priceOrderStr = priceOrder.getText().toString();
 		bayoutOrderStr = bayouOrder.getText().toString();
 
-		resultPercentOrder = Float.parseFloat(bayoutOrderStr)/ Float.parseFloat(priceOrderStr) * 100;
-		if(0 < resultPercentOrder && resultPercentOrder < 30) {
+		resultPercentOrder = Float.parseFloat(bayoutOrderStr) / Float.parseFloat(priceOrderStr) * 100;
+		if (0 < resultPercentOrder && resultPercentOrder < 30) {
 			resultPoint = "3";
-		} else if(30 <= resultPercentOrder && resultPercentOrder <= 100) {
+		} else if (30 <= resultPercentOrder && resultPercentOrder <= 100) {
 			resultPoint = "5";
 		} else {
 			resultPoint = "0";
@@ -163,20 +188,20 @@ public class AddOrderActivity extends AppCompatActivity {
 		priceOrderStr = priceOrder.getText().toString();
 		bayoutOrderStr = bayouOrder.getText().toString();
 
-		resultPercentOrder = Float.parseFloat(bayoutOrderStr)/ Float.parseFloat(priceOrderStr) * 100;
-		if(0 < resultPercentOrder && resultPercentOrder < 20) {
+		resultPercentOrder = Float.parseFloat(bayoutOrderStr) / Float.parseFloat(priceOrderStr) * 100;
+		if (0 < resultPercentOrder && resultPercentOrder < 20) {
 			resultPoint = "2";
-		} else if(20 <= resultPercentOrder && resultPercentOrder < 30) {
+		} else if (20 <= resultPercentOrder && resultPercentOrder < 30) {
 			resultPoint = "4";
-		} else if(30 <= resultPercentOrder && resultPercentOrder < 40) {
+		} else if (30 <= resultPercentOrder && resultPercentOrder < 40) {
 			resultPoint = "5";
-		} else if(40 <= resultPercentOrder && resultPercentOrder < 50) {
+		} else if (40 <= resultPercentOrder && resultPercentOrder < 50) {
 			resultPoint = "6";
-		} else if(50 <= resultPercentOrder && resultPercentOrder < 60) {
+		} else if (50 <= resultPercentOrder && resultPercentOrder < 60) {
 			resultPoint = "7";
-		} else if(60 <= resultPercentOrder && resultPercentOrder < 70) {
+		} else if (60 <= resultPercentOrder && resultPercentOrder < 70) {
 			resultPoint = "8";
-		} else if(70 <= resultPercentOrder && resultPercentOrder <= 100) {
+		} else if (70 <= resultPercentOrder && resultPercentOrder <= 100) {
 			resultPoint = "9";
 		} else {
 			resultPoint = "0";
@@ -197,6 +222,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		orderMap.put("bayoutOrder", bayoutOrderStr);
 		orderMap.put("uid", currentUserId);
 		orderMap.put("date", currentDateOrderList);
+		orderMap.put("counter", counterOrders);
 		orderMap.put("point", resultPoint);
 		orderMap.put("delivery", resultDelivery);
 		ordersRef.child(currentDateOrderList).child(numberOrderStr).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {

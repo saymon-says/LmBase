@@ -15,12 +15,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.lmbase.Class.Orders;
+import com.example.lmbase.Model.Orders;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -80,8 +81,9 @@ public class OrderListActivity extends AppCompatActivity {
 
 	private void DisplayAllUserOrders() {
 
+		Query counterRef = ordersRef.orderByChild("counter");
 		FirebaseRecyclerOptions<Orders> options = new FirebaseRecyclerOptions.Builder<Orders>()
-				.setQuery(ordersRef, Orders.class)
+				.setQuery(counterRef, Orders.class)
 				.build();
 
 		FirebaseRecyclerAdapter<Orders, OrdersViewHolder> adapter = new FirebaseRecyclerAdapter<Orders, OrdersViewHolder>(options) {
@@ -91,8 +93,8 @@ public class OrderListActivity extends AppCompatActivity {
 				holder.numberOrder.setText("Заказ: " + model.getNumberOrder());
 				holder.priceOrder.setText("Стоимость: " + model.getPriceOrder());
 				holder.bayoutOrder.setText("Выкуп: " + model.getBayoutOrder());
-				holder.pointOrder.setText("Балл выкупа :" + model.getPoint());
-				holder.deliveryOrder.setText("Доставка :" + model.getDelivery());
+				holder.pointOrder.setText("БВ :" + model.getPoint());
+				holder.deliveryOrder.setText("БД :" + model.getDelivery());
 			}
 
 			@NonNull
