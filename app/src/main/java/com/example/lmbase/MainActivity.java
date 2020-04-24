@@ -25,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 	private NavigationView navigationView;
 	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
-	private TextView navUserName, ordersCount, workshiftCount, deliveryCount, bayoutCount, pointCount;
+	private TextView navUserName, ordersCount, workshiftCount, deliveryCount, bayoutCount, pointCount, resultCountReit;
 
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef;
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 		deliveryCount = findViewById(R.id.delivery_count);
 		bayoutCount = findViewById(R.id.bayout_count);
 		pointCount = findViewById(R.id.point_count);
+		resultCountReit = findViewById(R.id.result_count_reit);
 
 		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
@@ -131,7 +134,12 @@ public class MainActivity extends AppCompatActivity {
 						bayoutCount.setText(String.valueOf(resultBuyout));
 					}
 					int resultPoint = resultBuyout + resultDelivery;
+					double countOrders = Double.parseDouble(String.valueOf(dataSnapshot.getChildrenCount()));
+					double resultReit = resultBuyout / countOrders;
+					double newDouble = new BigDecimal(resultReit).setScale(4, RoundingMode.UP).doubleValue();
 					pointCount.setText(String.valueOf(resultPoint));
+					resultCountReit.setText(String.valueOf(newDouble));
+
 					String countOfOrders = String.valueOf(dataSnapshot.getChildrenCount());
 					ordersCount.setText(countOfOrders);
 				} else {

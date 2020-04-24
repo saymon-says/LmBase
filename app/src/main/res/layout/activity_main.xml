@@ -23,9 +23,9 @@
 
             <TextView
                 android:id="@+id/text_orders_count"
-                android:layout_below="@id/main_page_toolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/main_page_toolbar"
                 android:layout_marginStart="21dp"
                 android:layout_marginTop="20dp"
                 android:text="Количество заказов:"
@@ -33,21 +33,21 @@
 
             <TextView
                 android:id="@+id/orders_count"
-                android:layout_below="@id/text_orders_count"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
+                android:layout_below="@id/text_orders_count"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input"
-                android:textAlignment="center"
                 android:fontFamily="@font/roboto_medium"
+                android:textAlignment="center"
                 android:textSize="80sp" />
 
             <TextView
                 android:id="@+id/text_workshift_count"
-                android:layout_below="@id/main_page_toolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/main_page_toolbar"
                 android:layout_marginStart="210dp"
                 android:layout_marginTop="20dp"
                 android:text="Количество смен:"
@@ -55,78 +55,100 @@
 
             <TextView
                 android:id="@+id/workshift_count"
-                android:layout_below="@+id/text_workshift_count"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
+                android:layout_below="@+id/text_workshift_count"
                 android:layout_marginStart="195dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input"
-                android:textAlignment="center"
                 android:fontFamily="@font/roboto_medium"
+                android:textAlignment="center"
                 android:textSize="80sp" />
 
             <TextView
                 android:id="@+id/text_delivery_count"
-                android:layout_below="@id/orders_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/orders_count"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="20dp"
                 android:text="Доставка сегодня:" />
 
             <TextView
                 android:id="@+id/delivery_count"
-                android:layout_below="@id/text_delivery_count"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
+                android:layout_below="@id/text_delivery_count"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input"
-                android:textAlignment="center"
                 android:fontFamily="@font/roboto_medium"
+                android:textAlignment="center"
                 android:textSize="80sp" />
 
             <TextView
                 android:id="@+id/text_bayout_count"
-                android:layout_below="@id/workshift_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/workshift_count"
                 android:layout_marginStart="220dp"
                 android:layout_marginTop="20dp"
                 android:text="Выкуп сегодня:" />
 
             <TextView
                 android:id="@+id/bayout_count"
-                android:layout_below="@id/text_bayout_count"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
+                android:layout_below="@id/text_bayout_count"
                 android:layout_marginStart="195dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input"
-                android:textAlignment="center"
                 android:fontFamily="@font/roboto_medium"
+                android:textAlignment="center"
                 android:textSize="80sp" />
 
             <TextView
                 android:id="@+id/text_result_count"
-                android:layout_below="@id/delivery_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="133dp"
+                android:layout_below="@id/delivery_count"
+                android:layout_marginStart="220dp"
                 android:layout_marginTop="20dp"
                 android:text="Баллы сегодня:" />
 
             <TextView
                 android:id="@+id/point_count"
-                android:layout_below="@id/text_result_count"
                 android:layout_width="150dp"
                 android:layout_height="120dp"
-                android:layout_marginStart="110dp"
+                android:layout_below="@id/text_result_count"
+                android:layout_marginStart="195dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/input"
-                android:textAlignment="center"
                 android:fontFamily="@font/roboto_medium"
+                android:textAlignment="center"
                 android:textSize="80sp" />
+
+            <TextView
+                android:id="@+id/text_result_count_reit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/delivery_count"
+                android:layout_marginStart="55dp"
+                android:layout_marginTop="140dp"
+                android:text="Рейтинг сегодня:" />
+
+            <TextView
+                android:id="@+id/result_count_reit"
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/text_result_count_reit"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:padding="15dp"
+                android:background="@drawable/input"
+                android:fontFamily="@font/roboto_medium"
+                android:textAlignment="center"
+                android:textSize="50sp" />
         </RelativeLayout>
     </RelativeLayout>
 

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,8 @@ public class EditOrderActivity extends AppCompatActivity {
 
 
 	private String orderKey;
-	private EditText numberOrder, priceOrder, bayouOrder;
+	private EditText priceOrder, bayouOrder;
+	private TextView numberOrder;
 	private Button editButton;
 	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
@@ -63,8 +65,8 @@ public class EditOrderActivity extends AppCompatActivity {
 				.child("Order List").child(currentUserId);
 		editOrderRef = FirebaseDatabase.getInstance().getReference()
 				.child("Order List").child(currentUserId).child(currentDateOrderList).child(orderKey);
-		ordersCountRef = FirebaseDatabase.getInstance().getReference()
-				.child("Order List").child(currentUserId).child(currentDateOrderList);
+//		ordersCountRef = FirebaseDatabase.getInstance().getReference()
+//				.child("Order List").child(currentUserId).child(currentDateOrderList);
 
 
 		editOrderRef.addValueEventListener(new ValueEventListener() {
@@ -73,10 +75,8 @@ public class EditOrderActivity extends AppCompatActivity {
 				if (dataSnapshot.exists()) {
 					String orderNumber = dataSnapshot.child("numberOrder").getValue().toString();
 					String orderPrice = dataSnapshot.child("priceOrder").getValue().toString();
-					String orderBayout = dataSnapshot.child("bayoutOrder").getValue().toString();
 					numberOrder.setText(orderNumber);
 					priceOrder.setText(orderPrice);
-					bayouOrder.setText(orderBayout);
 					switch (dataSnapshot.child("typeDelivery").getValue().toString()) {
 						case "usually":
 							radioGroupDelivery.check(R.id.usually_delivery);
@@ -153,7 +153,7 @@ public class EditOrderActivity extends AppCompatActivity {
 		editButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if ((numberOrder.length() == 0) || (priceOrder.length() == 0) || (bayouOrder.length() == 0)) {
+				if ((priceOrder.length() == 0) || (bayouOrder.length() == 0)) {
 					Toast.makeText(EditOrderActivity.this, "Проверь данные!", Toast.LENGTH_LONG).show();
 				} else if (Integer.parseInt(bayouOrder.getText().toString()) > Integer.parseInt(priceOrder.getText().toString())) {
 					Toast.makeText(EditOrderActivity.this, "Космический выкуп!", Toast.LENGTH_LONG).show();
@@ -206,12 +206,11 @@ public class EditOrderActivity extends AppCompatActivity {
 
 	private void calculateResultPointPartner() {
 
-		numberOrderStr = numberOrder.getText().toString();
 		priceOrderStr = priceOrder.getText().toString();
 		bayoutOrderStr = bayouOrder.getText().toString();
 
 		resultPercentOrder = Float.parseFloat(bayoutOrderStr) / Float.parseFloat(priceOrderStr) * 100;
-		if (0 < resultPercentOrder && resultPercentOrder < 30) {
+		if (0 <= resultPercentOrder && resultPercentOrder < 30) {
 			resultPoint = "3";
 		} else if (30 <= resultPercentOrder && resultPercentOrder <= 100) {
 			resultPoint = "5";
@@ -224,7 +223,6 @@ public class EditOrderActivity extends AppCompatActivity {
 
 	private void calculateResultPoint() {
 
-		numberOrderStr = numberOrder.getText().toString();
 		priceOrderStr = priceOrder.getText().toString();
 		bayoutOrderStr = bayouOrder.getText().toString();
 
@@ -262,7 +260,6 @@ public class EditOrderActivity extends AppCompatActivity {
 		orderMap.put("bayoutOrder", bayoutOrderStr);
 		orderMap.put("uid", currentUserId);
 		orderMap.put("date", currentDateOrderList);
-//		orderMap.put("counter", counterOrders);
 		orderMap.put("point", resultPoint);
 		orderMap.put("delivery", resultDelivery);
 		orderMap.put("typeOrder", typeOrder);

@@ -54,6 +54,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		radioGroupOrder = findViewById(R.id.group_radio_type_order);
 		radioGroupDelivery = findViewById(R.id.group_radio_type_delivery);
 		addButton = findViewById(R.id.add_button);
+		bayouOrder.setText("0");
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
@@ -107,10 +108,12 @@ public class AddOrderActivity extends AppCompatActivity {
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if ((numberOrder.length() == 0) || (priceOrder.length() == 0) || (bayouOrder.length() == 0)) {
+				if ((numberOrder.length() == 0) || (priceOrder.length() == 0)) {
 					Toast.makeText(AddOrderActivity.this, "Проверь данные!", Toast.LENGTH_LONG).show();
 				} else if (Integer.parseInt(bayouOrder.getText().toString()) > Integer.parseInt(priceOrder.getText().toString())) {
 					Toast.makeText(AddOrderActivity.this, "Космический выкуп!", Toast.LENGTH_LONG).show();
+//				} else if (bayouOrder.length() == 0){
+//					resultPoint = "0";
 				} else {
 					switch (deliveryVariant) {
 						case 0:
@@ -167,7 +170,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		bayoutOrderStr = bayouOrder.getText().toString();
 
 		resultPercentOrder = Float.parseFloat(bayoutOrderStr) / Float.parseFloat(priceOrderStr) * 100;
-		if (0 < resultPercentOrder && resultPercentOrder < 30) {
+		if (0 <= resultPercentOrder && resultPercentOrder < 30) {
 			resultPoint = "3";
 		} else if (30 <= resultPercentOrder && resultPercentOrder <= 100) {
 			resultPoint = "5";
