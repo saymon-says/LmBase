@@ -28,7 +28,7 @@
             android:layout_margin="15dp"
             android:background="@drawable/input"
             android:hint="Номер заказа"
-            android:inputType="number"
+            android:textSize="18sp"
             android:padding="10dp" />
 
         <TextView
@@ -91,7 +91,7 @@
             android:id="@+id/group_radio_type_delivery"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:padding="5dp">
 
             <RadioButton
