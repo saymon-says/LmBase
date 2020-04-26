@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +29,7 @@ public class AddOrderActivity extends AppCompatActivity {
 
 	private EditText numberOrder, priceOrder, bayouOrder;
 	private Button addButton;
+	private ImageButton fullButton;
 	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
@@ -54,6 +57,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		radioGroupOrder = findViewById(R.id.group_radio_type_order);
 		radioGroupDelivery = findViewById(R.id.group_radio_type_delivery);
 		addButton = findViewById(R.id.add_button);
+		fullButton = findViewById(R.id.full_buying_btn);
 		bayouOrder.setText("0");
 
 		mAuth = FirebaseAuth.getInstance();
@@ -81,7 +85,7 @@ public class AddOrderActivity extends AppCompatActivity {
 			}
 		});
 
-		if(radioGroupDelivery.getCheckedRadioButtonId() == R.id.usually_delivery){
+		if (radioGroupDelivery.getCheckedRadioButtonId() == R.id.usually_delivery) {
 			deliveryVariant = 0;
 			typeDelivery = "usually";
 		}
@@ -102,6 +106,13 @@ public class AddOrderActivity extends AppCompatActivity {
 						typeDelivery = "economy";
 						break;
 				}
+			}
+		});
+
+		fullButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				bayouOrder.setText(priceOrder.getText().toString());
 			}
 		});
 

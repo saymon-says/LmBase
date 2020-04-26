@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ public class EditOrderActivity extends AppCompatActivity {
 	private EditText priceOrder, bayouOrder;
 	private TextView numberOrder;
 	private Button editButton;
+	private ImageButton fullButton;
 	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
@@ -57,6 +59,7 @@ public class EditOrderActivity extends AppCompatActivity {
 		radioGroupOrder = findViewById(R.id.group_radio_type_order);
 		radioGroupDelivery = findViewById(R.id.group_radio_type_delivery);
 		editButton = findViewById(R.id.edit_button);
+		fullButton = findViewById(R.id.full_buying_btn);
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
@@ -147,6 +150,13 @@ public class EditOrderActivity extends AppCompatActivity {
 						typeDelivery = "economy";
 						break;
 				}
+			}
+		});
+
+		fullButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				bayouOrder.setText(priceOrder.getText().toString());
 			}
 		});
 

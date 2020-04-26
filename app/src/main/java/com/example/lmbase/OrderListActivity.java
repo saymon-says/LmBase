@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lmbase.Model.Orders;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,7 +32,7 @@ public class OrderListActivity extends AppCompatActivity {
 
 	private RecyclerView listOrders;
 	private String currentUserId, currentDateOrderList;
-	private Button addBtn;
+	private FloatingActionButton addBtn;
 
 	private FirebaseAuth mAuth;
 	private DatabaseReference ordersRef;

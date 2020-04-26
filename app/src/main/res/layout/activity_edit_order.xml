@@ -140,30 +140,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/price_order"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/input"
-                android:hint="Стоимость заказа"
-                android:inputType="number"
-                android:padding="10dp" />
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/bayout_order"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/input"
-                android:hint="Выкуп"
-                android:inputType="number"
-                android:padding="10dp" />
+                <EditText
+                    android:id="@+id/price_order"
+                    android:layout_width="265dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:background="@drawable/input"
+                    android:hint="Стоимость заказа"
+                    android:inputType="number"
+                    android:padding="10dp" />
+
+                <EditText
+                    android:id="@+id/bayout_order"
+                    android:layout_width="265dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/input"
+                    android:hint="Выкуп"
+                    android:inputType="number"
+                    android:padding="10dp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/full_buying_btn"
+                android:layout_gravity="center"
+                android:layout_width="62dp"
+                android:layout_height="62dp"
+                android:background="@drawable/button"
+                android:src="@drawable/buying"/>
         </LinearLayout>
     </LinearLayout>
 

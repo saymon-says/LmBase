@@ -88,6 +88,14 @@ public class MainActivity extends AppCompatActivity {
 		drawerLayout.addDrawerListener(toggle);
 		toggle.syncState();
 
+		pointCount.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent sendOrderList = new Intent(MainActivity.this, OrderListActivity.class);
+				startActivity(sendOrderList);
+			}
+		});
+
 		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
