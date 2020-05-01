@@ -17,15 +17,14 @@
 
         <GridLayout
             android:id="@+id/stat_grid"
-            android:layout_below="@id/main_page_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/main_page_toolbar"
             android:alignmentMode="alignMargins"
             android:columnCount="2"
             android:columnOrderPreserved="false"
             android:padding="15dp"
             android:rowCount="3">
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/delivery_today"
@@ -50,8 +49,8 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:src="@drawable/main_delivery" />
 
                     <TextView
@@ -95,8 +94,8 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:src="@drawable/main_buyout" />
 
                     <TextView
@@ -141,8 +140,8 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:src="@drawable/main_orders" />
 
                     <TextView
@@ -173,6 +172,8 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:touchscreenBlocksFocus="true"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="10dp">
@@ -188,8 +189,8 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:src="@drawable/main_result" />
 
                     <TextView
@@ -234,8 +235,8 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:src="@drawable/main_exact_time" />
 
                     <TextView
@@ -280,8 +281,8 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:layout_gravity="center"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:src="@drawable/main_fine" />
 
                     <TextView
