@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef, statisticRef;
 	private String currentUserId, currentDateOrderList, currentDateSortList;
-	private Integer resultPoint;
-	private Integer resultBuyout = 0, countOfOrders;
+	private Integer resultPoint = 0;
+	private Integer resultBuyout = 0, countOfOrders = 0, resultDelivery = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -130,19 +130,15 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
-					int resultDelivery = 0;
 					for (DataSnapshot ds : dataSnapshot.getChildren()) {
 						Map<String, Object> map = (Map<String, Object>) ds.getValue();
 						Object delivery = map.get("delivery");
 						int dValue = Integer.parseInt(String.valueOf(delivery));
-						resultDelivery += dValue;
-						deliveryCount.setText(String.valueOf(resultDelivery));
-					}
-					for (DataSnapshot ds : dataSnapshot.getChildren()) {
-						Map<String, Object> map = (Map<String, Object>) ds.getValue();
 						Object buyout = map.get("point");
 						int bValue = Integer.parseInt(String.valueOf(buyout));
+						resultDelivery += dValue;
 						resultBuyout += bValue;
+						deliveryCount.setText(String.valueOf(resultDelivery));
 						bayoutCount.setText(String.valueOf(resultBuyout));
 					}
 					resultPoint = resultBuyout + resultDelivery;

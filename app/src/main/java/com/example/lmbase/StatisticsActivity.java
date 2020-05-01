@@ -3,7 +3,6 @@ package com.example.lmbase;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +25,7 @@ import java.util.Objects;
 public class StatisticsActivity extends AppCompatActivity {
 
 	private Toolbar mToolbar;
-	private DatabaseReference fullMonthRef, ordersCountRef;
+	private DatabaseReference fullMonthRef;
 	private FirebaseAuth mAuth;
 	private String currentUserId, currentDateOrderList;
 	private TextView cashToday, monthCash, monthCashVariable, monthRating;
@@ -51,7 +50,6 @@ public class StatisticsActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
-		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Pointers List").child(currentUserId).child(currentDateOrderList);
 		fullMonthRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 
 		monthCash = findViewById(R.id.month_cash);
@@ -60,33 +58,21 @@ public class StatisticsActivity extends AppCompatActivity {
 		monthRating = findViewById(R.id.month_rating_tb);
 
 
-		ordersCountRef.addValueEventListener(new ValueEventListener() {
-			@SuppressLint("SetTextI18n")
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.exists()) {
-					Integer a = Integer.valueOf(dataSnapshot.child("resultPoint").getValue().toString());
-					double result = (a * pointValue + 400) * tax;
-					double newDouble = new BigDecimal(result).setScale(2, RoundingMode.UP).doubleValue();
-					cashToday.setText(newDouble + " руб");
-				} else {
-					Toast.makeText(StatisticsActivity.this, "Сорян..", Toast.LENGTH_SHORT).show();
-					cashToday.setText("Ничего пока");
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
-
 		fullMonthRef.addValueEventListener(new ValueEventListener() {
 			@SuppressLint("SetTextI18n")
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
+
 				if (dataSnapshot.exists()) {
+					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
+					if (dataSnapshot.child(currentDateOrderList).exists()) {
+						int aa = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue().toString());
+						double resultA = (aa * pointValue + 400) * tax;
+						double newDouble = new BigDecimal(resultA).setScale(2, RoundingMode.UP).doubleValue();
+						cashToday.setText(newDouble + " руб");
+					} else {
+						cashToday.setText(0 + " руб");
+					}
 					int resultPointMonth = 0;
 					int resultCountOrders = 0;
 					int resultBuyoutOrders = 0;
@@ -110,7 +96,7 @@ public class StatisticsActivity extends AppCompatActivity {
 					double newDoubleB = new BigDecimal(b).setScale(5, RoundingMode.UP).doubleValue();
 					monthRating.setText(newDoubleB + "");
 
-					double resultMonthCash = (resultPointMonth / countOfOrders * pointValue * 15 + 6000) * tax;
+					double resultMonthCash = (resultPointMonth / countOfOrders * pointValue * 14 + 6000) * tax;
 					double newDoubleResultMonthCash = new BigDecimal(resultMonthCash).setScale(2, RoundingMode.UP).doubleValue();
 					monthCashVariable.setText((newDoubleResultMonthCash) + " руб");
 				} else {
