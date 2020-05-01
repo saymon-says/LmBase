@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -42,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 	private NavigationView navigationView;
 	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
-	private TextView navUserName, ordersCount, workshiftCount, deliveryCount, bayoutCount, pointCount, resultCountReit;
+	private TextView navUserName, ordersCount, deliveryCount, bayoutCount, pointCount;
+	private CardView pointersToday;
 
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef, statisticRef;
@@ -74,11 +76,10 @@ public class MainActivity extends AppCompatActivity {
 		drawerLayout = findViewById(R.id.drawer_layout);
 		navigationView = findViewById(R.id.nav);
 		ordersCount = findViewById(R.id.orders_count);
-		workshiftCount = findViewById(R.id.workshift_count);
 		deliveryCount = findViewById(R.id.delivery_count);
 		bayoutCount = findViewById(R.id.bayout_count);
 		pointCount = findViewById(R.id.point_count);
-		resultCountReit = findViewById(R.id.result_count_reit);
+		pointersToday = findViewById(R.id.pointers_today);
 
 		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 		drawerLayout.addDrawerListener(toggle);
 		toggle.syncState();
 
-		pointCount.setOnClickListener(new View.OnClickListener() {
+		pointersToday.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent sendOrderList = new Intent(MainActivity.this, OrderListActivity.class);
@@ -142,11 +143,7 @@ public class MainActivity extends AppCompatActivity {
 						bayoutCount.setText(String.valueOf(resultBuyout));
 					}
 					resultPoint = resultBuyout + resultDelivery;
-					double countOrders = Double.parseDouble(String.valueOf(dataSnapshot.getChildrenCount()));
-					double resultReit = resultBuyout / countOrders;
-					double newDouble = new BigDecimal(resultReit).setScale(4, RoundingMode.UP).doubleValue();
 					pointCount.setText(String.valueOf(resultPoint));
-					resultCountReit.setText(String.valueOf(newDouble));
 
 					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
 					ordersCount.setText(countOfOrders + "");
@@ -156,23 +153,6 @@ public class MainActivity extends AppCompatActivity {
 					pointCount.setText("0");
 					bayoutCount.setText("0");
 					deliveryCount.setText("0");
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
-
-		workshiftCountRef.addValueEventListener(new ValueEventListener() {
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.exists()) {
-					String countOfWorkShift = String.valueOf(dataSnapshot.getChildrenCount());
-					workshiftCount.setText(countOfWorkShift);
-				} else {
-					workshiftCount.setText("0");
 				}
 			}
 
