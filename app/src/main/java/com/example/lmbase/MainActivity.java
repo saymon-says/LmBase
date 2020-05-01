@@ -257,12 +257,22 @@ public class MainActivity extends AppCompatActivity {
 				UpdateDataBaseWorkShift();
 				Toast.makeText(this, "Список смен в этом месяце", Toast.LENGTH_SHORT).show();
 				break;
+				
+			case R.id.nav_settings:
+				Toast.makeText(this, "Редактирование профиля", Toast.LENGTH_SHORT).show();
+				SendUserToSettingsActivity();
+				break;
 
 			case R.id.nav_logout:
 				mAuth.signOut();
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void SendUserToSettingsActivity() {
+		Intent sendToSettings = new Intent(this, SettingsActivity.class);
+		startActivity(sendToSettings);
 	}
 
 	private void UpdateDataBaseWorkShift() {
