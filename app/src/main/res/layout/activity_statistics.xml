@@ -59,7 +59,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="10000.00 руб"
                     android:textSize="23sp"
                     android:textAlignment="center"
                     />
@@ -103,7 +102,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1000.00 руб"
                     android:textSize="23sp"
                     android:textAlignment="center"
                     />
@@ -147,7 +145,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="99999.99 руб"
                     android:textSize="23sp"
                     android:textAlignment="center"
                     />
@@ -191,7 +188,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="1111.99 руб"
                     android:textSize="23sp"
                     android:textAlignment="center"
                     />
@@ -235,7 +231,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="999.99 руб"
                     android:textSize="23sp"
                     android:textAlignment="center"
                     />
@@ -279,7 +274,6 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="5.55555"
                     android:textSize="23sp"
                     android:textAlignment="center"
                     />

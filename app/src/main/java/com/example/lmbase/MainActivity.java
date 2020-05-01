@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -44,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
 	private TextView navUserName, ordersCount, workshiftCount, deliveryCount, bayoutCount, pointCount, resultCountReit;
 
 	private FirebaseAuth mAuth;
-	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef;
+	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef, statisticRef;
 	private String currentUserId, currentDateOrderList, currentDateSortList;
+	private Integer resultPoint;
+	private Integer resultBuyout = 0, countOfOrders;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders List");
 		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 		workshiftCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
+		statisticRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
 		navigationView = findViewById(R.id.nav);
@@ -122,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		ordersCountRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
@@ -133,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
 						resultDelivery += dValue;
 						deliveryCount.setText(String.valueOf(resultDelivery));
 					}
-					int resultBuyout = 0;
 					for (DataSnapshot ds : dataSnapshot.getChildren()) {
 						Map<String, Object> map = (Map<String, Object>) ds.getValue();
 						Object buyout = map.get("point");
@@ -141,15 +145,15 @@ public class MainActivity extends AppCompatActivity {
 						resultBuyout += bValue;
 						bayoutCount.setText(String.valueOf(resultBuyout));
 					}
-					int resultPoint = resultBuyout + resultDelivery;
+					resultPoint = resultBuyout + resultDelivery;
 					double countOrders = Double.parseDouble(String.valueOf(dataSnapshot.getChildrenCount()));
 					double resultReit = resultBuyout / countOrders;
 					double newDouble = new BigDecimal(resultReit).setScale(4, RoundingMode.UP).doubleValue();
 					pointCount.setText(String.valueOf(resultPoint));
 					resultCountReit.setText(String.valueOf(newDouble));
 
-					String countOfOrders = String.valueOf(dataSnapshot.getChildrenCount());
-					ordersCount.setText(countOfOrders);
+					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
+					ordersCount.setText(countOfOrders + "");
 				} else {
 					Toast.makeText(MainActivity.this, "Пока по нулям..", Toast.LENGTH_SHORT).show();
 					ordersCount.setText("0");
@@ -250,21 +254,20 @@ public class MainActivity extends AppCompatActivity {
 
 			case R.id.nav_for_list:
 				SendUserToUserListActivity();
-				Toast.makeText(this, "Список торговых", Toast.LENGTH_SHORT).show();
 				break;
 
 			case R.id.nav_for_workshift:
 				UpdateDataBaseWorkShift();
-				Toast.makeText(this, "Список смен в этом месяце", Toast.LENGTH_SHORT).show();
 				break;
 
 			case R.id.nav_statistics:
 				SendUserToStatisticsActivity();
-				Toast.makeText(this, "Статистика", Toast.LENGTH_SHORT).show();
+				break;
+			case R.id.nav_update:
+				UpdateDataBaseStatistics();
 				break;
 
 			case R.id.nav_settings:
-				Toast.makeText(this, "Редактирование профиля", Toast.LENGTH_SHORT).show();
 				SendUserToSettingsActivity();
 				break;
 
@@ -273,6 +276,20 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void UpdateDataBaseStatistics() {
+
+		HashMap statMap = new HashMap();
+		statMap.put("resultPoint", resultPoint);
+		statMap.put("resultBuyout", resultBuyout);
+		statMap.put("countOfOrders", countOfOrders);
+		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
+			@Override
+			public void onSuccess(Object o) {
+				Toast.makeText(MainActivity.this, "Обновились", Toast.LENGTH_SHORT).show();
+			}
+		});
 	}
 
 	private void SendUserToStatisticsActivity() {
@@ -289,8 +306,6 @@ public class MainActivity extends AppCompatActivity {
 
 		String resultPoint = pointCount.getText().toString();
 		HashMap workshiftMap = new HashMap();
-		workshiftMap.put("uid", currentUserId);
-		workshiftMap.put("dateSort", Integer.parseInt(currentDateSortList));
 		workshiftMap.put("date", currentDateOrderList);
 		workshiftMap.put("resultPoint", resultPoint);
 		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap).addOnSuccessListener(new OnSuccessListener() {
