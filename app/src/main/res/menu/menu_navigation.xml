@@ -9,6 +9,10 @@
     <item android:title="Статистика">
         <menu>
             <item
+                android:id="@+id/nav_statistics"
+                android:icon="@drawable/stat"
+                android:title="Статистика" />
+            <item
                 android:id="@+id/nav_for_workshift"
                 android:icon="@drawable/statistics"
                 android:title="Смены" />
@@ -28,9 +32,7 @@
         android:id="@+id/nav_settings"
         android:icon="@drawable/settings"
         android:title="Настройки" />
-    <item
-        android:enabled="false"
-        android:title="" />
+
     <item
         android:enabled="false"
         android:title="" />
