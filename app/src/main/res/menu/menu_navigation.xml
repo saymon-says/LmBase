@@ -9,6 +9,10 @@
     <item android:title="Статистика">
         <menu>
             <item
+                android:id="@+id/nav_update"
+                android:icon="@drawable/upload"
+                android:title="Обновить данные" />
+            <item
                 android:id="@+id/nav_statistics"
                 android:icon="@drawable/stat"
                 android:title="Статистика" />
@@ -16,23 +20,22 @@
                 android:id="@+id/nav_for_workshift"
                 android:icon="@drawable/statistics"
                 android:title="Смены" />
+        </menu>
+    </item>
+
+    <item android:title="Разное">
+
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/settings"
+                android:title="Настройки" />
             <item
                 android:id="@+id/nav_for_list"
                 android:icon="@drawable/research"
-                android:title="Торговые" />
+                android:title="Торговые представители" />
         </menu>
     </item>
-    <item
-        android:enabled="false"
-        android:title="" />
-    <item
-        android:id="@+id/nav_update"
-        android:title="Обновить данные" />
-    <item
-        android:id="@+id/nav_settings"
-        android:icon="@drawable/settings"
-        android:title="Настройки" />
-
     <item
         android:enabled="false"
         android:title="" />
