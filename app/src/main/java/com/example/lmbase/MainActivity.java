@@ -31,8 +31,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -47,13 +45,13 @@ public class MainActivity extends AppCompatActivity {
 	private NavigationView navigationView;
 	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
-	private TextView navUserName, ordersCount, deliveryCount, bayoutCount, pointCount;
+	private TextView navUserName, ordersCount, deliveryCount, bayoutCount, pointCount, fifteenExactTimeToday, sixtyExactTimeToday;
 	private CardView pointersToday, exactTime;
 	private EditText fifteenExactTime, sixtyExactTime;
 
 	private FirebaseAuth mAuth;
-	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef, statisticRef;
-	private String currentUserId, currentDateOrderList, currentDateSortList;
+	private DatabaseReference pointerRef, usersRef, ordersCountRef, statisticRef;
+	private String currentUserId, currentDateOrderList;
 	private Integer resultPoint = 0, fifteenTime = 0, sixtyTime = 0;
 	private Integer resultBuyout = 0, countOfOrders = 0, resultDelivery = 0;
 
@@ -66,16 +64,12 @@ public class MainActivity extends AppCompatActivity {
 		currentUserId = mAuth.getCurrentUser().getUid();
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
-		SimpleDateFormat currentDateSort = new SimpleDateFormat("ddMMyyyy");
+		final SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
-		currentDateSortList = currentDateSort.format(calendarDate.getTime());
 
 		pointerRef = FirebaseDatabase.getInstance().getReference().child("Pointers List");
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Orders List");
 		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
-		workshiftCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
 		statisticRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
@@ -86,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
 		pointCount = findViewById(R.id.point_count);
 		pointersToday = findViewById(R.id.pointers_today);
 		exactTime = findViewById(R.id.exacts_time_today);
+		fifteenExactTimeToday = findViewById(R.id.exact_time_fifteen_today);
+		sixtyExactTimeToday = findViewById(R.id.exact_time_sixty_today);
 
 		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
@@ -166,6 +162,26 @@ public class MainActivity extends AppCompatActivity {
 					pointCount.setText("0");
 					bayoutCount.setText("0");
 					deliveryCount.setText("0");
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
+		statisticRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					fifteenExactTimeToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("15").getValue()).toString());
+					sixtyExactTimeToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("60").getValue()).toString());
+				} else {
+					fifteenExactTimeToday.setText("0");
+					sixtyExactTimeToday.setText("0");
 				}
 			}
 

@@ -48,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/input"
                     android:inputType="number"
+                    android:hint="кол-во"
                     android:textAlignment="center"
                     android:padding="5dp" />
 
@@ -74,6 +75,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/input"
                     android:inputType="number"
+                    android:hint="кол-во"
                     android:textAlignment="center"
                     android:padding="5dp" />
 
