@@ -87,14 +87,14 @@ public class StatisticsActivity extends AppCompatActivity {
 						int exactFifteen = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("15").getValue().toString());
 						int exactSixty = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("60").getValue().toString());
 						int resultExact = exactFifteen * 100 + exactSixty * 20;
-						int aa = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue().toString());
+						double aa = Double.parseDouble(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue().toString());
 						double resultA = (aa * pointValue + workShiftValue + resultExact) * tax;
 						double newDouble = new BigDecimal(resultA).setScale(2, RoundingMode.UP).doubleValue();
 						cashToday.setText(newDouble + " руб");
 					} else {
 						cashToday.setText("0 руб");
 					}
-					int resultPointMonth = 0;
+					double resultPointMonth = 0;
 					int resultCountOrders = 0;
 					int resultBuyoutOrders = 0;
 					int resultFifteenExact = 0;
@@ -106,7 +106,7 @@ public class StatisticsActivity extends AppCompatActivity {
 						Object result = map.get("resultBuyout");
 						Object resultFifteen = map.get("15");
 						Object resultSixty = map.get("60");
-						int rValue = Integer.parseInt(String.valueOf(resultPoint));
+						double rValue = Double.parseDouble(String.valueOf(resultPoint));
 						int oValue = Integer.parseInt(String.valueOf(resultCount));
 						int bValue = Integer.parseInt(String.valueOf(result));
 						int fValue = Integer.parseInt(String.valueOf(resultFifteen));

@@ -50,8 +50,11 @@ public class MainActivity extends AppCompatActivity {
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef, usersRef, ordersCountRef, statisticRef;
 	private String currentUserId, currentDateOrderList;
-	private Integer resultPoint = 0, fifteenTime = 0, sixtyTime = 0, finesToday = 0;
+	private Integer fifteenTime = 0;
+	private Integer sixtyTime = 0;
+	private Integer finesToday = 0;
 	private Integer resultBuyout = 0, countOfOrders = 0, resultDelivery = 0;
+	private double pointFinesToday = 0.0, resultPoint = 0.0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,35 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		statisticRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.child(currentDateOrderList).exists()) {
+					fifteenTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("15").getValue()).toString());
+					fifteenExactTimeToday.setText(fifteenTime + "");
+
+					sixtyTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("60").getValue()).toString());
+					sixtyExactTimeToday.setText(sixtyTime + "");
+
+					finesToday = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("fines").getValue()).toString());
+					upFineToday.setText(finesToday + "");
+				} else {
+					fifteenExactTimeToday.setText("0");
+					sixtyExactTimeToday.setText("0");
+					upFineToday.setText("0");
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
 		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -158,40 +190,17 @@ public class MainActivity extends AppCompatActivity {
 						deliveryCount.setText(String.valueOf(resultDelivery));
 						buyoutCount.setText(String.valueOf(resultBuyout));
 					}
-					resultPoint = resultBuyout + resultDelivery;
+					pointFinesToday = (2.5 - finesToday) * 7;
+					resultPoint = resultBuyout + resultDelivery + pointFinesToday;
 					pointCount.setText(String.valueOf(resultPoint));
 
 					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
 					ordersCount.setText(countOfOrders + "");
 				} else {
-					Toast.makeText(MainActivity.this, "Пока по нулям..", Toast.LENGTH_SHORT).show();
 					ordersCount.setText("0");
-					pointCount.setText("0");
+					pointCount.setText("17,5");
 					buyoutCount.setText("0");
 					deliveryCount.setText("0");
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
-
-		statisticRef.addValueEventListener(new ValueEventListener() {
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.child(currentDateOrderList).exists()) {
-					fifteenExactTimeToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("15").getValue()).toString());
-					sixtyExactTimeToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("60").getValue()).toString());
-					upFineToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("fines").getValue()).toString());
-				} else {
-					fifteenExactTimeToday.setText("0");
-					sixtyExactTimeToday.setText("0");
-					upFineToday.setText("0");
 				}
 			}
 
@@ -234,31 +243,18 @@ public class MainActivity extends AppCompatActivity {
 		addFines.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				UpdateDataBaseFines();
+				if (fines.length() == 0) {
+					finesToday = 0;
+				} else {
+					finesToday = Integer.valueOf(fines.getText().toString());
+				}
+				UpdateDataBaseStatistics();
 				alertDialog.dismiss();
 			}
 		});
 
 		alertDialog.show();
 
-	}
-
-	private void UpdateDataBaseFines() {
-		if (fines.length() == 0) {
-			finesToday = 0;
-		} else {
-			finesToday = Integer.valueOf(fines.getText().toString());
-		}
-
-		HashMap statMap = new HashMap();
-		statMap.put("fines", finesToday);
-		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
-			@Override
-			public void onSuccess(Object o) {
-				Toast.makeText(MainActivity.this, "Готово..", Toast.LENGTH_SHORT).show();
-
-			}
-		});
 	}
 
 	private void ShowDialogExactTime() {
@@ -289,36 +285,21 @@ public class MainActivity extends AppCompatActivity {
 		addExactTime.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				UpdateDataBaseExactTime();
+				if (fifteenExactTime.length() == 0) {
+					fifteenTime = 0;
+				} else {
+					fifteenTime = Integer.valueOf(fifteenExactTime.getText().toString());
+				}
+				if (sixtyExactTime.length() == 0) {
+					sixtyTime = 0;
+				} else {
+					sixtyTime = Integer.valueOf(sixtyExactTime.getText().toString());
+				}
+				UpdateDataBaseStatistics();
 				alertDialog.dismiss();
 			}
 		});
 		alertDialog.show();
-	}
-
-	private void UpdateDataBaseExactTime() {
-
-		if (fifteenExactTime.length() == 0) {
-			fifteenTime = 0;
-		} else {
-			fifteenTime = Integer.valueOf(fifteenExactTime.getText().toString());
-		}
-		if (sixtyExactTime.length() == 0) {
-			sixtyTime = 0;
-		} else {
-			sixtyTime = Integer.valueOf(sixtyExactTime.getText().toString());
-		}
-
-		HashMap statMap = new HashMap();
-		statMap.put("15", fifteenTime);
-		statMap.put("60", sixtyTime);
-		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
-			@Override
-			public void onSuccess(Object o) {
-				Toast.makeText(MainActivity.this, "Готово..", Toast.LENGTH_SHORT).show();
-
-			}
-		});
 	}
 
 	@Override
@@ -390,6 +371,7 @@ public class MainActivity extends AppCompatActivity {
 				break;
 			case R.id.nav_update:
 				UpdateDataBaseStatistics();
+				SendUserToMainActivity();
 				break;
 
 			case R.id.nav_settings:
@@ -401,6 +383,11 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void SendUserToMainActivity() {
+		Intent mainActivity = new Intent(this, MainActivity.class);
+		startActivity(mainActivity);
 	}
 
 	private void UpdateDataBaseStatistics() {
