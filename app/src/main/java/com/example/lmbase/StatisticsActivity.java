@@ -25,11 +25,9 @@ import java.util.Objects;
 
 public class StatisticsActivity extends AppCompatActivity {
 
-	private Toolbar mToolbar;
 	private DatabaseReference fullMonthRef, usersRef;
-	private FirebaseAuth mAuth;
-	private String currentUserId, currentDateOrderList;
-	private TextView cashToday, monthCash, monthCashVariable, monthRating;
+	private String currentDateOrderList;
+	private TextView cashToday, monthCash, monthCashVariable, monthRating, monthCashTime, monthCashSurcharge;
 	private Float tax = 0.87f, pointValue = 13.5f;
 	private Integer countOfOrders, workShiftValue, workShiftCounts;
 
@@ -44,13 +42,13 @@ public class StatisticsActivity extends AppCompatActivity {
 		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
-		mToolbar = findViewById(R.id.statistics_navbar);
+		Toolbar mToolbar = findViewById(R.id.statistics_navbar);
 		setSupportActionBar(mToolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle("Статистика за месяц");
 		getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		String currentUserId = mAuth.getCurrentUser().getUid();
 		fullMonthRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
 
@@ -58,6 +56,8 @@ public class StatisticsActivity extends AppCompatActivity {
 		cashToday = findViewById(R.id.cash_today);
 		monthCashVariable = findViewById(R.id.month_cash_variable);
 		monthRating = findViewById(R.id.month_rating_tb);
+		monthCashTime = findViewById(R.id.month_cash_time);
+		monthCashSurcharge = findViewById(R.id.month_cash_surcharges);
 
 		usersRef.addValueEventListener(new ValueEventListener() {
 			@Override
@@ -89,24 +89,43 @@ public class StatisticsActivity extends AppCompatActivity {
 						double newDouble = new BigDecimal(resultA).setScale(2, RoundingMode.UP).doubleValue();
 						cashToday.setText(newDouble + " руб");
 					} else {
-						cashToday.setText(0 + " руб");
+						cashToday.setText("0 руб");
 					}
 					int resultPointMonth = 0;
 					int resultCountOrders = 0;
 					int resultBuyoutOrders = 0;
+					int resultFifteenExact = 0;
+					int resultSixtyExact = 0;
 					for (DataSnapshot ds : dataSnapshot.getChildren()) {
 						Map<String, Object> map = (Map<String, Object>) ds.getValue();
 						Object resultPoint = map.get("resultPoint");
 						Object resultCount = map.get("countOfOrders");
 						Object result = map.get("resultBuyout");
+						Object resultFifteen = map.get("15");
+						Object resultSixty = map.get("60");
 						int rValue = Integer.parseInt(String.valueOf(resultPoint));
 						int oValue = Integer.parseInt(String.valueOf(resultCount));
 						int bValue = Integer.parseInt(String.valueOf(result));
+						int fValue = Integer.parseInt(String.valueOf(resultFifteen));
+						int sValue = Integer.parseInt(String.valueOf(resultSixty));
 						resultPointMonth += rValue;
 						resultCountOrders += oValue;
 						resultBuyoutOrders += bValue;
+						resultFifteenExact += fValue;
+						resultSixtyExact += sValue;
 					}
-					double a = (resultPointMonth * pointValue + workShiftValue * countOfOrders - 2000) * tax;
+
+					double resultCashFifteensTime = resultFifteenExact * 100;
+					double resultCashSixtyTime = resultSixtyExact * 20;
+					double newDoubleResultCashSixtyTime = new BigDecimal(resultCashSixtyTime)
+							.setScale(2, RoundingMode.UP).doubleValue();
+					double newDoubleResultCashFifteensTime = new BigDecimal(resultCashFifteensTime)
+							.setScale(2, RoundingMode.UP).doubleValue();
+					double resultExactTime = newDoubleResultCashFifteensTime + newDoubleResultCashSixtyTime;
+					monthCashTime.setText(resultExactTime + " руб");
+
+
+					double a = (resultPointMonth * pointValue + workShiftValue * countOfOrders - 2000 + resultExactTime) * tax;
 					double newDoubleA = new BigDecimal(a).setScale(2, RoundingMode.UP).doubleValue();
 					monthCash.setText(newDoubleA + " руб");
 
@@ -118,8 +137,12 @@ public class StatisticsActivity extends AppCompatActivity {
 					double newDoubleResultMonthCash = new BigDecimal(resultMonthCash).setScale(2, RoundingMode.UP).doubleValue();
 					monthCashVariable.setText((newDoubleResultMonthCash) + " руб");
 				} else {
-					monthCash.setText("0");
-					monthCashVariable.setText("0");
+					monthCash.setText("0 руб");
+					monthCashVariable.setText("0 руб");
+					monthRating.setText("0");
+					monthCashTime.setText("0 руб");
+					cashToday.setText("0 руб");
+					monthCashSurcharge.setText("0 руб");
 				}
 			}
 
