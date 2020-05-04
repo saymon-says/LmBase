@@ -2,14 +2,18 @@ package com.example.lmbase;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -44,12 +48,13 @@ public class MainActivity extends AppCompatActivity {
 	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
 	private TextView navUserName, ordersCount, deliveryCount, bayoutCount, pointCount;
-	private CardView pointersToday;
+	private CardView pointersToday, exactTime;
+	private EditText fifteenExactTime, sixtyExactTime;
 
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef, usersRef, ordersRef, ordersCountRef, workshiftCountRef, statisticRef;
 	private String currentUserId, currentDateOrderList, currentDateSortList;
-	private Integer resultPoint = 0;
+	private Integer resultPoint = 0, fifteenTime = 0, sixtyTime = 0;
 	private Integer resultBuyout = 0, countOfOrders = 0, resultDelivery = 0;
 
 	@Override
@@ -80,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 		bayoutCount = findViewById(R.id.bayout_count);
 		pointCount = findViewById(R.id.point_count);
 		pointersToday = findViewById(R.id.pointers_today);
+		exactTime = findViewById(R.id.exacts_time_today);
 
 		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
@@ -98,6 +104,13 @@ public class MainActivity extends AppCompatActivity {
 			public void onClick(View v) {
 				Intent sendOrderList = new Intent(MainActivity.this, OrderListActivity.class);
 				startActivity(sendOrderList);
+			}
+		});
+
+		exactTime.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ShowDialogExactTime();
 			}
 		});
 
@@ -171,6 +184,64 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
+	private void ShowDialogExactTime() {
+		final AlertDialog.Builder exactTime = new AlertDialog.Builder(this);
+		View mView = getLayoutInflater().inflate(R.layout.dialog_exact_time, null);
+
+		fifteenExactTime = mView.findViewById(R.id.exact_time_fifteen);
+		sixtyExactTime = mView.findViewById(R.id.exact_time_sixty);
+
+		Button addExactTime = mView.findViewById(R.id.add_exact_time);
+		Button cancelDialog = mView.findViewById(R.id.cancel_button);
+		exactTime.setView(mView);
+
+		final AlertDialog alertDialog = exactTime.create();
+		alertDialog.setCanceledOnTouchOutside(false);
+		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+
+		cancelDialog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				alertDialog.dismiss();
+			}
+		});
+
+		addExactTime.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				UpdateDataBaseExactTime();
+				alertDialog.dismiss();
+			}
+		});
+		alertDialog.show();
+	}
+
+	private void UpdateDataBaseExactTime() {
+
+		if (fifteenExactTime.length() == 0) {
+			fifteenTime = 0;
+		} else {
+			fifteenTime = Integer.valueOf(fifteenExactTime.getText().toString());
+		}
+		if (sixtyExactTime.length() == 0) {
+			sixtyTime = 0;
+		} else {
+			sixtyTime = Integer.valueOf(sixtyExactTime.getText().toString());
+		}
+
+		HashMap statMap = new HashMap();
+		statMap.put("15", fifteenTime);
+		statMap.put("60", sixtyTime);
+		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
+			@Override
+			public void onSuccess(Object o) {
+				Toast.makeText(MainActivity.this, "Готово..", Toast.LENGTH_SHORT).show();
+
+			}
+		});
+	}
+
 	@Override
 	protected void onStart() {
 		super.onStart();
@@ -187,7 +258,6 @@ public class MainActivity extends AppCompatActivity {
 	public void onBackPressed() {
 		if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
 			drawerLayout.closeDrawer(GravityCompat.START);
-		} else {
 		}
 	}
 
