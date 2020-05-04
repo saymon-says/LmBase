@@ -3,6 +3,7 @@ package com.example.lmbase;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,12 +26,12 @@ import java.util.Objects;
 public class StatisticsActivity extends AppCompatActivity {
 
 	private Toolbar mToolbar;
-	private DatabaseReference fullMonthRef;
+	private DatabaseReference fullMonthRef, usersRef;
 	private FirebaseAuth mAuth;
 	private String currentUserId, currentDateOrderList;
 	private TextView cashToday, monthCash, monthCashVariable, monthRating;
 	private Float tax = 0.87f, pointValue = 13.5f;
-	private Integer countOfOrders;
+	private Integer countOfOrders, workShiftValue, workShiftCounts;
 
 
 	@SuppressLint("RestrictedApi")
@@ -45,18 +46,35 @@ public class StatisticsActivity extends AppCompatActivity {
 
 		mToolbar = findViewById(R.id.statistics_navbar);
 		setSupportActionBar(mToolbar);
-		Objects.requireNonNull(getSupportActionBar()).setTitle("Статистика");
+		Objects.requireNonNull(getSupportActionBar()).setTitle("Статистика за месяц");
 		getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
 		mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
 		fullMonthRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
+		usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
 
 		monthCash = findViewById(R.id.month_cash);
 		cashToday = findViewById(R.id.cash_today);
 		monthCashVariable = findViewById(R.id.month_cash_variable);
 		monthRating = findViewById(R.id.month_rating_tb);
 
+		usersRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					workShiftCounts = Integer.parseInt(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
+					workShiftValue = 6000 / workShiftCounts;
+				} else {
+					Toast.makeText(StatisticsActivity.this, "Nothing yet..", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
 
 		fullMonthRef.addValueEventListener(new ValueEventListener() {
 			@SuppressLint("SetTextI18n")
@@ -67,7 +85,7 @@ public class StatisticsActivity extends AppCompatActivity {
 					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
 					if (dataSnapshot.child(currentDateOrderList).exists()) {
 						int aa = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue().toString());
-						double resultA = (aa * pointValue + 400) * tax;
+						double resultA = (aa * pointValue + workShiftValue) * tax;
 						double newDouble = new BigDecimal(resultA).setScale(2, RoundingMode.UP).doubleValue();
 						cashToday.setText(newDouble + " руб");
 					} else {
@@ -88,7 +106,7 @@ public class StatisticsActivity extends AppCompatActivity {
 						resultCountOrders += oValue;
 						resultBuyoutOrders += bValue;
 					}
-					double a = (resultPointMonth * pointValue + 400 * countOfOrders - 2000) * tax;
+					double a = (resultPointMonth * pointValue + workShiftValue * countOfOrders - 2000) * tax;
 					double newDoubleA = new BigDecimal(a).setScale(2, RoundingMode.UP).doubleValue();
 					monthCash.setText(newDoubleA + " руб");
 
@@ -96,7 +114,7 @@ public class StatisticsActivity extends AppCompatActivity {
 					double newDoubleB = new BigDecimal(b).setScale(5, RoundingMode.UP).doubleValue();
 					monthRating.setText(newDoubleB + "");
 
-					double resultMonthCash = (resultPointMonth / countOfOrders * pointValue * 14 + 6000) * tax;
+					double resultMonthCash = (resultPointMonth / countOfOrders * pointValue * workShiftCounts + 6000) * tax;
 					double newDoubleResultMonthCash = new BigDecimal(resultMonthCash).setScale(2, RoundingMode.UP).doubleValue();
 					monthCashVariable.setText((newDoubleResultMonthCash) + " руб");
 				} else {
@@ -110,7 +128,5 @@ public class StatisticsActivity extends AppCompatActivity {
 
 			}
 		});
-
-
 	}
 }

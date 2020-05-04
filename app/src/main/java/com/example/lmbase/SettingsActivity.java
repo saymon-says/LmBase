@@ -39,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SettingsActivity extends AppCompatActivity {
 
 	private Toolbar mToolbar;
-	private EditText userName, userFullName;
+	private EditText userName, userFullName, workShift;
 	private Button editBtn;
 	private CircleImageView userpic;
 	private DatabaseReference settingsRef;
@@ -65,6 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 		userName = findViewById(R.id.settings_username);
 		userFullName = findViewById(R.id.settings_fullname);
+		workShift = findViewById(R.id.settings_workshift_count);
 		editBtn = findViewById(R.id.upload_profile);
 		userpic = findViewById(R.id.settings_userpic);
 
@@ -90,6 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
 				if (dataSnapshot.exists()) {
 					userName.setText(Objects.requireNonNull(dataSnapshot.child("alias").getValue()).toString());
 					userFullName.setText(Objects.requireNonNull(dataSnapshot.child("fullname").getValue()).toString());
+					workShift.setText(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
 					String image = Objects.requireNonNull(dataSnapshot.child("userpic").getValue()).toString();
 					Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
 				} else {
@@ -172,6 +174,7 @@ public class SettingsActivity extends AppCompatActivity {
 	private void EditUserProfile() {
 		String userAlias = userName.getText().toString();
 		String userFullname = userFullName.getText().toString();
+		int userWorkshiftCounts = Integer.parseInt(workShift.getText().toString());
 
 		if (userAlias.length() < 3) {
 			Toast.makeText(this, "Псевдоним слишком короткий", Toast.LENGTH_LONG).show();
@@ -187,6 +190,7 @@ public class SettingsActivity extends AppCompatActivity {
 			HashMap usersMap = new HashMap();
 			usersMap.put("alias", userAlias);
 			usersMap.put("fullname", userFullname);
+			usersMap.put("workshift", userWorkshiftCounts);
 			settingsRef.updateChildren(usersMap)
 					.addOnCompleteListener(new OnCompleteListener() {
 						@Override

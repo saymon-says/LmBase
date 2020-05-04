@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
 		mToolbar = findViewById(R.id.main_page_toolbar);
 		setSupportActionBar(mToolbar);
-		Objects.requireNonNull(getSupportActionBar()).setTitle("Статистика");
+		Objects.requireNonNull(getSupportActionBar()).setTitle("Статистика за день");
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 				this, drawerLayout, mToolbar, R.string.open_navigation, R.string.close_navigation);
 		drawerLayout.addDrawerListener(toggle);
