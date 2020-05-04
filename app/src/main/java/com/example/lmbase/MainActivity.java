@@ -42,17 +42,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
 
 	private DrawerLayout drawerLayout;
-	private NavigationView navigationView;
-	private Toolbar mToolbar;
 	private CircleImageView navUserpic;
-	private TextView navUserName, ordersCount, deliveryCount, bayoutCount, pointCount, fifteenExactTimeToday, sixtyExactTimeToday;
-	private CardView pointersToday, exactTime;
-	private EditText fifteenExactTime, sixtyExactTime;
+	private TextView navUserName, ordersCount, deliveryCount, buyoutCount,
+			pointCount, fifteenExactTimeToday, sixtyExactTimeToday, upFineToday;
+	private EditText fifteenExactTime, sixtyExactTime, fines;
 
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef, usersRef, ordersCountRef, statisticRef;
 	private String currentUserId, currentDateOrderList;
-	private Integer resultPoint = 0, fifteenTime = 0, sixtyTime = 0;
+	private Integer resultPoint = 0, fifteenTime = 0, sixtyTime = 0, finesToday = 0;
 	private Integer resultBuyout = 0, countOfOrders = 0, resultDelivery = 0;
 
 	@Override
@@ -73,21 +71,23 @@ public class MainActivity extends AppCompatActivity {
 		statisticRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
-		navigationView = findViewById(R.id.nav);
-		ordersCount = findViewById(R.id.orders_count);
-		deliveryCount = findViewById(R.id.delivery_count);
-		bayoutCount = findViewById(R.id.bayout_count);
-		pointCount = findViewById(R.id.point_count);
-		pointersToday = findViewById(R.id.pointers_today);
-		exactTime = findViewById(R.id.exacts_time_today);
-		fifteenExactTimeToday = findViewById(R.id.exact_time_fifteen_today);
-		sixtyExactTimeToday = findViewById(R.id.exact_time_sixty_today);
+		NavigationView navigationView = findViewById(R.id.nav);
+		ordersCount = findViewById(R.id.text_orders_count);
+		deliveryCount = findViewById(R.id.text_delivery_count);
+		buyoutCount = findViewById(R.id.text_bayout_count);
+		pointCount = findViewById(R.id.text_point_count);
+		CardView pointersToday = findViewById(R.id.pointers_today);
+		CardView exactTime = findViewById(R.id.exacts_time_today);
+		CardView fineToday = findViewById(R.id.fines_today);
+		fifteenExactTimeToday = findViewById(R.id.text_exact_time_fifteen_today);
+		sixtyExactTimeToday = findViewById(R.id.text_exact_time_sixty_today);
+		upFineToday = findViewById(R.id.text_fine_today);
 
 		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
 		navUserpic = navView.findViewById(R.id.profile_image);
 
-		mToolbar = findViewById(R.id.main_page_toolbar);
+		Toolbar mToolbar = findViewById(R.id.main_page_toolbar);
 		setSupportActionBar(mToolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle("Статистика за день");
 		ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -107,6 +107,13 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				ShowDialogExactTime();
+			}
+		});
+
+		fineToday.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ShowDialogFine();
 			}
 		});
 
@@ -149,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 						resultDelivery += dValue;
 						resultBuyout += bValue;
 						deliveryCount.setText(String.valueOf(resultDelivery));
-						bayoutCount.setText(String.valueOf(resultBuyout));
+						buyoutCount.setText(String.valueOf(resultBuyout));
 					}
 					resultPoint = resultBuyout + resultDelivery;
 					pointCount.setText(String.valueOf(resultPoint));
@@ -160,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 					Toast.makeText(MainActivity.this, "Пока по нулям..", Toast.LENGTH_SHORT).show();
 					ordersCount.setText("0");
 					pointCount.setText("0");
-					bayoutCount.setText("0");
+					buyoutCount.setText("0");
 					deliveryCount.setText("0");
 				}
 			}
@@ -179,9 +186,12 @@ public class MainActivity extends AppCompatActivity {
 							.child("15").getValue()).toString());
 					sixtyExactTimeToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
 							.child("60").getValue()).toString());
+					upFineToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("fines").getValue()).toString());
 				} else {
 					fifteenExactTimeToday.setText("0");
 					sixtyExactTimeToday.setText("0");
+					upFineToday.setText("0");
 				}
 			}
 
@@ -196,6 +206,56 @@ public class MainActivity extends AppCompatActivity {
 			public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 				UserMenuSelector(item);
 				return false;
+			}
+		});
+	}
+
+	private void ShowDialogFine() {
+		final AlertDialog.Builder fine = new AlertDialog.Builder(this);
+		View mView = getLayoutInflater().inflate(R.layout.dialog_fine, null);
+
+		fines = mView.findViewById(R.id.text_fine_today);
+		Button addFines = mView.findViewById(R.id.add_fines);
+		Button cancelDialog = mView.findViewById(R.id.cancel_button);
+		fine.setView(mView);
+
+		final AlertDialog alertDialog = fine.create();
+		alertDialog.setCanceledOnTouchOutside(false);
+		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+		cancelDialog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				alertDialog.dismiss();
+			}
+		});
+
+		addFines.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				UpdateDataBaseFines();
+				alertDialog.dismiss();
+			}
+		});
+
+		alertDialog.show();
+
+	}
+
+	private void UpdateDataBaseFines() {
+		if (fines.length() == 0) {
+			finesToday = 0;
+		} else {
+			finesToday = Integer.valueOf(fines.getText().toString());
+		}
+
+		HashMap statMap = new HashMap();
+		statMap.put("fines", finesToday);
+		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
+			@Override
+			public void onSuccess(Object o) {
+				Toast.makeText(MainActivity.this, "Готово..", Toast.LENGTH_SHORT).show();
+
 			}
 		});
 	}
@@ -346,6 +406,9 @@ public class MainActivity extends AppCompatActivity {
 		statMap.put("resultPoint", resultPoint);
 		statMap.put("resultBuyout", resultBuyout);
 		statMap.put("countOfOrders", countOfOrders);
+		statMap.put("15", fifteenTime);
+		statMap.put("60", sixtyTime);
+		statMap.put("fines", finesToday);
 		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {

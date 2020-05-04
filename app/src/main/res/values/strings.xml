@@ -2,4 +2,7 @@
     <string name="app_name">LmBase</string>
     <string name="open_navigation">Open navigation</string>
     <string name="close_navigation">Close navigation</string>
+    <string name="fine">Недоставленные заказы:</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
 </resources>

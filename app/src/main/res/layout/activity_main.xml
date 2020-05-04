@@ -62,7 +62,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/delivery_count"
+                        android:id="@+id/text_delivery_count"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -107,7 +107,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/bayout_count"
+                        android:id="@+id/text_bayout_count"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -153,7 +153,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/orders_count"
+                        android:id="@+id/text_orders_count"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -202,7 +202,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/point_count"
+                        android:id="@+id/text_point_count"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -281,7 +281,7 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/exact_time_fifteen_today"
+                                android:id="@+id/text_exact_time_fifteen_today"
                                 android:layout_width="25dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="20dp"
@@ -290,7 +290,7 @@
                                 android:textSize="40sp" />
 
                             <TextView
-                                android:id="@+id/exact_time_sixty_today"
+                                android:id="@+id/text_exact_time_sixty_today"
                                 android:layout_width="25dp"
                                 android:layout_height="wrap_content"
                                 android:textAlignment="center"
@@ -340,7 +340,7 @@
                         android:textSize="12sp" />
 
                     <TextView
-                        android:id="@+id/fine_today"
+                        android:id="@+id/text_fine_today"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
