@@ -84,8 +84,11 @@ public class StatisticsActivity extends AppCompatActivity {
 				if (dataSnapshot.exists()) {
 					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
 					if (dataSnapshot.child(currentDateOrderList).exists()) {
+						int exactFifteen = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("15").getValue().toString());
+						int exactSixty = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("60").getValue().toString());
+						int resultExact = exactFifteen * 100 + exactSixty * 20;
 						int aa = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue().toString());
-						double resultA = (aa * pointValue + workShiftValue) * tax;
+						double resultA = (aa * pointValue + workShiftValue + resultExact) * tax;
 						double newDouble = new BigDecimal(resultA).setScale(2, RoundingMode.UP).doubleValue();
 						cashToday.setText(newDouble + " руб");
 					} else {

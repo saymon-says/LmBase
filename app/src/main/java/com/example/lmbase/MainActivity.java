@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
 		statisticRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.exists()) {
+				if (dataSnapshot.child(currentDateOrderList).exists()) {
 					fifteenExactTimeToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
 							.child("15").getValue()).toString());
 					sixtyExactTimeToday.setText(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
@@ -215,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
 		View mView = getLayoutInflater().inflate(R.layout.dialog_fine, null);
 
 		fines = mView.findViewById(R.id.text_fine_today);
+		fines.setText(String.valueOf(finesToday));
 		Button addFines = mView.findViewById(R.id.add_fines);
 		Button cancelDialog = mView.findViewById(R.id.cancel_button);
 		fine.setView(mView);
@@ -266,6 +267,8 @@ public class MainActivity extends AppCompatActivity {
 
 		fifteenExactTime = mView.findViewById(R.id.exact_time_fifteen);
 		sixtyExactTime = mView.findViewById(R.id.exact_time_sixty);
+		fifteenExactTime.setText(String.valueOf(fifteenTime));
+		sixtyExactTime.setText(String.valueOf(sixtyTime));
 
 		Button addExactTime = mView.findViewById(R.id.add_exact_time);
 		Button cancelDialog = mView.findViewById(R.id.cancel_button);
