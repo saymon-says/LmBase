@@ -18,6 +18,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -61,8 +62,9 @@ public class TodayPointFragment extends Fragment {
 	}
 
 	private void DisplayAllUsers() {
+		Query query = usersRef.orderByChild("resultPointToday");
 		FirebaseRecyclerOptions<Users> options = new FirebaseRecyclerOptions.Builder<Users>()
-				.setQuery(usersRef, Users.class)
+				.setQuery(query, Users.class)
 				.build();
 
 		FirebaseRecyclerAdapter<Users, UsersViewHolder> adapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {
