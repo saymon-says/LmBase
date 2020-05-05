@@ -7,43 +7,26 @@
     tools:context=".UserListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/app_bar"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <include
             android:id="@+id/users_page_toolbar"
             layout="@layout/app_bar_layout"></include>
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tableLayout"
+            android:id="@+id/table_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ffff"
-            android:layout_below="@+id/users_page_toolbar">
+            android:layout_below="@+id/users_page_toolbar"
+            android:background="#ffff" />
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/month_statistics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Месяц"
-                android:textAlignment="center" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/today_statistics"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="День"
-                android:textAlignment="center" />
-
-        </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/user_list"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/app_bar"
-        android:layout_marginTop="5dp" />
+        android:layout_below="@+id/app_bar" />
 </RelativeLayout>

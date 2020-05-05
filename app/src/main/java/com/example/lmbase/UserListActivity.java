@@ -1,101 +1,48 @@
 package com.example.lmbase;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.lmbase.Model.Users;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class UserListActivity extends AppCompatActivity {
 
-	private RecyclerView userList;
-	private DatabaseReference usersRef;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_list);
 
-		userList = findViewById(R.id.user_list);
-		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-		linearLayoutManager.setReverseLayout(true);
-		linearLayoutManager.setStackFromEnd(true);
-		userList.setLayoutManager(linearLayoutManager);
-
-		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
 		Toolbar mToolbar = findViewById(R.id.users_page_toolbar);
 		setSupportActionBar(mToolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle("Список торговых представителей");
-	}
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		DisplayAllUsers();
-	}
+		ViewPager2 viewPager2 = findViewById(R.id.view_pager);
+		viewPager2.setAdapter(new UsersPointAdapter(this));
 
-	private void DisplayAllUsers() {
-		FirebaseRecyclerOptions<Users> options = new FirebaseRecyclerOptions.Builder<Users>()
-				.setQuery(usersRef, Users.class)
-				.build();
-
-		FirebaseRecyclerAdapter<Users, UsersViewHolder> adapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {
+		TabLayout tabLayout = findViewById(R.id.table_layout);
+		TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(
+				tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
 			@Override
-			protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
-				holder.username.setText(model.getAlias());
-				holder.userfullname.setText(model.getFullname());
-				holder.monthPoint.setText(String.valueOf(model.getResultMonthPoint()));
-				Picasso.get().load(model.getUserpic()).into(holder.userpic);
+			public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+				switch (position) {
+					case 0:
+						tab.setText("Месяц");
+						break;
+					case 1:
+						tab.setText("День");
+						break;
+				}
 			}
-
-			@NonNull
-			@Override
-			public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-				View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_list, parent, false);
-				UsersViewHolder usersViewHolder = new UsersViewHolder(view);
-				return usersViewHolder;
-			}
-		};
-		userList.setAdapter(adapter);
-		adapter.startListening();
-	}
-
-	public static class UsersViewHolder extends RecyclerView.ViewHolder {
-
-		TextView username, userfullname, monthPoint;
-		CircleImageView userpic;
-
-		public UsersViewHolder(@NonNull View itemView) {
-			super(itemView);
-			username = itemView.findViewById(R.id.username_list);
-			userfullname = itemView.findViewById(R.id.user_fullname_list);
-			userpic = itemView.findViewById(R.id.userpic_list);
-			monthPoint = itemView.findViewById(R.id.month_point);
 		}
-	}
-
-	@Override
-	public void onBackPressed() {
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
+		);
+		tabLayoutMediator.attach();
 	}
 }
