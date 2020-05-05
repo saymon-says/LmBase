@@ -1,13 +1,18 @@
 package com.example.lmbase;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -53,11 +58,26 @@ public class StatisticsActivity extends AppCompatActivity {
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
 
 		monthCash = findViewById(R.id.month_cash);
+		CardView month = findViewById(R.id.month_money);
 		cashToday = findViewById(R.id.cash_today);
 		monthCashVariable = findViewById(R.id.month_cash_variable);
+		CardView monthVariable = findViewById(R.id.month_money_variable);
 		monthRating = findViewById(R.id.month_rating_tb);
 		monthCashTime = findViewById(R.id.month_cash_time);
 		monthCashSurcharge = findViewById(R.id.month_cash_surcharges);
+
+		month.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ShowInfoMonthCash();
+			}
+		});
+		monthVariable.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ShowInfoMonthVariableCash();
+			}
+		});
 
 		usersRef.addValueEventListener(new ValueEventListener() {
 			@Override
@@ -154,5 +174,45 @@ public class StatisticsActivity extends AppCompatActivity {
 
 			}
 		});
+	}
+
+	private void ShowInfoMonthVariableCash() {
+		final AlertDialog.Builder monthVariable = new AlertDialog.Builder(this);
+		View mView = getLayoutInflater().inflate(R.layout.variable_pop_up, null);
+		Button cancelDialog = mView.findViewById(R.id.accept_btn);
+		monthVariable.setView(mView);
+
+		final AlertDialog alertDialog = monthVariable.create();
+		alertDialog.setCanceledOnTouchOutside(false);
+		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+		cancelDialog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				alertDialog.dismiss();
+			}
+		});
+		alertDialog.show();
+
+	}
+
+	private void ShowInfoMonthCash() {
+		final AlertDialog.Builder month = new AlertDialog.Builder(this);
+		View mView = getLayoutInflater().inflate(R.layout.month_pop_up, null);
+		Button cancelDialog = mView.findViewById(R.id.accept_btn);
+		month.setView(mView);
+
+		final AlertDialog alertDialog = month.create();
+		alertDialog.setCanceledOnTouchOutside(false);
+		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+		cancelDialog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				alertDialog.dismiss();
+			}
+		});
+		alertDialog.show();
+
 	}
 }

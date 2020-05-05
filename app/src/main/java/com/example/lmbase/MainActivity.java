@@ -406,7 +406,6 @@ public class MainActivity extends AppCompatActivity {
 					usersRef.child(currentUserId).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
 						@Override
 						public void onSuccess(Object o) {
-							Toast.makeText(MainActivity.this, "Добавлено", Toast.LENGTH_SHORT).show();
 						}
 					});
 				} else {
@@ -439,7 +438,6 @@ public class MainActivity extends AppCompatActivity {
 		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {
-				Toast.makeText(MainActivity.this, "Обновились", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}

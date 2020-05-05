@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_bg">
+
+        <TextView
+            android:id="@+id/hats"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/hats_pop_up"
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="center"
+            android:text="Перспектива:"
+            android:textSize="24sp" />
+
+
+        <TextView
+            android:id="@+id/text_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hats"
+            android:fontFamily="@font/roboto_medium"
+            android:padding="10dp"
+            android:text="@string/varible"
+            android:textAlignment="center" />
+
+        <Button
+            android:id="@+id/accept_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_month"
+            android:background="@drawable/button_pop_up"
+            android:text="Все понятно"
+            android:textAlignment="center" />
+    </RelativeLayout>
+</RelativeLayout>
