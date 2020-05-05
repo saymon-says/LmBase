@@ -72,6 +72,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 		mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(55.741313, 37.417692))
-				.title("144 кв, по 3 позиции!"));
+				.title("144 кв")).setSnippet("Выдавать только по 3 позиции");
 	}
 }

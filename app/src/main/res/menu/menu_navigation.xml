@@ -36,7 +36,8 @@
                 android:title="Торговые представители" />
             <item
                 android:id="@+id/nav_for_google_maps"
-                android:title="Maps" />
+                android:icon="@drawable/maps"
+                android:title="Карта негативных клиентов" />
         </menu>
     </item>
     <item android:title="">

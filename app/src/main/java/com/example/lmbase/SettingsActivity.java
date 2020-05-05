@@ -86,14 +86,19 @@ public class SettingsActivity extends AppCompatActivity {
 		});
 
 		settingsRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
 					userName.setText(Objects.requireNonNull(dataSnapshot.child("alias").getValue()).toString());
 					userFullName.setText(Objects.requireNonNull(dataSnapshot.child("fullname").getValue()).toString());
-					workShift.setText(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
 					String image = Objects.requireNonNull(dataSnapshot.child("userpic").getValue()).toString();
 					Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
+					if (dataSnapshot.child("workshift").exists()) {
+						workShift.setText(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
+					} else {
+						workShift.setText(15 +"");
+					}
 				} else {
 					Toast.makeText(SettingsActivity.this, "Nothing yet..", Toast.LENGTH_SHORT).show();
 				}

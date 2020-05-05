@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 	private Integer fifteenTime = 0;
 	private Integer sixtyTime = 0;
 	private Integer finesToday = 0;
-	private Integer resultBuyout = 0, countOfOrders = 0, resultDelivery = 0;
+	private Integer resultBuyout = 0, countOfOrders = 1, resultDelivery = 0;
 	private double pointFinesToday = 0.0, resultPoint = 0.0;
 
 	@Override
@@ -373,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
 				UpdateDataBaseStatistics();
 				UpdateDataBaseUsers();
 				SendUserToMainActivity();
+				Toast.makeText(this, "Обновлено", Toast.LENGTH_SHORT).show();
 				break;
 
 			case R.id.nav_for_google_maps:
