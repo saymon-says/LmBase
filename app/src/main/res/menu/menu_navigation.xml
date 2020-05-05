@@ -34,11 +34,11 @@
                 android:id="@+id/nav_for_list"
                 android:icon="@drawable/research"
                 android:title="Торговые представители" />
+            <item
+                android:id="@+id/nav_for_google_maps"
+                android:title="Maps" />
         </menu>
     </item>
-    <item
-        android:enabled="false"
-        android:title="" />
     <item android:title="">
         <item
             android:id="@+id/nav_logout"

@@ -375,6 +375,10 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToMainActivity();
 				break;
 
+			case R.id.nav_for_google_maps:
+				SendUserToMapsActivity();
+				break;
+
 			case R.id.nav_settings:
 				SendUserToSettingsActivity();
 				break;
@@ -384,6 +388,11 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void SendUserToMapsActivity() {
+		Intent mapsIntent = new Intent(this, MapsActivity.class);
+		startActivity(mapsIntent);
 	}
 
 	private void UpdateDataBaseUsers() {
