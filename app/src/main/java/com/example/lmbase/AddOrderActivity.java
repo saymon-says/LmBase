@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -123,8 +122,6 @@ public class AddOrderActivity extends AppCompatActivity {
 					Toast.makeText(AddOrderActivity.this, "Проверь данные!", Toast.LENGTH_LONG).show();
 				} else if (Integer.parseInt(bayouOrder.getText().toString()) > Integer.parseInt(priceOrder.getText().toString())) {
 					Toast.makeText(AddOrderActivity.this, "Космический выкуп!", Toast.LENGTH_LONG).show();
-//				} else if (bayouOrder.length() == 0){
-//					resultPoint = "0";
 				} else {
 					switch (deliveryVariant) {
 						case 0:
@@ -187,7 +184,6 @@ public class AddOrderActivity extends AppCompatActivity {
 			resultPoint = "5";
 		} else {
 			resultPoint = "0";
-			Toast.makeText(this, "Какая-то хрень!", Toast.LENGTH_LONG).show();
 		}
 		addOrderInOrderList();
 	}
@@ -215,7 +211,6 @@ public class AddOrderActivity extends AppCompatActivity {
 			resultPoint = "9";
 		} else {
 			resultPoint = "0";
-			Toast.makeText(this, "Какая-то хрень!", Toast.LENGTH_LONG).show();
 		}
 		addOrderInOrderList();
 	}
