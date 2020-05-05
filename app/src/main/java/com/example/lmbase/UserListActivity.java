@@ -20,12 +20,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserListActivity extends AppCompatActivity {
 
 	private RecyclerView userList;
-	private Toolbar mToolbar;
 	private DatabaseReference usersRef;
 
 	@Override
@@ -41,9 +42,9 @@ public class UserListActivity extends AppCompatActivity {
 
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-		mToolbar = findViewById(R.id.users_page_toolbar);
+		Toolbar mToolbar = findViewById(R.id.users_page_toolbar);
 		setSupportActionBar(mToolbar);
-		getSupportActionBar().setTitle("Список торговых представителей");
+		Objects.requireNonNull(getSupportActionBar()).setTitle("Список торговых представителей");
 	}
 
 	@Override
@@ -62,6 +63,7 @@ public class UserListActivity extends AppCompatActivity {
 			protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
 				holder.username.setText(model.getAlias());
 				holder.userfullname.setText(model.getFullname());
+				holder.monthPoint.setText(String.valueOf(model.getResultMonthPoint()));
 				Picasso.get().load(model.getUserpic()).into(holder.userpic);
 			}
 
@@ -79,7 +81,7 @@ public class UserListActivity extends AppCompatActivity {
 
 	public static class UsersViewHolder extends RecyclerView.ViewHolder {
 
-		TextView username, userfullname;
+		TextView username, userfullname, monthPoint;
 		CircleImageView userpic;
 
 		public UsersViewHolder(@NonNull View itemView) {
@@ -87,6 +89,7 @@ public class UserListActivity extends AppCompatActivity {
 			username = itemView.findViewById(R.id.username_list);
 			userfullname = itemView.findViewById(R.id.user_fullname_list);
 			userpic = itemView.findViewById(R.id.userpic_list);
+			monthPoint = itemView.findViewById(R.id.month_point);
 		}
 	}
 

@@ -2,14 +2,17 @@ package com.example.lmbase.Model;
 
 public class Users {
 	String alias, fullname, userpic;
+	Double resultPointToday, resultMonthPoint;
 
 	public Users() {
 	}
 
-	public Users(String alias, String fullname, String userpic) {
+	public Users(String alias, String fullname, String userpic, Double resultPointToday, Double resultMonthPoint) {
 		this.alias = alias;
 		this.fullname = fullname;
 		this.userpic = userpic;
+		this.resultPointToday = resultPointToday;
+		this.resultMonthPoint = resultMonthPoint;
 	}
 
 	public String getAlias() {
@@ -34,5 +37,21 @@ public class Users {
 
 	public void setUserpic(String userpic) {
 		this.userpic = userpic;
+	}
+
+	public Double getResultPointToday() {
+		return resultPointToday;
+	}
+
+	public void setResultPointToday(Double resultPointToday) {
+		this.resultPointToday = resultPointToday;
+	}
+
+	public Double getResultMonthPoint() {
+		return resultMonthPoint;
+	}
+
+	public void setResultMonthPoint(Double resultMonthPoint) {
+		this.resultMonthPoint = resultMonthPoint;
 	}
 }

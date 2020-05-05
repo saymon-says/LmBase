@@ -1,20 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UserListActivity">
 
-    <include
-        layout="@layout/app_bar_layout"
-        android:id="@+id/users_page_toolbar">
-    </include>
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/app_bar"
+        >
+
+        <include
+            android:id="@+id/users_page_toolbar"
+            layout="@layout/app_bar_layout"></include>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffff"
+            android:layout_below="@+id/users_page_toolbar">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/month_statistics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Месяц"
+                android:textAlignment="center" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/today_statistics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="День"
+                android:textAlignment="center" />
+
+        </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_list"
-        android:layout_below="@id/users_page_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/app_bar"
+        android:layout_marginTop="5dp" />
 </RelativeLayout>

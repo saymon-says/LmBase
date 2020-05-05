@@ -371,6 +371,7 @@ public class MainActivity extends AppCompatActivity {
 				break;
 			case R.id.nav_update:
 				UpdateDataBaseStatistics();
+				UpdateDataBaseUsers();
 				SendUserToMainActivity();
 				break;
 
@@ -383,6 +384,42 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	private void UpdateDataBaseUsers() {
+		statisticRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					double resultPointMonth = 0;
+					double resultPointToday = Double.parseDouble(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("resultPoint").getValue()).toString());
+					for (DataSnapshot ds : dataSnapshot.getChildren()) {
+						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						Object resultPoint = map.get("resultPoint");
+						double rValue = Double.parseDouble(String.valueOf(resultPoint));
+						resultPointMonth += rValue;
+					}
+					HashMap statMap = new HashMap();
+					statMap.put("resultMonthPoint", resultPointMonth);
+					statMap.put("resultPointToday", resultPointToday);
+					usersRef.child(currentUserId).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
+						@Override
+						public void onSuccess(Object o) {
+							Toast.makeText(MainActivity.this, "Добавлено", Toast.LENGTH_SHORT).show();
+						}
+					});
+				} else {
+					Toast.makeText(MainActivity.this, "Пока нет ниче", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
 	}
 
 	private void SendUserToMainActivity() {
