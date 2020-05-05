@@ -29,7 +29,8 @@
             android:background="@drawable/input"
             android:hint="Номер заказа"
             android:textSize="18sp"
-            android:padding="10dp" />
+            android:padding="10dp"
+            android:textAlignment="center"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -155,6 +156,7 @@
                     android:background="@drawable/input"
                     android:hint="Стоимость заказа"
                     android:inputType="number"
+                    android:textAlignment="center"
                     android:padding="10dp" />
 
                 <EditText
@@ -167,6 +169,7 @@
                     android:background="@drawable/input"
                     android:hint="Выкуп"
                     android:inputType="number"
+                    android:textAlignment="center"
                     android:padding="10dp" />
             </LinearLayout>
 
