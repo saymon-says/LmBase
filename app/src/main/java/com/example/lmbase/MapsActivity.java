@@ -34,14 +34,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -221,9 +225,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	}
 
 	private void ShowProblemClientMarker() {
-		mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(55.775043, 37.629152))
-				.title("15 кв, по 3 позиции!")).setSnippet("Выдавать по 3 позиции! Потому что меряет пол часа 3 вещи");
+		troubleClient.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					for (DataSnapshot ds : dataSnapshot.getChildren()) {
+						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						Object clientLat = map.get("clientLatitude");
+						Object clientLong = map.get("clientLongitude");
+						Object titleClient = map.get("clientAddress");
+						Object refinementInfo = map.get("clientRefinement");
+						Object infoClient = map.get("clientComment");
+
+						double Lat = (double) clientLat;
+						double Lg = (double) clientLong;
+						String title = String.valueOf(titleClient);
+						String snipped = String.valueOf(infoClient);
+						String refinement = String.valueOf(refinementInfo);
+
+						mMap.addMarker(new MarkerOptions()
+								.position(new LatLng(Lat, Lg))
+								.title(title)).setSnippet(refinement + "\n" + snipped);
+					}
+				} else {
+					Toast.makeText(MapsActivity.this, "Все клиенты молодцы!", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
 	}
 
 	private void getDeviceLocation() {
@@ -320,7 +353,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	}
 
-//
+//mMap.addMarker(new MarkerOptions()
+//				.position(new LatLng(55.775043, 37.629152))
+//				.title("15 кв, по 3 позиции!")).setSnippet("Выдавать по 3 позиции! Потому что меряет пол часа 3 вещи");
 //		mMap.addMarker(new MarkerOptions()
 //				.position(new LatLng(55.774444, 37.641755))
 //				.title("1203-1266 кв, по 3 позиции!!"));
