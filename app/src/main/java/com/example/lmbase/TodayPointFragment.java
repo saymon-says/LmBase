@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -31,6 +35,7 @@ public class TodayPointFragment extends Fragment {
 
 	private DatabaseReference usersRef;
 	private RecyclerView userList;
+	private String currentDateOrderList;
 
 	public TodayPointFragment() {
 	}
@@ -39,6 +44,11 @@ public class TodayPointFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
+
+		Calendar calendarDate = Calendar.getInstance();
+		final SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		currentDateOrderList = currentDate.format(calendarDate.getTime());
+
 		View v = inflater.inflate(R.layout.fragment_today_point, container, false);
 		userList = v.findViewById(R.id.recycler_today);
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -68,11 +78,16 @@ public class TodayPointFragment extends Fragment {
 				.build();
 
 		FirebaseRecyclerAdapter<Users, UsersViewHolder> adapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {
+			@SuppressLint("SetTextI18n")
 			@Override
 			protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
 				holder.username.setText(model.getAlias());
 				holder.userfullname.setText(model.getFullname());
-				holder.todayPoint.setText(String.valueOf(model.getResultPointToday()));
+				if (model.getCurrentDateOrderList().equals(currentDateOrderList)) {
+					holder.todayPoint.setText(String.valueOf(model.getResultPointToday()));
+				} else {
+					holder.todayPoint.setText(0.0 + "");
+				}
 				Picasso.get().load(model.getUserpic()).into(holder.userpic);
 			}
 

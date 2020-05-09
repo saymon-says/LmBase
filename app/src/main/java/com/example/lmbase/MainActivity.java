@@ -413,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
 					HashMap statMap = new HashMap();
 					statMap.put("resultMonthPoint", resultPointMonth);
 					statMap.put("resultPointToday", resultPointToday);
+					statMap.put("currentDateOrderList", currentDateOrderList);
 					usersRef.child(currentUserId).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
 						@Override
 						public void onSuccess(Object o) {

@@ -1,18 +1,27 @@
 package com.example.lmbase.Model;
 
 public class Users {
-	String alias, fullname, userpic;
+	String alias, fullname, userpic, currentDateOrderList;
 	Double resultPointToday, resultMonthPoint;
 
 	public Users() {
 	}
 
-	public Users(String alias, String fullname, String userpic, Double resultPointToday, Double resultMonthPoint) {
+	public Users(String alias, String fullname, String userpic, String currentDateOrderList, Double resultPointToday, Double resultMonthPoint) {
 		this.alias = alias;
 		this.fullname = fullname;
 		this.userpic = userpic;
+		this.currentDateOrderList = currentDateOrderList;
 		this.resultPointToday = resultPointToday;
 		this.resultMonthPoint = resultMonthPoint;
+	}
+
+	public String getCurrentDateOrderList() {
+		return currentDateOrderList;
+	}
+
+	public void setCurrentDateOrderList(String currentDateOrderList) {
+		this.currentDateOrderList = currentDateOrderList;
 	}
 
 	public String getAlias() {
