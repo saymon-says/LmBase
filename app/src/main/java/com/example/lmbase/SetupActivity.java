@@ -35,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SetupActivity extends AppCompatActivity {
 
-	private EditText userAlias, userFullname;
+	private EditText userAlias, userFullname, workShift, reitUser;
 	private Button saveButton;
 	private CircleImageView userpic;
 	private ProgressDialog progressDialog;
@@ -54,6 +54,8 @@ public class SetupActivity extends AppCompatActivity {
 
 		userAlias = findViewById(R.id.user_alias);
 		userFullname = findViewById(R.id.user_Fullname);
+		workShift = findViewById(R.id.settings_workshift_count);
+		reitUser = findViewById(R.id.settings_reit);
 		saveButton = findViewById(R.id.button_save_setup);
 		userpic = findViewById(R.id.userpic);
 		progressDialog = new ProgressDialog(this);
@@ -159,20 +161,28 @@ public class SetupActivity extends AppCompatActivity {
 	private void SaveSetupInfoUser() {
 		String userAliasSetup = userAlias.getText().toString();
 		String userFullnameSetup = userFullname.getText().toString();
+		int userWorkshiftCounts = Integer.parseInt(workShift.getText().toString());
+		double userReitCounts = Double.parseDouble(reitUser.getText().toString());
 
 		if(userAliasSetup.length() < 3) {
 			Toast.makeText(this, "Псевдоним слишком короткий", Toast.LENGTH_LONG).show();
 		} else if (userFullnameSetup.length() < 8) {
 			Toast.makeText(this, "Коротковато Ф.И.О.", Toast.LENGTH_LONG).show();
+		} else if (userWorkshiftCounts == 0) {
+			Toast.makeText(this, "Проверь смены!", Toast.LENGTH_SHORT).show();
+		} else  if (userReitCounts == 0) {
+			Toast.makeText(this, "Рейтинг маловат", Toast.LENGTH_SHORT).show();
 		} else {
 			progressDialog.setTitle("Сохраняемся..");
-			progressDialog.setMessage("Падажжиии...");
+			progressDialog.setMessage("Падажжиии...Ща все будет!");
 			progressDialog.show();
 			progressDialog.setCanceledOnTouchOutside(true);
 
 			HashMap usersMap = new HashMap();
 			usersMap.put("alias", userAliasSetup);
 			usersMap.put("fullname", userFullnameSetup);
+			usersMap.put("workshift", userWorkshiftCounts);
+			usersMap.put("reit", userReitCounts);
 			userRef.updateChildren(usersMap)
 					.addOnCompleteListener(new OnCompleteListener() {
 						@Override

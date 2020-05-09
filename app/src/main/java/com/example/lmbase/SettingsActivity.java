@@ -39,7 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SettingsActivity extends AppCompatActivity {
 
 	private Toolbar mToolbar;
-	private EditText userName, userFullName, workShift;
+	private EditText userName, userFullName, workShift, reitUser;
 	private Button editBtn;
 	private CircleImageView userpic;
 	private DatabaseReference settingsRef;
@@ -66,6 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
 		userName = findViewById(R.id.settings_username);
 		userFullName = findViewById(R.id.settings_fullname);
 		workShift = findViewById(R.id.settings_workshift_count);
+		reitUser = findViewById(R.id.settings_reit);
 		editBtn = findViewById(R.id.upload_profile);
 		userpic = findViewById(R.id.settings_userpic);
 
@@ -94,11 +95,12 @@ public class SettingsActivity extends AppCompatActivity {
 					userFullName.setText(Objects.requireNonNull(dataSnapshot.child("fullname").getValue()).toString());
 					String image = Objects.requireNonNull(dataSnapshot.child("userpic").getValue()).toString();
 					Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
-					if (dataSnapshot.child("workshift").exists()) {
-						workShift.setText(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
-					} else {
-						workShift.setText(15 +"");
-					}
+//					if (dataSnapshot.child("workshift").exists()) {
+					workShift.setText(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
+					reitUser.setText(dataSnapshot.child("reit").getValue().toString());
+//					} else {
+//						workShift.setText(15 +"");
+//					}
 				} else {
 					Toast.makeText(SettingsActivity.this, "Nothing yet..", Toast.LENGTH_SHORT).show();
 				}
@@ -180,15 +182,19 @@ public class SettingsActivity extends AppCompatActivity {
 		String userAlias = userName.getText().toString();
 		String userFullname = userFullName.getText().toString();
 		int userWorkshiftCounts = Integer.parseInt(workShift.getText().toString());
+		double userReitCounts = Double.parseDouble(reitUser.getText().toString());
 
 		if (userAlias.length() < 3) {
 			Toast.makeText(this, "Псевдоним слишком короткий", Toast.LENGTH_LONG).show();
 		} else if (userFullname.length() < 8) {
 			Toast.makeText(this, "Коротковато Ф.И.О.", Toast.LENGTH_LONG).show();
+		} else if (userWorkshiftCounts == 0) {
+			Toast.makeText(this, "Проверь смены!", Toast.LENGTH_SHORT).show();
+		} else  if (userReitCounts == 0) {
+			Toast.makeText(this, "Рейтинг маловат", Toast.LENGTH_SHORT).show();
 		} else {
-
 			progressDialog.setTitle("Сохраняемся..");
-			progressDialog.setMessage("Падажжиии...");
+			progressDialog.setMessage("Падажжиии...Ща все будет");
 			progressDialog.show();
 			progressDialog.setCanceledOnTouchOutside(true);
 
@@ -196,6 +202,7 @@ public class SettingsActivity extends AppCompatActivity {
 			usersMap.put("alias", userAlias);
 			usersMap.put("fullname", userFullname);
 			usersMap.put("workshift", userWorkshiftCounts);
+			usersMap.put("reit", userReitCounts);
 			settingsRef.updateChildren(usersMap)
 					.addOnCompleteListener(new OnCompleteListener() {
 						@Override

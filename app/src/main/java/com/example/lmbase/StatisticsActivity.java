@@ -35,6 +35,7 @@ public class StatisticsActivity extends AppCompatActivity {
 	private TextView cashToday, monthCash, monthCashVariable, monthRating, monthCashTime, monthCashSurcharge;
 	private Float tax = 0.87f, pointValue = 13.5f;
 	private Integer countOfOrders, workShiftValue, workShiftCounts;
+	private double reitUserMonth;
 
 
 	@SuppressLint("RestrictedApi")
@@ -83,6 +84,7 @@ public class StatisticsActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
+					reitUserMonth = Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("reit").getValue()).toString());
 					workShiftCounts = Integer.parseInt(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
 					workShiftValue = 6000 / workShiftCounts;
 				} else {
@@ -108,7 +110,7 @@ public class StatisticsActivity extends AppCompatActivity {
 						int exactSixty = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("60").getValue().toString());
 						int resultExact = exactFifteen * 100 + exactSixty * 20;
 						double aa = Double.parseDouble(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue().toString());
-						double resultA = (aa * pointValue + workShiftValue + resultExact) * tax;
+						double resultA = (aa * reitUserMonth * pointValue + workShiftValue + resultExact) * tax;
 						double newDouble = new BigDecimal(resultA).setScale(2, RoundingMode.UP).doubleValue();
 						cashToday.setText(newDouble + " руб");
 					} else {
@@ -148,7 +150,7 @@ public class StatisticsActivity extends AppCompatActivity {
 					monthCashTime.setText(resultExactTime + " руб");
 
 
-					double a = (resultPointMonth * pointValue + workShiftValue * countOfOrders - 2000 + resultExactTime) * tax;
+					double a = (resultPointMonth * reitUserMonth * pointValue + workShiftValue * countOfOrders - 2000 + resultExactTime) * tax;
 					double newDoubleA = new BigDecimal(a).setScale(2, RoundingMode.UP).doubleValue();
 					monthCash.setText(newDoubleA + " руб");
 
@@ -156,7 +158,7 @@ public class StatisticsActivity extends AppCompatActivity {
 					double newDoubleB = new BigDecimal(b).setScale(5, RoundingMode.UP).doubleValue();
 					monthRating.setText(newDoubleB + "");
 
-					double resultMonthCash = (resultPointMonth / countOfOrders * pointValue * workShiftCounts + 6000) * tax;
+					double resultMonthCash = ((resultPointMonth * reitUserMonth) / countOfOrders * pointValue * workShiftCounts + 6000) * tax;
 					double newDoubleResultMonthCash = new BigDecimal(resultMonthCash).setScale(2, RoundingMode.UP).doubleValue();
 					monthCashVariable.setText((newDoubleResultMonthCash) + " руб");
 				} else {
