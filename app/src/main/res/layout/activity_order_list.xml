@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/orders_page_toolbar"
-        layout="@layout/app_bar_layout"></include>
+        layout="@layout/app_bar_layout"/>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

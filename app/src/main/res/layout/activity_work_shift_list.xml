@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/workshift_page_toolbar"
-        layout="@layout/app_bar_layout"></include>
+        layout="@layout/app_bar_layout"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_of_workshifts"
