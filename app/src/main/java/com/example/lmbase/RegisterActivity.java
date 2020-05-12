@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
 		else {
 
 			loadingDialog.setTitle("Аккаунт создается..");
-			loadingDialog.setMessage("Падажжиии...");
+			loadingDialog.setMessage("Падажжиии...Ща все будет!");
 			loadingDialog.show();
 			loadingDialog.setCanceledOnTouchOutside(true);
 

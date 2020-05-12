@@ -29,10 +29,10 @@
             android:layout_marginTop="50dp"
             android:background="@drawable/input"
             android:drawableStart="@drawable/username"
-            android:drawablePadding="15dp"
             android:hint="Введите псевдоним"
             android:inputType="text"
-            android:padding="15dp" />
+            android:padding="15dp"
+            android:textAlignment="center" />
 
         <EditText
             android:id="@+id/user_Fullname"
@@ -43,10 +43,10 @@
             android:layout_marginTop="45dp"
             android:background="@drawable/input"
             android:drawableStart="@drawable/fullname"
-            android:drawablePadding="15dp"
             android:hint="Введите ФИО"
             android:inputType="text"
-            android:padding="15dp" />
+            android:padding="15dp"
+            android:textAlignment="center" />
 
         <LinearLayout
             android:id="@+id/workshift_settings"
@@ -65,7 +65,8 @@
                 android:background="@drawable/input"
                 android:hint="Смены в месяце"
                 android:inputType="number"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:textAlignment="center" />
 
             <EditText
                 android:id="@+id/settings_reit"

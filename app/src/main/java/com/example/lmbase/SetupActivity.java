@@ -36,11 +36,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SetupActivity extends AppCompatActivity {
 
 	private EditText userAlias, userFullname, workShift, reitUser;
-	private Button saveButton;
 	private CircleImageView userpic;
 	private ProgressDialog progressDialog;
 
-	private FirebaseAuth mAuth;
 	private DatabaseReference userRef;
 	private String currentUserId;
 	private StorageReference userpicRef;
@@ -56,11 +54,11 @@ public class SetupActivity extends AppCompatActivity {
 		userFullname = findViewById(R.id.user_Fullname);
 		workShift = findViewById(R.id.settings_workshift_count);
 		reitUser = findViewById(R.id.settings_reit);
-		saveButton = findViewById(R.id.button_save_setup);
+		Button saveButton = findViewById(R.id.button_save_setup);
 		userpic = findViewById(R.id.userpic);
 		progressDialog = new ProgressDialog(this);
 
-		mAuth = FirebaseAuth.getInstance();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
 		currentUserId = mAuth.getCurrentUser().getUid();
 		userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
 		userpicRef = FirebaseStorage.getInstance().getReference().child("User Pic");
@@ -68,7 +66,7 @@ public class SetupActivity extends AppCompatActivity {
 		saveButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SaveSetupInfoUser();
+				ShowExistsUserPic();
 			}
 		});
 
@@ -91,7 +89,7 @@ public class SetupActivity extends AppCompatActivity {
 						Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
 					}
 				} else {
-					Toast.makeText(SetupActivity.this, "Сначала выбери аватар", Toast.LENGTH_LONG).show();
+					Toast.makeText(SetupActivity.this, "Сначала выбери аватар", Toast.LENGTH_SHORT).show();
 				}
 			}
 
@@ -137,7 +135,7 @@ public class SetupActivity extends AppCompatActivity {
 												@Override
 												public void onComplete(@NonNull Task<Void> task) {
 													if (task.isSuccessful()) {
-														Toast.makeText(SetupActivity.this, "Фото загружено", Toast.LENGTH_LONG).show();
+														Toast.makeText(SetupActivity.this, "Фото загружено", Toast.LENGTH_SHORT).show();
 														progressDialog.dismiss();
 													} else {
 														String message = task.getException().toString();
@@ -159,20 +157,25 @@ public class SetupActivity extends AppCompatActivity {
 	}
 
 	private void SaveSetupInfoUser() {
+
 		String userAliasSetup = userAlias.getText().toString();
 		String userFullnameSetup = userFullname.getText().toString();
-		int userWorkshiftCounts = Integer.parseInt(workShift.getText().toString());
-		double userReitCounts = Double.parseDouble(reitUser.getText().toString());
+		String userWorkshiftCounts = workShift.getText().toString();
+		String userReitCounts = reitUser.getText().toString();
 
 		if(userAliasSetup.length() < 3) {
-			Toast.makeText(this, "Псевдоним слишком короткий", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Псевдоним слишком короткий", Toast.LENGTH_SHORT).show();
 		} else if (userFullnameSetup.length() < 8) {
-			Toast.makeText(this, "Коротковато Ф.И.О.", Toast.LENGTH_LONG).show();
-		} else if (userWorkshiftCounts == 0) {
-			Toast.makeText(this, "Проверь смены!", Toast.LENGTH_SHORT).show();
-		} else  if (userReitCounts == 0) {
-			Toast.makeText(this, "Рейтинг маловат", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, "Коротковато Ф.И.О.", Toast.LENGTH_SHORT).show();
+		} else if (userWorkshiftCounts.length() == 0) {
+			Toast.makeText(this, "В среднем в месяце 15 смен", Toast.LENGTH_SHORT).show();
+		} else  if (userReitCounts.length() == 0) {
+			Toast.makeText(this, "В начале рейтинг 1 подойдет", Toast.LENGTH_SHORT).show();
 		} else {
+
+			int userWorkshiftCountsInt = Integer.parseInt(userWorkshiftCounts);
+			int userReitCountsInt = Integer.parseInt(userReitCounts);
+
 			progressDialog.setTitle("Сохраняемся..");
 			progressDialog.setMessage("Падажжиии...Ща все будет!");
 			progressDialog.show();
@@ -181,14 +184,14 @@ public class SetupActivity extends AppCompatActivity {
 			HashMap usersMap = new HashMap();
 			usersMap.put("alias", userAliasSetup);
 			usersMap.put("fullname", userFullnameSetup);
-			usersMap.put("workshift", userWorkshiftCounts);
-			usersMap.put("reit", userReitCounts);
+			usersMap.put("workshift", userWorkshiftCountsInt);
+			usersMap.put("reit", userReitCountsInt);
 			userRef.updateChildren(usersMap)
 					.addOnCompleteListener(new OnCompleteListener() {
 						@Override
 						public void onComplete(@NonNull Task task) {
 							if(task.isSuccessful()) {
-								Toast.makeText(SetupActivity.this, "Полетели!", Toast.LENGTH_LONG).show();
+								Toast.makeText(SetupActivity.this, "Полетели!", Toast.LENGTH_SHORT).show();
 								SendUserToMainActivity();
 								progressDialog.dismiss();
 							} else {
@@ -200,6 +203,29 @@ public class SetupActivity extends AppCompatActivity {
 					});
 		}
 	}
+
+	private void ShowExistsUserPic() {
+		userRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if(dataSnapshot.exists()) {
+					if(dataSnapshot.hasChild("userpic")) {
+						String image = dataSnapshot.child("userpic").getValue().toString();
+						Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
+						SaveSetupInfoUser();
+					}
+				} else {
+					Toast.makeText(SetupActivity.this, "Сначала выбери аватар", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+	}
+
 
 	private void SendUserToMainActivity() {
 		Intent mainActivity = new Intent(SetupActivity.this, MainActivity.class);

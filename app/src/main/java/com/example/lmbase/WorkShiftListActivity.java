@@ -82,8 +82,8 @@ public class WorkShiftListActivity extends AppCompatActivity {
 					@SuppressLint("SetTextI18n")
 					@Override
 					protected void onBindViewHolder(@NonNull WorkShiftListActivity.WorkShiftsViewHolder holder, int position, @NonNull WorkShifts model) {
-						holder.date.setText("Date " + model.getDate());
-						holder.resultPoint.setText("Result: " + model.getResultPoint());
+						holder.date.setText("Дата смены " + model.getDate());
+						holder.resultPoint.setText("Результат: " + model.getResultPoint());
 					}
 
 					@NonNull
