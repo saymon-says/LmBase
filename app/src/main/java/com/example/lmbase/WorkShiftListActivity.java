@@ -46,7 +46,7 @@ public class WorkShiftListActivity extends AppCompatActivity {
 		listWorkshifts.setLayoutManager(linearLayoutManager);
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("MMM-yyyy");
+		SimpleDateFormat currentDate = new SimpleDateFormat("MM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		mToolbar = findViewById(R.id.workshift_page_toolbar);
@@ -82,7 +82,7 @@ public class WorkShiftListActivity extends AppCompatActivity {
 					@SuppressLint("SetTextI18n")
 					@Override
 					protected void onBindViewHolder(@NonNull WorkShiftListActivity.WorkShiftsViewHolder holder, int position, @NonNull WorkShifts model) {
-						holder.date.setText("Дата смены " + model.getDate());
+						holder.date.setText("Дата " + model.getDate());
 						holder.resultPoint.setText("Результат: " + model.getResultPoint());
 					}
 

@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -73,11 +74,16 @@ public class MonthPointFragment extends Fragment {
 				.build();
 
 		FirebaseRecyclerAdapter<Users, UsersViewHolder> adapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(options) {
+			@SuppressLint("SetTextI18n")
 			@Override
 			protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
 				holder.username.setText(model.getAlias());
 				holder.userfullname.setText(model.getFullname());
-				holder.monthPoint.setText(String.valueOf(model.getResultMonthPoint()));
+				if(model.getResultMonthPoint() != null) {
+					holder.monthPoint.setText(String.valueOf(model.getResultMonthPoint()));
+				} else {
+					holder.monthPoint.setText(0.0 + "");
+				}
 				Picasso.get().load(model.getUserpic()).into(holder.userpic);
 			}
 
