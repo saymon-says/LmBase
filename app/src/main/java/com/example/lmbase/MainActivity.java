@@ -20,7 +20,6 @@ import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,20 +40,25 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
+	private final static String WORKSHEET_OPEN = "1";
 	private DrawerLayout drawerLayout;
+	private NavigationView navigationView;
 	private CircleImageView navUserpic;
 	private TextView navUserName, ordersCount, deliveryCount, buyoutCount,
 			pointCount, fifteenExactTimeToday, sixtyExactTimeToday, upFineToday;
 	private EditText fifteenExactTime, sixtyExactTime, fines;
-
 	private FirebaseAuth mAuth;
-	private DatabaseReference pointerRef, usersRef, ordersCountRef, statisticRef;
-	private String currentUserId, currentDateOrderList;
+	private DatabaseReference pointerRef;
+	private DatabaseReference usersRef;
+	private DatabaseReference statisticRef, ordersCountRef;
+	private String currentUserId, currentDateOrderList, openDateWorkShift;
 	private Integer fifteenTime = 0;
 	private Integer sixtyTime = 0;
 	private Integer finesToday = 0;
 	private Integer resultBuyout = 0, countOfOrders = 1, resultDelivery = 0;
 	private double pointFinesToday = 0.0, resultPoint = 0.0;
+//	private String WORKSHEET_OPEN_TODAY = "0";
+//	private String WORKSHEET_OPEN_DATE_TODAY = "0";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
+		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
 		Calendar calendarDate = Calendar.getInstance();
-		final SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		@SuppressLint("SimpleDateFormat") final SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		pointerRef = FirebaseDatabase.getInstance().getReference().child("Pointers List");
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 		statisticRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
-		NavigationView navigationView = findViewById(R.id.nav);
+		navigationView = findViewById(R.id.nav);
 		ordersCount = findViewById(R.id.text_orders_count);
 		deliveryCount = findViewById(R.id.text_delivery_count);
 		buyoutCount = findViewById(R.id.text_bayout_count);
@@ -101,66 +105,52 @@ public class MainActivity extends AppCompatActivity {
 		pointersToday.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+//				if (WORKSHEET_OPEN_TODAY.equals("1") && WORKSHEET_OPEN_DATE_TODAY.equals("1")) {
 				Intent sendOrderList = new Intent(MainActivity.this, OrderListActivity.class);
 				startActivity(sendOrderList);
+//				} else if (WORKSHEET_OPEN_TODAY.equals("1") && WORKSHEET_OPEN_DATE_TODAY.equals("0")){
+//					Toast.makeText(MainActivity.this, "Закрой старую смену!", Toast.LENGTH_SHORT).show();
+//				}
 			}
 		});
+
+//		ShowExistsWorkShift();
 
 		exactTime.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+//				if (WORKSHEET_OPEN_TODAY.equals("1")) {
 				ShowDialogExactTime();
+//				} else {
+//					Toast.makeText(MainActivity.this, "Смена закрыта!", Toast.LENGTH_SHORT).show();
+//				}
 			}
 		});
 
 		fineToday.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+//				if (WORKSHEET_OPEN_TODAY.equals("1")) {
 				ShowDialogFine();
+//				} else {
+//					Toast.makeText(MainActivity.this, "Смена закрыта!", Toast.LENGTH_SHORT).show();
+//				}
 			}
 		});
 
-		statisticRef.addValueEventListener(new ValueEventListener() {
-			@SuppressLint("SetTextI18n")
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.child(currentDateOrderList).exists()) {
-					fifteenTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("15").getValue()).toString());
-					fifteenExactTimeToday.setText(fifteenTime + "");
-
-					sixtyTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("60").getValue()).toString());
-					sixtyExactTimeToday.setText(sixtyTime + "");
-
-					finesToday = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("fines").getValue()).toString());
-					upFineToday.setText(finesToday + "");
-				} else {
-					fifteenExactTimeToday.setText("0");
-					sixtyExactTimeToday.setText("0");
-					upFineToday.setText("0");
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
 
 		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
 					if (dataSnapshot.hasChild("fullname")) {
-						String fullname = dataSnapshot.child("fullname").getValue().toString();
+						String fullname = Objects.requireNonNull(dataSnapshot.child("fullname").getValue()).toString();
 						navUserName.setText(fullname);
 					} else {
 						Toast.makeText(MainActivity.this, "Нужно добавить ФИО", Toast.LENGTH_LONG).show();
 					}
 					if (dataSnapshot.hasChild("userpic")) {
-						String userPic = dataSnapshot.child("userpic").getValue().toString();
+						String userPic = Objects.requireNonNull(dataSnapshot.child("userpic").getValue()).toString();
 						Picasso.get().load(userPic).placeholder(R.drawable.anonymous).into(navUserpic);
 					} else {
 						Toast.makeText(MainActivity.this, "Добавь аватар", Toast.LENGTH_LONG).show();
@@ -174,41 +164,6 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		ordersCountRef.addValueEventListener(new ValueEventListener() {
-			@SuppressLint("SetTextI18n")
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.exists()) {
-					for (DataSnapshot ds : dataSnapshot.getChildren()) {
-						Map<String, Object> map = (Map<String, Object>) ds.getValue();
-						Object delivery = map.get("delivery");
-						int dValue = Integer.parseInt(String.valueOf(delivery));
-						Object buyout = map.get("point");
-						int bValue = Integer.parseInt(String.valueOf(buyout));
-						resultDelivery += dValue;
-						resultBuyout += bValue;
-						deliveryCount.setText(String.valueOf(resultDelivery));
-						buyoutCount.setText(String.valueOf(resultBuyout));
-					}
-					pointFinesToday = (2.5 - finesToday) * 7;
-					resultPoint = resultBuyout + resultDelivery + pointFinesToday;
-					pointCount.setText(String.valueOf(resultPoint));
-
-					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
-					ordersCount.setText(countOfOrders + "");
-				} else {
-					ordersCount.setText("0");
-					pointCount.setText("17,5");
-					buyoutCount.setText("0");
-					deliveryCount.setText("0");
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
 
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
@@ -219,9 +174,43 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
+//	private void ShowExistsWorkShift() {
+//		usersRef.addValueEventListener(new ValueEventListener() {
+//			@Override
+//			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//				if (dataSnapshot.child(currentUserId).child("workshift_exist").exists()) {
+//					String existWorkShift = Objects.requireNonNull(dataSnapshot.child(currentUserId)
+//							.child("workshift_exist").getValue()).toString();
+//					openDateWorkShift = Objects.requireNonNull(dataSnapshot.child(currentUserId)
+//							.child("dateOpenWorkShift").getValue()).toString();
+//					if (existWorkShift.equals(WORKSHEET_OPEN) && openDateWorkShift.equals(currentDateOrderList)) {
+//						WORKSHEET_OPEN_TODAY = "1";
+//						WORKSHEET_OPEN_DATE_TODAY = "1";
+//						navigationView.getMenu().findItem(R.id.nav_add_workshift).setTitle("Закрыть смену");
+//					} else if (existWorkShift.equals(WORKSHEET_OPEN)) {
+//						WORKSHEET_OPEN_TODAY = "1";
+//						WORKSHEET_OPEN_DATE_TODAY = "0";
+//						navigationView.getMenu().findItem(R.id.nav_add_workshift).setTitle("Закрыть смену");
+//						Toast.makeText(MainActivity.this, "Сначала закрой старую смену!", Toast.LENGTH_SHORT).show();
+//					}
+//				} else {
+//					WORKSHEET_OPEN_TODAY = "0";
+//					WORKSHEET_OPEN_DATE_TODAY = "0";
+//					navigationView.getMenu().findItem(R.id.nav_add_workshift).setTitle("Открыть смену");
+//				}
+//			}
+//
+//			@Override
+//			public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//			}
+//		});
+//
+//	}
+
 	private void ShowDialogFine() {
 		final AlertDialog.Builder fine = new AlertDialog.Builder(this);
-		View mView = getLayoutInflater().inflate(R.layout.dialog_fine, null);
+		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_fine, null);
 
 		fines = mView.findViewById(R.id.text_fine_today);
 		fines.setText(String.valueOf(finesToday));
@@ -259,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private void ShowDialogExactTime() {
 		final AlertDialog.Builder exactTime = new AlertDialog.Builder(this);
-		View mView = getLayoutInflater().inflate(R.layout.dialog_exact_time, null);
+		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_exact_time, null);
 
 		fifteenExactTime = mView.findViewById(R.id.exact_time_fifteen);
 		sixtyExactTime = mView.findViewById(R.id.exact_time_sixty);
@@ -315,6 +304,80 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		ShowAllDataOpenedWorkShift();
+	}
+
+	private void ShowAllDataOpenedWorkShift() {
+		ordersCountRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					for (DataSnapshot ds : dataSnapshot.getChildren()) {
+						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						assert map != null;
+						Object delivery = map.get("delivery");
+						int dValue = Integer.parseInt(String.valueOf(delivery));
+						Object buyout = map.get("point");
+						int bValue = Integer.parseInt(String.valueOf(buyout));
+						resultDelivery += dValue;
+						resultBuyout += bValue;
+						deliveryCount.setText(String.valueOf(resultDelivery));
+						buyoutCount.setText(String.valueOf(resultBuyout));
+					}
+					pointFinesToday = (2.5 - finesToday) * 7;
+					resultPoint = resultBuyout + resultDelivery + pointFinesToday;
+					pointCount.setText(String.valueOf(resultPoint));
+
+					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
+					ordersCount.setText(countOfOrders + "");
+				} else {
+					ordersCount.setText("0");
+					pointCount.setText("0");
+					buyoutCount.setText("0");
+					deliveryCount.setText("0");
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+		statisticRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.child(currentDateOrderList).exists()) {
+					fifteenTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("15").getValue()).toString());
+					fifteenExactTimeToday.setText(fifteenTime + "");
+
+					sixtyTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("60").getValue()).toString());
+					sixtyExactTimeToday.setText(sixtyTime + "");
+
+					finesToday = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("fines").getValue()).toString());
+					upFineToday.setText(finesToday + "");
+				} else {
+					fifteenExactTimeToday.setText("0");
+					sixtyExactTimeToday.setText("0");
+					upFineToday.setText("0");
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
+	}
+
+	@Override
 	public void onBackPressed() {
 		if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
 			drawerLayout.closeDrawer(GravityCompat.START);
@@ -322,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void CheckUserInBase() {
-		final String currentUserId = mAuth.getCurrentUser().getUid();
+		final String currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		usersRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -354,8 +417,15 @@ public class MainActivity extends AppCompatActivity {
 	private void UserMenuSelector(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.nav_add_workshift:
+//				switch (WORKSHEET_OPEN_TODAY) {
+//					case "0":
+//						ShowDialogAddWorkShift();
+//						break;
+//					case "1":
+//						ShowDialogCancelWorkShift();
+//						break;
+//				}
 				SendUserToOrderList();
-				Toast.makeText(this, "Поехали...", Toast.LENGTH_SHORT).show();
 				break;
 
 			case R.id.nav_for_list:
@@ -363,17 +433,25 @@ public class MainActivity extends AppCompatActivity {
 				break;
 
 			case R.id.nav_for_workshift:
-				UpdateDataBaseWorkShift();
+				SendUserToWorkShiftActivity();
 				break;
 
 			case R.id.nav_statistics:
 				SendUserToStatisticsActivity();
 				break;
 			case R.id.nav_update:
+//				switch (WORKSHEET_OPEN_TODAY) {
+//					case "0":
+//						Toast.makeText(this, "Пока нечего обновлять", Toast.LENGTH_SHORT).show();
+//						break;
+//					case "1":
 				UpdateDataBaseStatistics();
 				UpdateDataBaseUsers();
+				UpdateDataBaseWorkShift();
 				SendUserToMainActivity();
 				Toast.makeText(this, "Обновлено", Toast.LENGTH_SHORT).show();
+//						break;
+//				}
 				break;
 
 			case R.id.nav_for_google_maps:
@@ -391,6 +469,78 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+//	private void ShowDialogCancelWorkShift() {
+//		final AlertDialog.Builder cancel = new AlertDialog.Builder(this);
+//		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_cancel_workshift, null);
+//
+//		Button cancelWorkShift = mView.findViewById(R.id.accept_button);
+//		Button cancelDialog = mView.findViewById(R.id.cancel_button);
+//		cancel.setView(mView);
+//
+//		final AlertDialog alertDialog = cancel.create();
+//		alertDialog.setCanceledOnTouchOutside(false);
+//		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//
+//		cancelDialog.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				Toast.makeText(MainActivity.this, "Да! Поработай еще немного!", Toast.LENGTH_SHORT).show();
+//				alertDialog.dismiss();
+//			}
+//		});
+//
+//		cancelWorkShift.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+////				UpdateDataBaseStatistics();
+////				UpdateDataBaseUsers();
+//				UpdateDataBaseWorkShift();
+//				HashMap statMap = new HashMap();
+//				statMap.put("workshift_exist", "0");
+//				statMap.put("resultPointToday", 0);
+//				usersRef.child(currentUserId).updateChildren(statMap);
+//				alertDialog.dismiss();
+//			}
+//		});
+//
+//		alertDialog.show();
+//	}
+
+//	private void ShowDialogAddWorkShift() {
+//		final AlertDialog.Builder add = new AlertDialog.Builder(this);
+//		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_add_workshift, null);
+//
+//		Button addWorkshift = mView.findViewById(R.id.accept_button);
+//		Button cancelDialog = mView.findViewById(R.id.cancel_button);
+//		add.setView(mView);
+//
+//		final AlertDialog alertDialog = add.create();
+//		alertDialog.setCanceledOnTouchOutside(false);
+//		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//
+//		cancelDialog.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				Toast.makeText(MainActivity.this, "Да ничего страшного, возвращайся!", Toast.LENGTH_SHORT).show();
+//				alertDialog.dismiss();
+//			}
+//		});
+//
+//		addWorkshift.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				HashMap statMap = new HashMap();
+//				statMap.put("workshift_exist", "1");
+//				statMap.put("dateOpenWorkShift", currentDateOrderList);
+//				usersRef.child(currentUserId).updateChildren(statMap);
+//				Toast.makeText(MainActivity.this, "Поехали!", Toast.LENGTH_SHORT).show();
+//				alertDialog.dismiss();
+//			}
+//		});
+//
+//		alertDialog.show();
+//	}
+
 	private void SendUserToMapsActivity() {
 		Intent mapsIntent = new Intent(this, MapsActivity.class);
 		startActivity(mapsIntent);
@@ -406,6 +556,7 @@ public class MainActivity extends AppCompatActivity {
 							.child("resultPoint").getValue()).toString());
 					for (DataSnapshot ds : dataSnapshot.getChildren()) {
 						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						assert map != null;
 						Object resultPoint = map.get("resultPoint");
 						double rValue = Double.parseDouble(String.valueOf(resultPoint));
 						resultPointMonth += rValue;
@@ -414,11 +565,7 @@ public class MainActivity extends AppCompatActivity {
 					statMap.put("resultMonthPoint", resultPointMonth);
 					statMap.put("resultPointToday", resultPointToday);
 					statMap.put("currentDateOrderList", currentDateOrderList);
-					usersRef.child(currentUserId).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
-						@Override
-						public void onSuccess(Object o) {
-						}
-					});
+					usersRef.child(currentUserId).updateChildren(statMap);
 				} else {
 					Toast.makeText(MainActivity.this, "Пока нет ниче", Toast.LENGTH_SHORT).show();
 				}
@@ -446,11 +593,7 @@ public class MainActivity extends AppCompatActivity {
 		statMap.put("15", fifteenTime);
 		statMap.put("60", sixtyTime);
 		statMap.put("fines", finesToday);
-		statisticRef.child(currentDateOrderList).updateChildren(statMap).addOnSuccessListener(new OnSuccessListener() {
-			@Override
-			public void onSuccess(Object o) {
-			}
-		});
+		statisticRef.child(currentDateOrderList).updateChildren(statMap);
 	}
 
 	private void SendUserToStatisticsActivity() {
@@ -465,21 +608,15 @@ public class MainActivity extends AppCompatActivity {
 
 	private void UpdateDataBaseWorkShift() {
 
-		String resultPoint = pointCount.getText().toString();
 		HashMap workshiftMap = new HashMap();
 		workshiftMap.put("date", currentDateOrderList);
 		workshiftMap.put("resultPoint", resultPoint);
-		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap).addOnSuccessListener(new OnSuccessListener() {
-			@Override
-			public void onSuccess(Object o) {
-				SendUserToWorkshiftActivity();
-			}
-		});
+		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap);
 	}
 
-	private void SendUserToWorkshiftActivity() {
-		Intent workshiiftIntent = new Intent(this, WorkShiftListActivity.class);
-		startActivity(workshiiftIntent);
+	private void SendUserToWorkShiftActivity() {
+		Intent workshiftIntent = new Intent(this, WorkShiftListActivity.class);
+		startActivity(workshiftIntent);
 	}
 
 	private void SendUserToUserListActivity() {
@@ -488,7 +625,11 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void SendUserToOrderList() {
+//		if (WORKSHEET_OPEN_TODAY.equals("1")) {
 		Intent orderListIntent = new Intent(this, OrderListActivity.class);
 		startActivity(orderListIntent);
+//		} else {
+//			Toast.makeText(MainActivity.this, "Смена закрыта!", Toast.LENGTH_SHORT).show();
+//		}
 	}
 }
