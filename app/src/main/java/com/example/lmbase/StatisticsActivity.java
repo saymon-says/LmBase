@@ -35,7 +35,7 @@ public class StatisticsActivity extends AppCompatActivity {
 	private TextView cashToday, monthCash, monthCashVariable, monthRating, monthCashTime, monthCashSurcharge;
 	private Float tax = 0.87f, pointValue = 13.5f;
 	private Integer countOfOrders, workShiftValue, workShiftCounts,
-			workShiftAdded, beneton, benetonSurcharges, addedWorkShiftSurcharges, allSurcharges;
+			workShiftAdded = 0, beneton = 0, benetonSurcharges, addedWorkShiftSurcharges, allSurcharges;
 	private double reitUserMonth;
 
 
@@ -89,13 +89,16 @@ public class StatisticsActivity extends AppCompatActivity {
 					reitUserMonth = Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("reit").getValue()).toString());
 					workShiftCounts = Integer.parseInt(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
 					workShiftValue = 6000 / workShiftCounts;
-					beneton = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("beneton").getValue()).toString());
-					workShiftAdded = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("addedWorkshift").getValue()).toString());
-
+					if (dataSnapshot.hasChild("beneton")) {
+						beneton = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("beneton").getValue()).toString());
+					}
+					if (dataSnapshot.hasChild("addedWorkshift")) {
+						workShiftAdded = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("addedWorkshift").getValue()).toString());
+					}
 					addedWorkShiftSurcharges = workShiftAdded * workShiftValue * 2;
 					benetonSurcharges = beneton * 200;
 					allSurcharges = addedWorkShiftSurcharges + benetonSurcharges;
-					monthCashSurcharge.setText( allSurcharges + " руб");
+					monthCashSurcharge.setText(allSurcharges + " руб");
 				} else {
 					monthCashSurcharge.setText(0.00 + "");
 					Toast.makeText(StatisticsActivity.this, "Nothing yet..", Toast.LENGTH_SHORT).show();

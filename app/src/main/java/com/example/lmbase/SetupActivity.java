@@ -174,7 +174,7 @@ public class SetupActivity extends AppCompatActivity {
 		} else {
 
 			int userWorkshiftCountsInt = Integer.parseInt(userWorkshiftCounts);
-			int userReitCountsInt = Integer.parseInt(userReitCounts);
+			double userReitCountsInt = Double.parseDouble(userReitCounts);
 
 			progressDialog.setTitle("Сохраняемся..");
 			progressDialog.setMessage("Падажжиии...Ща все будет!");

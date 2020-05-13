@@ -81,7 +81,7 @@ public class TodayPointFragment extends Fragment {
 			@SuppressLint("SetTextI18n")
 			@Override
 			protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
-				holder.username.setText(model.getAlias());
+				holder.username.setText("@" + model.getAlias());
 				holder.userfullname.setText(model.getFullname());
 				if(model.getCurrentDateOrderList() == null) {
 					holder.todayPoint.setText(0.0 + "");

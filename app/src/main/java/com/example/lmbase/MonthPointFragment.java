@@ -77,7 +77,7 @@ public class MonthPointFragment extends Fragment {
 			@SuppressLint("SetTextI18n")
 			@Override
 			protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
-				holder.username.setText(model.getAlias());
+				holder.username.setText("@" + model.getAlias());
 				holder.userfullname.setText(model.getFullname());
 				if(model.getResultMonthPoint() != null) {
 					holder.monthPoint.setText(String.valueOf(model.getResultMonthPoint()));
