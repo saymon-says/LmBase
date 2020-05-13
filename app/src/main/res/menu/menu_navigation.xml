@@ -29,7 +29,7 @@
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/settings"
-                android:title="Настройки" />
+                android:title="Коррекция доплат" />
             <item
                 android:id="@+id/nav_for_list"
                 android:icon="@drawable/research"

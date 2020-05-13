@@ -34,7 +34,8 @@ public class StatisticsActivity extends AppCompatActivity {
 	private String currentDateOrderList;
 	private TextView cashToday, monthCash, monthCashVariable, monthRating, monthCashTime, monthCashSurcharge;
 	private Float tax = 0.87f, pointValue = 13.5f;
-	private Integer countOfOrders, workShiftValue, workShiftCounts;
+	private Integer countOfOrders, workShiftValue, workShiftCounts,
+			workShiftAdded, beneton, benetonSurcharges, addedWorkShiftSurcharges, allSurcharges;
 	private double reitUserMonth;
 
 
@@ -81,13 +82,22 @@ public class StatisticsActivity extends AppCompatActivity {
 		});
 
 		usersRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
 					reitUserMonth = Double.parseDouble(Objects.requireNonNull(dataSnapshot.child("reit").getValue()).toString());
 					workShiftCounts = Integer.parseInt(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
 					workShiftValue = 6000 / workShiftCounts;
+					beneton = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("beneton").getValue()).toString());
+					workShiftAdded = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("addedWorkshift").getValue()).toString());
+
+					addedWorkShiftSurcharges = workShiftAdded * workShiftValue * 2;
+					benetonSurcharges = beneton * 200;
+					allSurcharges = addedWorkShiftSurcharges + benetonSurcharges;
+					monthCashSurcharge.setText( allSurcharges + " руб");
 				} else {
+					monthCashSurcharge.setText(0.00 + "");
 					Toast.makeText(StatisticsActivity.this, "Nothing yet..", Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -150,7 +160,7 @@ public class StatisticsActivity extends AppCompatActivity {
 					monthCashTime.setText(resultExactTime + " руб");
 
 
-					double a = (resultPointMonth * reitUserMonth * pointValue + workShiftValue * countOfOrders - 2000 + resultExactTime) * tax;
+					double a = (resultPointMonth * reitUserMonth * pointValue + workShiftValue * countOfOrders - 2000 + resultExactTime + allSurcharges) * tax;
 					double newDoubleA = new BigDecimal(a).setScale(2, RoundingMode.UP).doubleValue();
 					monthCash.setText(newDoubleA + " руб");
 
@@ -167,7 +177,6 @@ public class StatisticsActivity extends AppCompatActivity {
 					monthRating.setText("0");
 					monthCashTime.setText("0 руб");
 					cashToday.setText("0 руб");
-					monthCashSurcharge.setText("0 руб");
 				}
 			}
 

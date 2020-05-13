@@ -51,7 +51,7 @@ public class SetupActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_setup);
 
 		userAlias = findViewById(R.id.user_alias);
-		userFullname = findViewById(R.id.user_Fullname);
+		userFullname = findViewById(R.id.user_fullname);
 		workShift = findViewById(R.id.settings_workshift_count);
 		reitUser = findViewById(R.id.settings_reit);
 		Button saveButton = findViewById(R.id.button_save_setup);

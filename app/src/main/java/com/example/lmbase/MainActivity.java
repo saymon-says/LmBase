@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
 	private CircleImageView navUserpic;
 	private TextView navUserName, ordersCount, deliveryCount, buyoutCount,
 			pointCount, fifteenExactTimeToday, sixtyExactTimeToday, upFineToday;
-	private EditText fifteenExactTime, sixtyExactTime, fines;
+	private ImageButton settingProfile;
+	private EditText fifteenExactTime, sixtyExactTime, fines, benetonCount, workshiftAdd;
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef;
 	private DatabaseReference usersRef;
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 	private Integer sixtyTime = 0;
 	private Integer finesToday = 0;
 	private Integer resultBuyout = 0, countOfOrders = 1, resultDelivery = 0;
+	private Integer benetonCounts = 0;
+	private Integer addedWorkshifts = 0;
 	private double pointFinesToday = 0.0, resultPoint = 0.0;
 //	private String WORKSHEET_OPEN_TODAY = "0";
 //	private String WORKSHEET_OPEN_DATE_TODAY = "0";
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
 		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
 		navUserpic = navView.findViewById(R.id.profile_image);
+		settingProfile = navView.findViewById(R.id.nav_setting_profile);
 
 		Toolbar mToolbar = findViewById(R.id.main_page_toolbar);
 		setSupportActionBar(mToolbar);
@@ -137,6 +142,14 @@ public class MainActivity extends AppCompatActivity {
 //				}
 			}
 		});
+
+		settingProfile.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SendUserToSettingsActivity();
+			}
+		});
+
 		statisticRef.addValueEventListener(new ValueEventListener() {
 			@SuppressLint("SetTextI18n")
 			@Override
@@ -207,6 +220,12 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
+					if (dataSnapshot.hasChild("beneton")) {
+						benetonCounts = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("beneton").getValue()).toString());
+					}
+					if (dataSnapshot.hasChild("addedWorkshift")) {
+						addedWorkshifts = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child("addedWorkshift").getValue()).toString());
+					}
 					if (dataSnapshot.hasChild("fullname")) {
 						String fullname = Objects.requireNonNull(dataSnapshot.child("fullname").getValue()).toString();
 						navUserName.setText(fullname);
@@ -524,7 +543,7 @@ public class MainActivity extends AppCompatActivity {
 				break;
 
 			case R.id.nav_settings:
-				SendUserToSettingsActivity();
+				ShowDialogSurchargesUser();
 				break;
 
 			case R.id.nav_logout:
@@ -532,6 +551,46 @@ public class MainActivity extends AppCompatActivity {
 				SendUserToLoginActivity();
 				break;
 		}
+	}
+
+	@SuppressLint("SetTextI18n")
+	private void ShowDialogSurchargesUser() {
+		final AlertDialog.Builder surcharges = new AlertDialog.Builder(this);
+		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_surcharges_user, null);
+
+		benetonCount = mView.findViewById(R.id.beneton_counts);
+		workshiftAdd = mView.findViewById(R.id.workshift_added);
+		benetonCount.setText(benetonCounts + "");
+		workshiftAdd.setText(addedWorkshifts + "");
+
+		Button addSurcharges = mView.findViewById(R.id.accept);
+		Button cancelDialog = mView.findViewById(R.id.cancel);
+		surcharges.setView(mView);
+
+		final AlertDialog alertDialog = surcharges.create();
+		alertDialog.setCanceledOnTouchOutside(false);
+		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+		cancelDialog.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(MainActivity.this, "Бывает", Toast.LENGTH_SHORT).show();
+				alertDialog.dismiss();
+			}
+		});
+
+		addSurcharges.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				benetonCounts = Integer.parseInt(benetonCount.getText().toString());
+				addedWorkshifts = Integer.valueOf(workshiftAdd.getText().toString());
+				UpdateDataBaseUsers();
+				Toast.makeText(MainActivity.this, "Казна пополняется, милорд", Toast.LENGTH_SHORT).show();
+				alertDialog.dismiss();
+			}
+		});
+
+		alertDialog.show();
 	}
 
 //	private void ShowDialogCancelWorkShift() {
@@ -630,6 +689,8 @@ public class MainActivity extends AppCompatActivity {
 					statMap.put("resultMonthPoint", resultPointMonth);
 					statMap.put("resultPointToday", resultPointToday);
 					statMap.put("currentDateOrderList", currentDateOrderList);
+					statMap.put("beneton", benetonCounts);
+					statMap.put("addedWorkshift", addedWorkshifts);
 					usersRef.child(currentUserId).updateChildren(statMap);
 				} else {
 					Toast.makeText(MainActivity.this, "Пока нет ниче", Toast.LENGTH_SHORT).show();

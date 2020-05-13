@@ -30,26 +30,44 @@
                 app:civ_border_color="#FF000000"
                 app:civ_border_width="2dp" />
 
+            <TextView
+                android:id="@+id/text_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/settings_userpic"
+                android:layout_marginTop="35dp"
+                android:gravity="center_horizontal"
+                android:text="Введите псевдоним" />
+
             <EditText
                 android:id="@+id/settings_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/settings_userpic"
+                android:layout_below="@id/text_username"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="40dp"
                 android:background="@drawable/input"
                 android:hint="Псевдоним"
                 android:padding="10dp"
                 android:textAlignment="center" />
 
+            <TextView
+                android:id="@+id/text_fullname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/settings_username"
+                android:layout_marginTop="15dp"
+                android:gravity="center_horizontal"
+                android:text="Введите ФИО" />
+
             <EditText
                 android:id="@+id/settings_fullname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/settings_username"
+                android:layout_below="@id/text_fullname"
                 android:layout_marginLeft="40dp"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="5dp"
                 android:layout_marginRight="40dp"
                 android:background="@drawable/input"
                 android:hint="Ф.И.О."
@@ -63,32 +81,60 @@
                 android:layout_below="@id/settings_fullname"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/settings_workshift_count"
-                    android:layout_width="155dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginTop="35dp"
-                    android:textAlignment="center"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/input"
-                    android:hint="Смены в месяце"
-                    android:inputType="number"
-                    android:padding="10dp" />
+                    android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/settings_reit"
-                    android:layout_width="80dp"
+                    <TextView
+                        android:id="@+id/text_workshift"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginTop="35dp"
+                        android:gravity="center_horizontal"
+                        android:text="Стандартное число смен" />
+
+                    <EditText
+                        android:id="@+id/settings_workshift_count"
+                        android:layout_width="155dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/input"
+                        android:hint="Смены в месяце"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="35dp"
-                    android:layout_marginEnd="40dp"
-                    android:background="@drawable/input"
-                    android:hint="ТБ"
-                    android:inputType="numberDecimal"
-                    android:padding="10dp"
-                    android:textAlignment="center" />
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:id="@+id/text_reit"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="35dp"
+                        android:gravity="center_horizontal"
+                        android:text="Введите ТБ" />
+
+                    <EditText
+                        android:id="@+id/settings_reit"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="40dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/input"
+                        android:hint="ТБ"
+                        android:inputType="numberDecimal"
+                        android:padding="10dp"
+                        android:textAlignment="center" />
+                </LinearLayout>
             </LinearLayout>
 
             <Button
@@ -97,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/workshift_settings"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="55dp"
+                android:layout_marginTop="45dp"
                 android:background="@drawable/button"
                 android:text="Обновить" />
 
