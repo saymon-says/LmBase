@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="3dp"
-    app:cardElevation="3dp"
-    app:cardUseCompatPadding="true"
-    >
+    app:cardCornerRadius="10dp"
+    app:cardElevation="1dp"
+    app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:id="@+id/orerder_hats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/secondaryColor"
         android:padding="5dp">
 
         <ImageView
@@ -30,8 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="5dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/image_order"
             android:fontFamily="@font/roboto_medium"
             android:text="999999"

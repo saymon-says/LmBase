@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -100,6 +99,17 @@ public class OrderListActivity extends AppCompatActivity {
 				holder.bayoutOrder.setText("Выкуп: " + model.getBayoutOrder());
 				holder.pointOrder.setText("БВ :" + model.getPoint());
 				holder.deliveryOrder.setText("БД :" + model.getDelivery());
+				switch (model.getTypeDelivery()) {
+					case "usually":
+						holder.orderImage.setImageResource(R.drawable.lamoda_order);
+						break;
+					case "partner":
+						holder.orderImage.setImageResource(R.drawable.partner_order);
+						break;
+					case "economy":
+						holder.orderImage.setImageResource(R.drawable.economy_order);
+						break;
+				}
 
 				holder.itemView.setOnClickListener(new View.OnClickListener() {
 					@Override
@@ -116,19 +126,24 @@ public class OrderListActivity extends AppCompatActivity {
 			@Override
 			public OrdersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 				View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_list, parent, false);
-				OrdersViewHolder ordersHolder = new OrdersViewHolder(view);
-				return ordersHolder;
+				return new OrdersViewHolder(view);
 			}
 		};
 		listOrders.setAdapter(adapter);
 		adapter.startListening();
 	}
 
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
+
 	public static class OrdersViewHolder extends RecyclerView.ViewHolder {
 		TextView numberOrder, priceOrder, bayoutOrder, pointOrder, deliveryOrder;
 		ImageView orderImage;
 
-		public OrdersViewHolder(@NonNull View itemView) {
+		OrdersViewHolder(@NonNull View itemView) {
 			super(itemView);
 			numberOrder = itemView.findViewById(R.id.number_order);
 			priceOrder = itemView.findViewById(R.id.price_order);
@@ -137,11 +152,5 @@ public class OrderListActivity extends AppCompatActivity {
 			deliveryOrder = itemView.findViewById(R.id.delivery_order);
 			orderImage = itemView.findViewById(R.id.image_order);
 		}
-	}
-
-	@Override
-	public void onBackPressed() {
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
 	}
 }

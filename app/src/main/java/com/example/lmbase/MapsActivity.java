@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -50,33 +51,27 @@ import java.util.Objects;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+	private static final int DEFAULT_ZOOM = 10;
+	private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+	// Keys for storing activity state.
+	private static final String KEY_CAMERA_POSITION = "camera_position";
+	private static final String KEY_LOCATION = "location";
+	// A default location (Moscow, Russia) and default zoom to use when location permission is
+	// not granted.
+	private final LatLng mDefaultLocation = new LatLng(55.751590, 37.617832);
 	private GoogleMap mMap;
-	private CameraPosition mCameraPosition;
 	private Button addMarker;
 	private String finalAddress, finalRefinement, finalComment;
 	private EditText addressClient, commentClient, refinementClient;
 	private DatabaseReference troubleClient;
 	private String currentUserId;
-	private FirebaseAuth mAuth;
 	private Double clientLatitude, clientLongitude;
-
 	// The entry point to the Fused Location Provider.
 	private FusedLocationProviderClient mFusedLocationProviderClient;
-
-	// A default location (Moscow, Russia) and default zoom to use when location permission is
-	// not granted.
-	private final LatLng mDefaultLocation = new LatLng(55.752554, 37.618923);
-	private static final int DEFAULT_ZOOM = 10;
-	private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 	private boolean mLocationPermissionGranted;
-
 	// The geographical location where the device is currently located. That is, the last-known
 	// location retrieved by the Fused Location Provider.
 	private Location mLastKnownLocation;
-
-	// Keys for storing activity state.
-	private static final String KEY_CAMERA_POSITION = "camera_position";
-	private static final String KEY_LOCATION = "location";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +79,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		setContentView(R.layout.activity_maps);
 
 		addMarker = findViewById(R.id.add_marker);
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		troubleClient = FirebaseDatabase.getInstance().getReference().child("Trouble Client List");
 
 		// Retrieve location and camera position from saved instance state.
 		if (savedInstanceState != null) {
 			mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-			mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+			CameraPosition mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
 		}
 
 		// Construct a FusedLocationProviderClient.
@@ -99,6 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		// Obtain the SupportMapFragment and get notified when the map is ready to be used.
 		SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
+		assert mapFragment != null;
 		mapFragment.getMapAsync(this);
 	}
 
@@ -106,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	 * Saves the state of the map when the activity is paused.
 	 */
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	protected void onSaveInstanceState(@NonNull Bundle outState) {
 		if (mMap != null) {
 			outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
 			outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
@@ -166,7 +162,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	private void ShowAddProblemClientMarkerPopUp() {
 
 		final AlertDialog.Builder client = new AlertDialog.Builder(this);
-		View mView = getLayoutInflater().inflate(R.layout.add_marker_popup, null);
+		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.add_marker_popup, null);
 		addressClient = mView.findViewById(R.id.client_address);
 		refinementClient = mView.findViewById(R.id.client_address_refinement);
 		commentClient = mView.findViewById(R.id.client_comment);
@@ -231,6 +227,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 				if (dataSnapshot.exists()) {
 					for (DataSnapshot ds : dataSnapshot.getChildren()) {
 						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						assert map != null;
 						Object clientLat = map.get("clientLatitude");
 						Object clientLong = map.get("clientLongitude");
 						Object titleClient = map.get("clientAddress");
@@ -287,7 +284,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 				});
 			}
 		} catch (SecurityException e) {
-			Log.e("Exception: %s", e.getMessage());
+			Log.e("Exception: %s", Objects.requireNonNull(e.getMessage()));
 		}
 	}
 
@@ -319,13 +316,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 										   @NonNull String[] permissions,
 										   @NonNull int[] grantResults) {
 		mLocationPermissionGranted = false;
-		switch (requestCode) {
-			case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-				// If request is cancelled, the result arrays are empty.
-				if (grantResults.length > 0
-						&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-					mLocationPermissionGranted = true;
-				}
+		if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+			if (grantResults.length > 0
+					&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				mLocationPermissionGranted = true;
 			}
 		}
 		updateLocationUI();
@@ -349,31 +343,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 				getLocationPermission();
 			}
 		} catch (SecurityException e) {
-			Log.e("Exception: %s", e.getMessage());
+			Log.e("Exception: %s", Objects.requireNonNull(e.getMessage()));
 		}
 	}
-
-//mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(55.775043, 37.629152))
-//				.title("15 кв, по 3 позиции!")).setSnippet("Выдавать по 3 позиции! Потому что меряет пол часа 3 вещи");
-//		mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(55.774444, 37.641755))
-//				.title("1203-1266 кв, по 3 позиции!!"));
-//
-//		mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(55.823665, 37.658606))
-//				.title("287 кв, не ездить!"));
-//
-//		mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(55.829505, 37.596218))
-//				.title("78 кв, по 3 позиции!"));
-//
-//		mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(55.755860, 37.403027))
-//				.title("176 кв, по 3 позиции!"));
-//
-//		mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(55.741313, 37.417692))
-//				.title("144 кв")).setSnippet("Выдавать только по 3 позиции");
-//	}
 }

@@ -45,7 +45,7 @@ public class StatisticsActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_statistics);
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		Toolbar mToolbar = findViewById(R.id.statistics_navbar);
@@ -54,7 +54,7 @@ public class StatisticsActivity extends AppCompatActivity {
 		getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
 
 		FirebaseAuth mAuth = FirebaseAuth.getInstance();
-		String currentUserId = mAuth.getCurrentUser().getUid();
+		String currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		fullMonthRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
 
@@ -106,10 +106,10 @@ public class StatisticsActivity extends AppCompatActivity {
 				if (dataSnapshot.exists()) {
 					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
 					if (dataSnapshot.child(currentDateOrderList).exists()) {
-						int exactFifteen = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("15").getValue().toString());
-						int exactSixty = Integer.parseInt(dataSnapshot.child(currentDateOrderList).child("60").getValue().toString());
+						int exactFifteen = Integer.parseInt(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList).child("15").getValue()).toString());
+						int exactSixty = Integer.parseInt(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList).child("60").getValue()).toString());
 						int resultExact = exactFifteen * 100 + exactSixty * 20;
-						double aa = Double.parseDouble(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue().toString());
+						double aa = Double.parseDouble(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList).child("resultPoint").getValue()).toString());
 						double resultA = (aa * reitUserMonth * pointValue + workShiftValue + resultExact) * tax;
 						double newDouble = new BigDecimal(resultA).setScale(2, RoundingMode.UP).doubleValue();
 						cashToday.setText(newDouble + " руб");
@@ -180,7 +180,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
 	private void ShowInfoMonthVariableCash() {
 		final AlertDialog.Builder monthVariable = new AlertDialog.Builder(this);
-		View mView = getLayoutInflater().inflate(R.layout.variable_pop_up, null);
+		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.variable_pop_up, null);
 		Button cancelDialog = mView.findViewById(R.id.accept_btn);
 		monthVariable.setView(mView);
 
@@ -200,7 +200,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
 	private void ShowInfoMonthCash() {
 		final AlertDialog.Builder month = new AlertDialog.Builder(this);
-		View mView = getLayoutInflater().inflate(R.layout.month_pop_up, null);
+		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.month_pop_up, null);
 		Button cancelDialog = mView.findViewById(R.id.accept_btn);
 		month.setView(mView);
 

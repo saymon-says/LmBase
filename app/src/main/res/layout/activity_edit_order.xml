@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:drawableStart="@drawable/usually_order"
+                    android:drawableStart="@drawable/usually_delivery"
                     android:padding="5dp"
                     android:text="  Обычный заказ" />
 
@@ -71,7 +71,7 @@
                     android:id="@+id/sdd_order"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/sdd_order"
+                    android:drawableStart="@drawable/express_delivery"
                     android:padding="5dp"
                     android:text="  СДД заказ" />
             </RadioGroup>
@@ -120,10 +120,11 @@
                     android:id="@+id/econom_delivery"
                     android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/econom_order"
+                    android:drawableStart="@drawable/economy_order"
                     android:padding="3dp"
                     android:text="  Эконом" />
             </RadioGroup>
+
 
             <TextView
                 android:layout_width="wrap_content"
