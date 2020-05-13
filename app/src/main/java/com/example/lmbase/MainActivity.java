@@ -40,7 +40,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-	private final static String WORKSHEET_OPEN = "1";
+	//	private final static String WORKSHEET_OPEN = "1";
 	private DrawerLayout drawerLayout;
 	private NavigationView navigationView;
 	private CircleImageView navUserpic;
@@ -137,7 +137,71 @@ public class MainActivity extends AppCompatActivity {
 //				}
 			}
 		});
+		statisticRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.child(currentDateOrderList).exists()) {
+					fifteenTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("15").getValue()).toString());
+					fifteenExactTimeToday.setText(fifteenTime + "");
 
+					sixtyTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("60").getValue()).toString());
+					sixtyExactTimeToday.setText(sixtyTime + "");
+
+					finesToday = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+							.child("fines").getValue()).toString());
+					upFineToday.setText(finesToday + "");
+				} else {
+					fifteenExactTimeToday.setText("0");
+					sixtyExactTimeToday.setText("0");
+					upFineToday.setText("0");
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
+		ordersCountRef.addValueEventListener(new ValueEventListener() {
+			@SuppressLint("SetTextI18n")
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					for (DataSnapshot ds : dataSnapshot.getChildren()) {
+						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						assert map != null;
+						Object delivery = map.get("delivery");
+						int dValue = Integer.parseInt(String.valueOf(delivery));
+						Object buyout = map.get("point");
+						int bValue = Integer.parseInt(String.valueOf(buyout));
+						resultDelivery += dValue;
+						resultBuyout += bValue;
+						deliveryCount.setText(String.valueOf(resultDelivery));
+						buyoutCount.setText(String.valueOf(resultBuyout));
+					}
+					pointFinesToday = (2.5 - finesToday) * 7;
+					resultPoint = resultBuyout + resultDelivery + pointFinesToday;
+					pointCount.setText(String.valueOf(resultPoint));
+
+					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
+					ordersCount.setText(countOfOrders + "");
+				} else {
+					ordersCount.setText("0");
+					pointCount.setText("0");
+					buyoutCount.setText("0");
+					deliveryCount.setText("0");
+				}
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
 
 		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
 			@Override
@@ -238,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
 					finesToday = Integer.valueOf(fines.getText().toString());
 				}
 				UpdateDataBaseStatistics();
+				SendUserToMainActivity();
 				alertDialog.dismiss();
 			}
 		});
@@ -303,79 +368,79 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		ShowAllDataOpenedWorkShift();
-	}
+//	@Override
+//	protected void onResume() {
+//		super.onResume();
+//		ShowAllDataOpenedWorkShift();
+//	}
 
-	private void ShowAllDataOpenedWorkShift() {
-		ordersCountRef.addValueEventListener(new ValueEventListener() {
-			@SuppressLint("SetTextI18n")
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.exists()) {
-					for (DataSnapshot ds : dataSnapshot.getChildren()) {
-						Map<String, Object> map = (Map<String, Object>) ds.getValue();
-						assert map != null;
-						Object delivery = map.get("delivery");
-						int dValue = Integer.parseInt(String.valueOf(delivery));
-						Object buyout = map.get("point");
-						int bValue = Integer.parseInt(String.valueOf(buyout));
-						resultDelivery += dValue;
-						resultBuyout += bValue;
-						deliveryCount.setText(String.valueOf(resultDelivery));
-						buyoutCount.setText(String.valueOf(resultBuyout));
-					}
-					pointFinesToday = (2.5 - finesToday) * 7;
-					resultPoint = resultBuyout + resultDelivery + pointFinesToday;
-					pointCount.setText(String.valueOf(resultPoint));
-
-					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
-					ordersCount.setText(countOfOrders + "");
-				} else {
-					ordersCount.setText("0");
-					pointCount.setText("0");
-					buyoutCount.setText("0");
-					deliveryCount.setText("0");
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
-		statisticRef.addValueEventListener(new ValueEventListener() {
-			@SuppressLint("SetTextI18n")
-			@Override
-			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if (dataSnapshot.child(currentDateOrderList).exists()) {
-					fifteenTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("15").getValue()).toString());
-					fifteenExactTimeToday.setText(fifteenTime + "");
-
-					sixtyTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("60").getValue()).toString());
-					sixtyExactTimeToday.setText(sixtyTime + "");
-
-					finesToday = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
-							.child("fines").getValue()).toString());
-					upFineToday.setText(finesToday + "");
-				} else {
-					fifteenExactTimeToday.setText("0");
-					sixtyExactTimeToday.setText("0");
-					upFineToday.setText("0");
-				}
-			}
-
-			@Override
-			public void onCancelled(@NonNull DatabaseError databaseError) {
-
-			}
-		});
-
-	}
+//	private void ShowAllDataOpenedWorkShift() {
+//		statisticRef.addValueEventListener(new ValueEventListener() {
+//			@SuppressLint("SetTextI18n")
+//			@Override
+//			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//				if (dataSnapshot.child(currentDateOrderList).exists()) {
+//					fifteenTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+//							.child("15").getValue()).toString());
+//					fifteenExactTimeToday.setText(fifteenTime + "");
+//
+//					sixtyTime = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+//							.child("60").getValue()).toString());
+//					sixtyExactTimeToday.setText(sixtyTime + "");
+//
+//					finesToday = Integer.valueOf(Objects.requireNonNull(dataSnapshot.child(currentDateOrderList)
+//							.child("fines").getValue()).toString());
+//					upFineToday.setText(finesToday + "");
+//				} else {
+//					fifteenExactTimeToday.setText("0");
+//					sixtyExactTimeToday.setText("0");
+//					upFineToday.setText("0");
+//				}
+//			}
+//
+//			@Override
+//			public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//			}
+//		});
+//
+//		ordersCountRef.addValueEventListener(new ValueEventListener() {
+//			@SuppressLint("SetTextI18n")
+//			@Override
+//			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//				if (dataSnapshot.exists()) {
+//					for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+//						assert map != null;
+//						Object delivery = map.get("delivery");
+//						int dValue = Integer.parseInt(String.valueOf(delivery));
+//						Object buyout = map.get("point");
+//						int bValue = Integer.parseInt(String.valueOf(buyout));
+//						resultDelivery += dValue;
+//						resultBuyout += bValue;
+//						deliveryCount.setText(String.valueOf(resultDelivery));
+//						buyoutCount.setText(String.valueOf(resultBuyout));
+//					}
+//					pointFinesToday = (2.5 - finesToday) * 7;
+//					resultPoint = resultBuyout + resultDelivery + pointFinesToday;
+//					pointCount.setText(String.valueOf(resultPoint));
+//
+//					countOfOrders = Math.toIntExact(dataSnapshot.getChildrenCount());
+//					ordersCount.setText(countOfOrders + "");
+//				} else {
+//					ordersCount.setText("0");
+//					pointCount.setText("0");
+//					buyoutCount.setText("0");
+//					deliveryCount.setText("0");
+//				}
+//			}
+//
+//			@Override
+//			public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//			}
+//		});
+//	}
 
 	@Override
 	public void onBackPressed() {
@@ -446,8 +511,8 @@ public class MainActivity extends AppCompatActivity {
 //						break;
 //					case "1":
 				UpdateDataBaseStatistics();
+//				UpdateDataBaseWorkShift();
 				UpdateDataBaseUsers();
-				UpdateDataBaseWorkShift();
 				SendUserToMainActivity();
 				Toast.makeText(this, "Обновлено", Toast.LENGTH_SHORT).show();
 //						break;
@@ -585,7 +650,6 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void UpdateDataBaseStatistics() {
-
 		HashMap statMap = new HashMap();
 		statMap.put("resultPoint", resultPoint);
 		statMap.put("resultBuyout", resultBuyout);
@@ -594,6 +658,12 @@ public class MainActivity extends AppCompatActivity {
 		statMap.put("60", sixtyTime);
 		statMap.put("fines", finesToday);
 		statisticRef.child(currentDateOrderList).updateChildren(statMap);
+
+		String resultPointToday = pointCount.getText().toString();
+		HashMap workshiftMap = new HashMap();
+		workshiftMap.put("date", currentDateOrderList);
+		workshiftMap.put("resultPoint", resultPointToday);
+		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap);
 	}
 
 	private void SendUserToStatisticsActivity() {
@@ -606,13 +676,14 @@ public class MainActivity extends AppCompatActivity {
 		startActivity(sendToSettings);
 	}
 
-	private void UpdateDataBaseWorkShift() {
-
-		HashMap workshiftMap = new HashMap();
-		workshiftMap.put("date", currentDateOrderList);
-		workshiftMap.put("resultPoint", resultPoint);
-		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap);
-	}
+//	private void UpdateDataBaseWorkShift() {
+//
+//		String resultPointToday = pointCount.getText().toString();
+//		HashMap workshiftMap = new HashMap();
+//		workshiftMap.put("date", currentDateOrderList);
+//		workshiftMap.put("resultPoint", resultPointToday);
+//		pointerRef.child(currentUserId).child(currentDateOrderList).updateChildren(workshiftMap);
+//	}
 
 	private void SendUserToWorkShiftActivity() {
 		Intent workshiftIntent = new Intent(this, WorkShiftListActivity.class);

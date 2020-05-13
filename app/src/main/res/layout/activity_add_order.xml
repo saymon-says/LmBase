@@ -33,6 +33,7 @@
                 android:background="@drawable/input"
                 android:hint="Номер заказа"
                 android:padding="10dp"
+                android:inputType="number"
                 android:textAlignment="center"
                 android:textSize="18sp" />
 
