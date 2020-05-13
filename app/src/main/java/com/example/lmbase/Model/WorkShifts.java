@@ -2,9 +2,10 @@ package com.example.lmbase.Model;
 
 public class WorkShifts {
 
-	String date, resultPoint;
+	String date;
+	Double resultPoint;
 
-	public WorkShifts(String date, String resultPoint) {
+	public WorkShifts(String date, Double resultPoint) {
 		this.date = date;
 		this.resultPoint = resultPoint;
 	}
@@ -21,11 +22,11 @@ public class WorkShifts {
 		this.date = date;
 	}
 
-	public String getResultPoint() {
+	public Double getResultPoint() {
 		return resultPoint;
 	}
 
-	public void setResultPoint(String resultPoint) {
+	public void setResultPoint(Double resultPoint) {
 		this.resultPoint = resultPoint;
 	}
 }

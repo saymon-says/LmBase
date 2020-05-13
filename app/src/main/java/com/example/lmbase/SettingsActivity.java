@@ -181,18 +181,22 @@ public class SettingsActivity extends AppCompatActivity {
 	private void EditUserProfile() {
 		String userAlias = userName.getText().toString();
 		String userFullname = userFullName.getText().toString();
-		int userWorkshiftCounts = Integer.parseInt(workShift.getText().toString());
-		double userReitCounts = Double.parseDouble(reitUser.getText().toString());
+		String userWorkshiftCounts = workShift.getText().toString();
+		String userReitCounts = reitUser.getText().toString();
 
 		if (userAlias.length() < 3) {
 			Toast.makeText(this, "Псевдоним слишком короткий", Toast.LENGTH_LONG).show();
 		} else if (userFullname.length() < 8) {
 			Toast.makeText(this, "Коротковато Ф.И.О.", Toast.LENGTH_LONG).show();
-		} else if (userWorkshiftCounts == 0) {
-			Toast.makeText(this, "Проверь смены!", Toast.LENGTH_SHORT).show();
-		} else  if (userReitCounts == 0) {
-			Toast.makeText(this, "Рейтинг маловат", Toast.LENGTH_SHORT).show();
+		} else if (userWorkshiftCounts.length() == 0) {
+			Toast.makeText(this, "В среднем в месяце 15 смен", Toast.LENGTH_SHORT).show();
+		} else  if (userReitCounts.length() == 0) {
+			Toast.makeText(this, "В начале рейтинг 1 подойдет", Toast.LENGTH_SHORT).show();
 		} else {
+
+			int userWorkshiftCountsInt = Integer.parseInt(userWorkshiftCounts);
+			double userReitCountsDouble = Double.parseDouble(userReitCounts);
+
 			progressDialog.setTitle("Сохраняемся..");
 			progressDialog.setMessage("Падажжиии...Ща все будет");
 			progressDialog.show();
@@ -201,8 +205,8 @@ public class SettingsActivity extends AppCompatActivity {
 			HashMap usersMap = new HashMap();
 			usersMap.put("alias", userAlias);
 			usersMap.put("fullname", userFullname);
-			usersMap.put("workshift", userWorkshiftCounts);
-			usersMap.put("reit", userReitCounts);
+			usersMap.put("workshift", userWorkshiftCountsInt);
+			usersMap.put("reit", userReitCountsDouble);
 			settingsRef.updateChildren(usersMap)
 					.addOnCompleteListener(new OnCompleteListener() {
 						@Override

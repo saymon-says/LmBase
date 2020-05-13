@@ -720,7 +720,7 @@ public class MainActivity extends AppCompatActivity {
 		statMap.put("fines", finesToday);
 		statisticRef.child(currentDateOrderList).updateChildren(statMap);
 
-		String resultPointToday = pointCount.getText().toString();
+		double resultPointToday = Double.parseDouble(pointCount.getText().toString());
 		HashMap workshiftMap = new HashMap();
 		workshiftMap.put("date", currentDateOrderList);
 		workshiftMap.put("resultPoint", resultPointToday);

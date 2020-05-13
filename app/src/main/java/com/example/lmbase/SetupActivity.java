@@ -174,7 +174,7 @@ public class SetupActivity extends AppCompatActivity {
 		} else {
 
 			int userWorkshiftCountsInt = Integer.parseInt(userWorkshiftCounts);
-			double userReitCountsInt = Double.parseDouble(userReitCounts);
+			double userReitCountsDouble = Double.parseDouble(userReitCounts);
 
 			progressDialog.setTitle("Сохраняемся..");
 			progressDialog.setMessage("Падажжиии...Ща все будет!");
@@ -185,7 +185,7 @@ public class SetupActivity extends AppCompatActivity {
 			usersMap.put("alias", userAliasSetup);
 			usersMap.put("fullname", userFullnameSetup);
 			usersMap.put("workshift", userWorkshiftCountsInt);
-			usersMap.put("reit", userReitCountsInt);
+			usersMap.put("reit", userReitCountsDouble);
 			userRef.updateChildren(usersMap)
 					.addOnCompleteListener(new OnCompleteListener() {
 						@Override
