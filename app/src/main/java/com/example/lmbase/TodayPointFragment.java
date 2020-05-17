@@ -46,7 +46,7 @@ public class TodayPointFragment extends Fragment {
 							 Bundle savedInstanceState) {
 
 		Calendar calendarDate = Calendar.getInstance();
-		final SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		@SuppressLint("SimpleDateFormat") final SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		View v = inflater.inflate(R.layout.fragment_today_point, container, false);
@@ -97,8 +97,7 @@ public class TodayPointFragment extends Fragment {
 			@Override
 			public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 				View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_list, parent, false);
-				UsersViewHolder usersViewHolder = new UsersViewHolder(view);
-				return usersViewHolder;
+				return new UsersViewHolder(view);
 			}
 		};
 		userList.setAdapter(adapter);
@@ -110,7 +109,7 @@ public class TodayPointFragment extends Fragment {
 		TextView username, userfullname, todayPoint;
 		CircleImageView userpic;
 
-		public UsersViewHolder(@NonNull View itemView) {
+		UsersViewHolder(@NonNull View itemView) {
 			super(itemView);
 			username = itemView.findViewById(R.id.username_list);
 			userfullname = itemView.findViewById(R.id.user_fullname_list);

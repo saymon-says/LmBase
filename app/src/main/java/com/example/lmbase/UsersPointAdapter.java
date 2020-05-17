@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class UsersPointAdapter extends FragmentStateAdapter {
-	public UsersPointAdapter(@NonNull FragmentActivity fragmentActivity) {
+	UsersPointAdapter(@NonNull FragmentActivity fragmentActivity) {
 		super(fragmentActivity);
 	}
 

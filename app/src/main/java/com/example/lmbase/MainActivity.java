@@ -33,7 +33,6 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -43,11 +42,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
 
 	private DrawerLayout drawerLayout;
-	private NavigationView navigationView;
 	private CircleImageView navUserpic;
 	private TextView navUserName, ordersCount, deliveryCount, buyoutCount,
 			pointCount, fifteenExactTimeToday, sixtyExactTimeToday, upFineToday;
-	private ImageButton settingProfile;
 	private EditText fifteenExactTime, sixtyExactTime, fines, benetonCount, workshiftAdd;
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef;
@@ -80,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 		statisticRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
-		navigationView = findViewById(R.id.nav);
+		NavigationView navigationView = findViewById(R.id.nav);
 		ordersCount = findViewById(R.id.text_orders_count);
 		deliveryCount = findViewById(R.id.text_delivery_count);
 		buyoutCount = findViewById(R.id.text_bayout_count);
@@ -95,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 		View navView = navigationView.inflateHeaderView(R.layout.header_nav);
 		navUserName = navView.findViewById(R.id.nav_username);
 		navUserpic = navView.findViewById(R.id.profile_image);
-		settingProfile = navView.findViewById(R.id.nav_setting_profile);
+		ImageButton settingProfile = navView.findViewById(R.id.nav_setting_profile);
 
 		Toolbar mToolbar = findViewById(R.id.main_page_toolbar);
 		setSupportActionBar(mToolbar);

@@ -1,20 +1,17 @@
 package com.example.lmbase;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.lmbase.Model.Users;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -23,8 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.squareup.picasso.Picasso;
-
-import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -79,7 +74,7 @@ public class MonthPointFragment extends Fragment {
 			protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
 				holder.username.setText("@" + model.getAlias());
 				holder.userfullname.setText(model.getFullname());
-				if(model.getResultMonthPoint() != null) {
+				if (model.getResultMonthPoint() != null) {
 					holder.monthPoint.setText(String.valueOf(model.getResultMonthPoint()));
 				} else {
 					holder.monthPoint.setText(0.0 + "");
@@ -91,8 +86,7 @@ public class MonthPointFragment extends Fragment {
 			@Override
 			public UsersViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 				View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_list, parent, false);
-				UsersViewHolder usersViewHolder = new UsersViewHolder(view);
-				return usersViewHolder;
+				return new UsersViewHolder(view);
 			}
 		};
 		userList.setAdapter(adapter);
@@ -104,7 +98,7 @@ public class MonthPointFragment extends Fragment {
 		TextView username, userfullname, monthPoint;
 		CircleImageView userpic;
 
-		public UsersViewHolder(@NonNull View itemView) {
+		UsersViewHolder(@NonNull View itemView) {
 			super(itemView);
 			username = itemView.findViewById(R.id.username_list);
 			userfullname = itemView.findViewById(R.id.user_fullname_list);

@@ -38,14 +38,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SettingsActivity extends AppCompatActivity {
 
-	private Toolbar mToolbar;
 	private EditText userName, userFullName, workShift, reitUser;
-	private Button editBtn;
 	private CircleImageView userpic;
 	private DatabaseReference settingsRef;
 	private StorageReference userpicRef;
 	private ProgressDialog progressDialog;
-	private FirebaseAuth mAuth;
 	private String currentUserId;
 	final static int gallery_pic = 1;
 
@@ -58,7 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
 		progressDialog = new ProgressDialog(this);
 
 
-		mToolbar = findViewById(R.id.settings_toolbar);
+		Toolbar mToolbar = findViewById(R.id.settings_toolbar);
 		setSupportActionBar(mToolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle("Редактирование профиля");
 		getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
@@ -67,11 +64,11 @@ public class SettingsActivity extends AppCompatActivity {
 		userFullName = findViewById(R.id.settings_fullname);
 		workShift = findViewById(R.id.settings_workshift_count);
 		reitUser = findViewById(R.id.settings_reit);
-		editBtn = findViewById(R.id.upload_profile);
+		Button editBtn = findViewById(R.id.upload_profile);
 		userpic = findViewById(R.id.settings_userpic);
 
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		settingsRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
 		userpicRef = FirebaseStorage.getInstance().getReference().child("User Pic");
 
@@ -97,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
 					Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
 //					if (dataSnapshot.child("workshift").exists()) {
 					workShift.setText(Objects.requireNonNull(dataSnapshot.child("workshift").getValue()).toString());
-					reitUser.setText(dataSnapshot.child("reit").getValue().toString());
+					reitUser.setText(Objects.requireNonNull(dataSnapshot.child("reit").getValue()).toString());
 //					} else {
 //						workShift.setText(15 +"");
 //					}

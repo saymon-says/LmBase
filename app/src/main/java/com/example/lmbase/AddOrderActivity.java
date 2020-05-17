@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,13 +24,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class AddOrderActivity extends AppCompatActivity {
 
 	private EditText numberOrder, priceOrder, bayouOrder;
-	private Button addButton;
-	private ImageButton fullButton;
-	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
 	private String resultDelivery, typeOrder, typeDelivery;
@@ -37,8 +36,7 @@ public class AddOrderActivity extends AppCompatActivity {
 	private long counterOrders = 0;
 	private float resultPercentOrder;
 
-	private DatabaseReference ordersRef, ordersCountRef;
-	private FirebaseAuth mAuth;
+	private DatabaseReference ordersCountRef;
 	private String currentDateOrderList;
 
 	@Override
@@ -47,21 +45,20 @@ public class AddOrderActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_add_order);
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		numberOrder = findViewById(R.id.number_order);
 		priceOrder = findViewById(R.id.price_order);
 		bayouOrder = findViewById(R.id.bayout_order);
-		radioGroupOrder = findViewById(R.id.group_radio_type_order);
-		radioGroupDelivery = findViewById(R.id.group_radio_type_delivery);
-		addButton = findViewById(R.id.add_button);
-		fullButton = findViewById(R.id.full_buying_btn);
+		RadioGroup radioGroupOrder = findViewById(R.id.group_radio_type_order);
+		RadioGroup radioGroupDelivery = findViewById(R.id.group_radio_type_delivery);
+		Button addButton = findViewById(R.id.add_button);
+		ImageButton fullButton = findViewById(R.id.full_buying_btn);
 		bayouOrder.setText("0");
 
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
-		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId);
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 
 		if (radioGroupOrder.getCheckedRadioButtonId() == R.id.usually_order) {
@@ -232,7 +229,7 @@ public class AddOrderActivity extends AppCompatActivity {
 		orderMap.put("delivery", resultDelivery);
 		orderMap.put("typeOrder", typeOrder);
 		orderMap.put("typeDelivery", typeDelivery);
-		ordersRef.child(currentDateOrderList).child(numberOrderStr).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {
+		ordersCountRef.child(numberOrderStr).updateChildren(orderMap).addOnSuccessListener(new OnSuccessListener() {
 			@Override
 			public void onSuccess(Object o) {
 				SendUserToOrderListActivity();

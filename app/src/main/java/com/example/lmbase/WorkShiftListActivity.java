@@ -31,11 +31,9 @@ import java.util.Objects;
 public class WorkShiftListActivity extends AppCompatActivity {
 
 	private RecyclerView listWorkshifts;
-	private String currentUserId, currentDateOrderList;
+	private String currentDateOrderList;
 
-	private FirebaseAuth mAuth;
 	private DatabaseReference workshiftRef;
-	private Toolbar mToolbar;
 	private int currentMonth, currentYear;
 	private String firstDateStart, firstDateEnd, secondDateStart, secondDateEnd;
 	private String dateWorkshift, date1, date2;
@@ -60,12 +58,12 @@ public class WorkShiftListActivity extends AppCompatActivity {
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 		dateWorkshift = currentDateWorkShift.format(calendarDate.getTime());
 
-		mToolbar = findViewById(R.id.workshift_page_toolbar);
+		Toolbar mToolbar = findViewById(R.id.workshift_page_toolbar);
 		setSupportActionBar(mToolbar);
 		Objects.requireNonNull(getSupportActionBar()).setTitle("Смены за " + currentDateOrderList);
 
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		String currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		workshiftRef = FirebaseDatabase.getInstance().getReference().child("Pointers List").child(currentUserId);
 	}
 

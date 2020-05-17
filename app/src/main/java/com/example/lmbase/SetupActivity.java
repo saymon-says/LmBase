@@ -173,7 +173,7 @@ public class SetupActivity extends AppCompatActivity {
 			Toast.makeText(this, "В начале рейтинг 1 подойдет", Toast.LENGTH_SHORT).show();
 		} else {
 
-			int userWorkshiftCountsInt = Integer.parseInt(userWorkshiftCounts);
+			int userWorkShiftCountsInt = Integer.parseInt(userWorkshiftCounts);
 			double userReitCountsDouble = Double.parseDouble(userReitCounts);
 
 			progressDialog.setTitle("Сохраняемся..");
@@ -184,7 +184,7 @@ public class SetupActivity extends AppCompatActivity {
 			HashMap usersMap = new HashMap();
 			usersMap.put("alias", userAliasSetup);
 			usersMap.put("fullname", userFullnameSetup);
-			usersMap.put("workshift", userWorkshiftCountsInt);
+			usersMap.put("workshift", userWorkShiftCountsInt);
 			usersMap.put("reit", userReitCountsDouble);
 			userRef.updateChildren(usersMap)
 					.addOnCompleteListener(new OnCompleteListener() {

@@ -1,5 +1,6 @@
 package com.example.lmbase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,15 +26,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class EditOrderActivity extends AppCompatActivity {
 
 
-	private String orderKey;
 	private EditText priceOrder, bayoutOrder;
 	private TextView numberOrder;
-	private Button editButton;
-	private ImageButton fullButton;
 	private RadioGroup radioGroupOrder, radioGroupDelivery;
 	private String currentUserId;
 	private String numberOrderStr, priceOrderStr, bayoutOrderStr, resultPoint;
@@ -42,7 +41,6 @@ public class EditOrderActivity extends AppCompatActivity {
 	private float resultPercentOrder;
 
 	private DatabaseReference editOrderRef, ordersRef;
-	private FirebaseAuth mAuth;
 	private String currentDateOrderList;
 
 	@Override
@@ -51,7 +49,7 @@ public class EditOrderActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_edit_order);
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		numberOrder = findViewById(R.id.number_order);
@@ -59,12 +57,12 @@ public class EditOrderActivity extends AppCompatActivity {
 		bayoutOrder = findViewById(R.id.bayout_order);
 		radioGroupOrder = findViewById(R.id.group_radio_type_order);
 		radioGroupDelivery = findViewById(R.id.group_radio_type_delivery);
-		editButton = findViewById(R.id.edit_button);
-		fullButton = findViewById(R.id.full_buying_btn);
+		Button editButton = findViewById(R.id.edit_button);
+		ImageButton fullButton = findViewById(R.id.full_buying_btn);
 
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
-		orderKey = getIntent().getExtras().get("orderKey").toString();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+		String orderKey = Objects.requireNonNull(Objects.requireNonNull(getIntent().getExtras()).get("orderKey")).toString();
 		ordersRef = FirebaseDatabase.getInstance().getReference()
 				.child("Order List").child(currentUserId);
 		editOrderRef = FirebaseDatabase.getInstance().getReference()
@@ -139,11 +137,11 @@ public class EditOrderActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
-					String orderNumber = dataSnapshot.child("numberOrder").getValue().toString();
-					String orderPrice = dataSnapshot.child("priceOrder").getValue().toString();
+					String orderNumber = Objects.requireNonNull(dataSnapshot.child("numberOrder").getValue()).toString();
+					String orderPrice = Objects.requireNonNull(dataSnapshot.child("priceOrder").getValue()).toString();
 					numberOrder.setText(orderNumber);
 					priceOrder.setText(orderPrice);
-					switch (dataSnapshot.child("typeDelivery").getValue().toString()) {
+					switch (Objects.requireNonNull(dataSnapshot.child("typeDelivery").getValue()).toString()) {
 						case "usually":
 							radioGroupDelivery.check(R.id.usually_delivery);
 							deliveryVariant = 0;
@@ -161,7 +159,7 @@ public class EditOrderActivity extends AppCompatActivity {
 							break;
 
 					}
-					switch (dataSnapshot.child("typeOrder").getValue().toString()) {
+					switch (Objects.requireNonNull(dataSnapshot.child("typeOrder").getValue()).toString()) {
 						case "usually":
 							radioGroupOrder.check(R.id.usually_order);
 							typeOrder = "usually";
@@ -190,7 +188,7 @@ public class EditOrderActivity extends AppCompatActivity {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
-					int countOfOrders = Integer.parseInt(dataSnapshot.child("counter").getValue().toString());
+					int countOfOrders = Integer.parseInt(Objects.requireNonNull(dataSnapshot.child("counter").getValue()).toString());
 					if (0 <= countOfOrders && countOfOrders < 15) {
 						resultDelivery = "3";
 					} else if (15 <= countOfOrders && countOfOrders < 29) {

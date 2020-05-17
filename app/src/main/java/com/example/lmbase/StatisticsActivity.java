@@ -23,8 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,6 +39,10 @@ public class StatisticsActivity extends AppCompatActivity {
 	private Integer countOfOrders, workShiftValue, workShiftCounts,
 			workShiftAdded = 0, beneton = 0, benetonSurcharges, addedWorkShiftSurcharges, allSurcharges;
 	private double reitUserMonth;
+	private int currentMonth, currentYear;
+	private String firstDateStart, firstDateEnd, secondDateStart, secondDateEnd;
+	private String dateWorkshift, date1, date2;
+	private String firstMonthStart, firstMonthEnd, secondMonthEnd;
 
 
 	@SuppressLint("RestrictedApi")
@@ -46,7 +52,9 @@ public class StatisticsActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_statistics);
 
 		Calendar calendarDate = Calendar.getInstance();
-		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+		currentMonth = calendarDate.get(Calendar.MONTH);
+		currentYear = calendarDate.get(Calendar.YEAR);
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
 		Toolbar mToolbar = findViewById(R.id.statistics_navbar);
@@ -81,6 +89,56 @@ public class StatisticsActivity extends AppCompatActivity {
 			}
 		});
 
+		try {
+			CreateDateRange();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void CreateDateRange() throws ParseException {
+
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (0 < currentMonth && currentMonth < 10) { //1
+			firstMonthStart = "0" + currentMonth; //02
+			firstMonthEnd = "0" + (currentMonth + 1);//03
+			secondMonthEnd = "0" + (currentMonth + 2); //04
+		} else if (currentMonth == 0) { //0
+			firstMonthStart = "12"; //12
+			firstMonthEnd = "0" + (currentMonth + 1);//01
+			secondMonthEnd = "0" + (currentMonth + 2); //02
+		} else if (currentMonth == 11) {//11
+			firstMonthStart = currentMonth + ""; //11
+			firstMonthEnd = "" + (currentMonth + 1);//12
+			secondMonthEnd = "01"; //01
+		} else { //10
+			firstMonthStart = "" + currentMonth; //10
+			firstMonthEnd = "" + (currentMonth + 1);//03
+			secondMonthEnd = "" + (currentMonth + 2); //04
+		}
+
+		firstDateStart = currentYear + "-" + firstMonthStart + "-" + 26; //2020-4-26
+		firstDateEnd = currentYear + "-" + firstMonthEnd + "-" + 25; //2020-5-25
+		secondDateStart = currentYear + "-" + firstMonthEnd + "-" + 26; //2020-5-26
+		secondDateEnd = currentYear + "-" + secondMonthEnd + "-" + 25; //2020-6-25
+
+		Date firstDateEndRange = currentDate.parse(firstDateEnd);
+		Date currentDateWorkShift = currentDate.parse(currentDateOrderList); //2020-05-24
+
+		if (Objects.requireNonNull(firstDateEndRange).before(currentDateWorkShift)
+				|| firstDateEndRange.equals(currentDateWorkShift)) {
+			date1 = secondDateStart;
+			date2 = secondDateEnd;
+		} else {
+			date1 = firstDateStart;
+			date2 = firstDateEnd;
+		}
+		ShowInfoMonth();
+	}
+
+	private void ShowInfoMonth() {
 		usersRef.addValueEventListener(new ValueEventListener() {
 			@SuppressLint("SetTextI18n")
 			@Override
@@ -111,7 +169,7 @@ public class StatisticsActivity extends AppCompatActivity {
 			}
 		});
 
-		fullMonthRef.addValueEventListener(new ValueEventListener() {
+		fullMonthRef.orderByKey().startAt(date1).endAt(date2).addValueEventListener(new ValueEventListener() {
 			@SuppressLint("SetTextI18n")
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -189,6 +247,7 @@ public class StatisticsActivity extends AppCompatActivity {
 			}
 		});
 	}
+
 
 	private void ShowInfoMonthVariableCash() {
 		final AlertDialog.Builder monthVariable = new AlertDialog.Builder(this);

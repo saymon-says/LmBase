@@ -20,9 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity {
 
-	private Button loginButton;
 	private EditText emailLoginUser, passwordLoginUser;
-	private TextView newAccountLink;
 	private FirebaseAuth mAuth;
 	private ProgressDialog progressDialog;
 
@@ -33,10 +31,10 @@ public class LoginActivity extends AppCompatActivity {
 
 		mAuth = FirebaseAuth.getInstance();
 
-		loginButton = findViewById(R.id.button_login);
+		Button loginButton = findViewById(R.id.button_login);
 		emailLoginUser = findViewById(R.id.email_login);
 		passwordLoginUser = findViewById(R.id.password_login);
-		newAccountLink = findViewById(R.id.add_account);
+		TextView newAccountLink = findViewById(R.id.add_account);
 		progressDialog = new ProgressDialog(this);
 
 		newAccountLink.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 		String emailUser = emailLoginUser.getText().toString();
 		String passwordUser = passwordLoginUser.getText().toString();
 
-		if(emailUser.length() < 3) {
+		if (emailUser.length() < 3) {
 			Toast.makeText(this, "Email слишком короткий", Toast.LENGTH_LONG).show();
 		} else if (passwordUser.length() < 6) {
 			Toast.makeText(this, "Пароль слишком короткий", Toast.LENGTH_LONG).show();
@@ -84,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
 					.addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 						@Override
 						public void onComplete(@NonNull Task<AuthResult> task) {
-							if(task.isSuccessful()) {
+							if (task.isSuccessful()) {
 								Toast.makeText(LoginActivity.this, "Полетели!", Toast.LENGTH_LONG).show();
 								SendUserToMainActivity();
 								progressDialog.dismiss();

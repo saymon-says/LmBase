@@ -26,23 +26,20 @@ import com.google.firebase.database.Query;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class OrderListActivity extends AppCompatActivity {
 
 	private RecyclerView listOrders;
-	private String currentUserId, currentDateOrderList;
-	private FloatingActionButton addBtn;
 
-	private FirebaseAuth mAuth;
 	private DatabaseReference ordersRef;
-	private Toolbar mToolbar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_order_list);
 
-		addBtn = findViewById(R.id.add_order);
+		FloatingActionButton addBtn = findViewById(R.id.add_order);
 		listOrders = findViewById(R.id.list_of_orders);
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 		linearLayoutManager.setReverseLayout(false);
@@ -50,15 +47,15 @@ public class OrderListActivity extends AppCompatActivity {
 		listOrders.setLayoutManager(linearLayoutManager);
 
 		Calendar calendarDate = Calendar.getInstance();
-		SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
-		currentDateOrderList = currentDate.format(calendarDate.getTime());
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
+		String currentDateOrderList = currentDate.format(calendarDate.getTime());
 
-		mToolbar = findViewById(R.id.orders_page_toolbar);
+		Toolbar mToolbar = findViewById(R.id.orders_page_toolbar);
 		setSupportActionBar(mToolbar);
-		getSupportActionBar().setTitle("Заказы на: " + currentDateOrderList);
+		Objects.requireNonNull(getSupportActionBar()).setTitle("Заказы на: " + currentDateOrderList);
 
-		mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
+		FirebaseAuth mAuth = FirebaseAuth.getInstance();
+		String currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		ordersRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 
 		addBtn.setOnClickListener(new View.OnClickListener() {
