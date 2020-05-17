@@ -196,7 +196,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:background="@drawable/button"
-            android:text="Обновить заказ" />
+            android:text="Добавить заказ" />
     </RelativeLayout>
 
 </ScrollView>

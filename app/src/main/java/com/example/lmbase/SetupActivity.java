@@ -30,20 +30,19 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SetupActivity extends AppCompatActivity {
 
+	final static int gallery_pic = 1;
 	private EditText userAlias, userFullname, workShift, reitUser;
 	private CircleImageView userpic;
 	private ProgressDialog progressDialog;
-
 	private DatabaseReference userRef;
 	private String currentUserId;
 	private StorageReference userpicRef;
-
-	final static int gallery_pic = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,7 @@ public class SetupActivity extends AppCompatActivity {
 		progressDialog = new ProgressDialog(this);
 
 		FirebaseAuth mAuth = FirebaseAuth.getInstance();
-		currentUserId = mAuth.getCurrentUser().getUid();
+		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 		userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
 		userpicRef = FirebaseStorage.getInstance().getReference().child("User Pic");
 
@@ -83,9 +82,9 @@ public class SetupActivity extends AppCompatActivity {
 		userRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if(dataSnapshot.exists()) {
-					if(dataSnapshot.hasChild("userpic")) {
-						String image = dataSnapshot.child("userpic").getValue().toString();
+				if (dataSnapshot.exists()) {
+					if (dataSnapshot.hasChild("userpic")) {
+						String image = Objects.requireNonNull(dataSnapshot.child("userpic").getValue()).toString();
 						Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
 					}
 				} else {
@@ -104,13 +103,12 @@ public class SetupActivity extends AppCompatActivity {
 	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == gallery_pic && resultCode == RESULT_OK && data != null) {
-			Uri imageUri = data.getData();
 			CropImage.activity()
 					.setGuidelines(CropImageView.Guidelines.ON)
 					.setAspectRatio(1, 1)
 					.start(this);
 		}
-		if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+		if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
 			CropImage.ActivityResult result = CropImage.getActivityResult(data);
 			if (resultCode == RESULT_OK) {
 
@@ -119,13 +117,14 @@ public class SetupActivity extends AppCompatActivity {
 				progressDialog.show();
 				progressDialog.setCanceledOnTouchOutside(true);
 
+				assert result != null;
 				Uri resultUri = result.getUri();
 				final StorageReference filePath = userpicRef.child(currentUserId + ".jpg");
 
 				filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
 					@Override
 					public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-						if(task.isSuccessful()) {
+						if (task.isSuccessful()) {
 							filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
 								@Override
 								public void onSuccess(Uri uri) {
@@ -138,7 +137,7 @@ public class SetupActivity extends AppCompatActivity {
 														Toast.makeText(SetupActivity.this, "Фото загружено", Toast.LENGTH_SHORT).show();
 														progressDialog.dismiss();
 													} else {
-														String message = task.getException().toString();
+														String message = Objects.requireNonNull(task.getException()).toString();
 														Toast.makeText(SetupActivity.this, "Ошибка" + message, Toast.LENGTH_LONG).show();
 														progressDialog.dismiss();
 													}
@@ -150,6 +149,7 @@ public class SetupActivity extends AppCompatActivity {
 					}
 				});
 			} else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+				assert result != null;
 				Exception error = result.getError();
 				progressDialog.dismiss();
 			}
@@ -163,13 +163,13 @@ public class SetupActivity extends AppCompatActivity {
 		String userWorkshiftCounts = workShift.getText().toString();
 		String userReitCounts = reitUser.getText().toString();
 
-		if(userAliasSetup.length() < 3) {
+		if (userAliasSetup.length() < 3) {
 			Toast.makeText(this, "Псевдоним слишком короткий", Toast.LENGTH_SHORT).show();
 		} else if (userFullnameSetup.length() < 8) {
 			Toast.makeText(this, "Коротковато Ф.И.О.", Toast.LENGTH_SHORT).show();
 		} else if (userWorkshiftCounts.length() == 0) {
 			Toast.makeText(this, "В среднем в месяце 15 смен", Toast.LENGTH_SHORT).show();
-		} else  if (userReitCounts.length() == 0) {
+		} else if (userReitCounts.length() == 0) {
 			Toast.makeText(this, "В начале рейтинг 1 подойдет", Toast.LENGTH_SHORT).show();
 		} else {
 
@@ -190,12 +190,12 @@ public class SetupActivity extends AppCompatActivity {
 					.addOnCompleteListener(new OnCompleteListener() {
 						@Override
 						public void onComplete(@NonNull Task task) {
-							if(task.isSuccessful()) {
+							if (task.isSuccessful()) {
 								Toast.makeText(SetupActivity.this, "Полетели!", Toast.LENGTH_SHORT).show();
 								SendUserToMainActivity();
 								progressDialog.dismiss();
 							} else {
-								String message = task.getException().toString();
+								String message = Objects.requireNonNull(task.getException()).toString();
 								Toast.makeText(SetupActivity.this, "Ошибка" + message, Toast.LENGTH_LONG).show();
 								progressDialog.dismiss();
 							}
@@ -208,9 +208,9 @@ public class SetupActivity extends AppCompatActivity {
 		userRef.addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-				if(dataSnapshot.exists()) {
-					if(dataSnapshot.hasChild("userpic")) {
-						String image = dataSnapshot.child("userpic").getValue().toString();
+				if (dataSnapshot.exists()) {
+					if (dataSnapshot.hasChild("userpic")) {
+						String image = Objects.requireNonNull(dataSnapshot.child("userpic").getValue()).toString();
 						Picasso.get().load(image).placeholder(R.drawable.anonymous).into(userpic);
 						SaveSetupInfoUser();
 					}

@@ -31,8 +31,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -58,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
 	private Integer benetonCounts = 0;
 	private Integer addedWorkshifts = 0;
 	private double pointFinesToday = 0.0, resultPoint = 0.0;
+	private int currentMonth, currentYear;
+	private String firstDateStart, firstDateEnd, secondDateStart, secondDateEnd;
+	private String date1, date2;
+	private String firstMonthStart, firstMonthEnd, secondMonthEnd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
 		currentUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
 		Calendar calendarDate = Calendar.getInstance();
+		currentMonth = calendarDate.get(Calendar.MONTH);
+		currentYear = calendarDate.get(Calendar.YEAR);
 		@SuppressLint("SimpleDateFormat") final SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
 		currentDateOrderList = currentDate.format(calendarDate.getTime());
 
@@ -101,6 +109,12 @@ public class MainActivity extends AppCompatActivity {
 				this, drawerLayout, mToolbar, R.string.open_navigation, R.string.close_navigation);
 		drawerLayout.addDrawerListener(toggle);
 		toggle.syncState();
+
+		try {
+			CreateDateRange();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 
 		pointersToday.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -236,6 +250,46 @@ public class MainActivity extends AppCompatActivity {
 				return false;
 			}
 		});
+	}
+
+	private void CreateDateRange() throws ParseException {
+
+		@SuppressLint("SimpleDateFormat") SimpleDateFormat currentDate = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (0 < currentMonth && currentMonth < 10) { //1
+			firstMonthStart = "0" + currentMonth; //02
+			firstMonthEnd = "0" + (currentMonth + 1);//03
+			secondMonthEnd = "0" + (currentMonth + 2); //04
+		} else if (currentMonth == 0) { //0
+			firstMonthStart = "12"; //12
+			firstMonthEnd = "0" + (currentMonth + 1);//01
+			secondMonthEnd = "0" + (currentMonth + 2); //02
+		} else if (currentMonth == 11) {//11
+			firstMonthStart = currentMonth + ""; //11
+			firstMonthEnd = "" + (currentMonth + 1);//12
+			secondMonthEnd = "01"; //01
+		} else { //10
+			firstMonthStart = "" + currentMonth; //10
+			firstMonthEnd = "" + (currentMonth + 1);//03
+			secondMonthEnd = "" + (currentMonth + 2); //04
+		}
+
+		firstDateStart = currentYear + "-" + firstMonthStart + "-" + 26; //2020-4-26
+		firstDateEnd = currentYear + "-" + firstMonthEnd + "-" + 25; //2020-5-25
+		secondDateStart = currentYear + "-" + firstMonthEnd + "-" + 26; //2020-5-26
+		secondDateEnd = currentYear + "-" + secondMonthEnd + "-" + 25; //2020-6-25
+
+		Date firstDateEndRange = currentDate.parse(firstDateEnd);
+		Date currentDateWorkShift = currentDate.parse(currentDateOrderList); //2020-05-24
+
+		if (Objects.requireNonNull(firstDateEndRange).before(currentDateWorkShift)
+				|| firstDateEndRange.equals(currentDateWorkShift)) {
+			date1 = secondDateStart;
+			date2 = secondDateEnd;
+		} else {
+			date1 = firstDateStart;
+			date2 = firstDateEnd;
+		}
 	}
 
 	private void ShowDialogFine() {
@@ -456,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void UpdateDataBaseUsers() {
-		statisticRef.addValueEventListener(new ValueEventListener() {
+		statisticRef.orderByKey().startAt(date1).endAt(date2).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
@@ -473,7 +527,6 @@ public class MainActivity extends AppCompatActivity {
 					HashMap statMap = new HashMap();
 					statMap.put("resultMonthPoint", resultPointMonth);
 					statMap.put("resultPointToday", resultPointToday);
-					statMap.put("currentDateOrderList", currentDateOrderList);
 					statMap.put("beneton", benetonCounts);
 					statMap.put("addedWorkshift", addedWorkshifts);
 					usersRef.child(currentUserId).updateChildren(statMap);

@@ -41,7 +41,7 @@ public class StatisticsActivity extends AppCompatActivity {
 	private double reitUserMonth;
 	private int currentMonth, currentYear;
 	private String firstDateStart, firstDateEnd, secondDateStart, secondDateEnd;
-	private String dateWorkshift, date1, date2;
+	private String date1, date2;
 	private String firstMonthStart, firstMonthEnd, secondMonthEnd;
 
 
