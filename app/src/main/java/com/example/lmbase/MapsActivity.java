@@ -8,10 +8,14 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +27,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -49,7 +54,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements
+		OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
 	private static final int DEFAULT_ZOOM = 10;
 	private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -113,13 +119,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		mMap = googleMap;
+		mMap.setOnInfoWindowClickListener(this);
 
-		addMarker.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ShowAddProblemClientMarkerPopUp();
-			}
-		});
+
+		CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(mDefaultLocation)
+				.zoom(DEFAULT_ZOOM)
+				.build();
+		CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+		mMap.animateCamera(cameraUpdate);
+
+//		addMarker.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				ShowAddProblemClientMarkerPopUp();
+//			}
+//		});
 
 		ShowProblemClientMarker();
 
@@ -127,10 +142,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		// info window contents.
 		mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
+			@SuppressLint("SetTextI18n")
 			@Override
 			// Return null here, so that getInfoContents() is called next.
 			public View getInfoWindow(Marker arg0) {
-				return null;
+				View info = getLayoutInflater().inflate(R.layout.dialog_user_added_client,
+						(FrameLayout) findViewById(R.id.map), false);
+
+				TextView username = info.findViewById(R.id.username_map);
+				username.setText(arg0.getTitle());
+
+				TextView comment = info.findViewById(R.id.client_refinement);
+				comment.setText(arg0.getSnippet());
+				return info;
 			}
 
 			@Override
@@ -345,5 +369,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		} catch (SecurityException e) {
 			Log.e("Exception: %s", Objects.requireNonNull(e.getMessage()));
 		}
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+		String m = marker.getId();
+		ShowPopUpUserAddedClient();
+		Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
+	}
+
+	private void ShowPopUpUserAddedClient() {
+//		final AlertDialog.Builder popup = new AlertDialog.Builder(this);
+//		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_user_added_client, null);
+//
+//		final AlertDialog alertDialog = popup.create();
+//		alertDialog.setCanceledOnTouchOutside(true);
+//		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+		assert inflater != null;
+		View popupView = inflater.inflate(R.layout.dialog_user_added_client, null);
+
+		// create the popup window
+		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+		boolean focusable = true; // lets taps outside the popup also dismiss it
+		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+		// show the popup window
+		// which view you pass in doesn't matter, it is only used for the window tolken
+		popupWindow.showAtLocation(popupView, Gravity.BOTTOM, 0, 30);
 	}
 }
