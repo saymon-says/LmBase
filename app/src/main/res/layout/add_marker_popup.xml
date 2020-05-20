@@ -51,7 +51,7 @@
             android:layout_below="@id/client_address"
             android:fontFamily="@font/roboto_medium"
             android:padding="10dp"
-            android:text="Уточняющая ифнормация: подъезд, этаж, телефон.."
+            android:text="Уточняющая информация: подъезд, этаж, телефон.."
             android:textAlignment="center" />
 
         <EditText

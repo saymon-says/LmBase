@@ -8,14 +8,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +50,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements
-		OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
+//		, GoogleMap.OnInfoWindowClickListener
+{
 
 	private static final int DEFAULT_ZOOM = 10;
 	private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -66,11 +63,11 @@ public class MapsActivity extends FragmentActivity implements
 	// not granted.
 	private final LatLng mDefaultLocation = new LatLng(55.751590, 37.617832);
 	private GoogleMap mMap;
-	private Button addMarker;
 	private String finalAddress, finalRefinement, finalComment;
 	private EditText addressClient, commentClient, refinementClient;
 	private DatabaseReference troubleClient;
 	private String currentUserId;
+	private Button addMarker;
 	private Double clientLatitude, clientLongitude;
 	// The entry point to the Fused Location Provider.
 	private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -119,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		mMap = googleMap;
-		mMap.setOnInfoWindowClickListener(this);
+//		mMap.setOnInfoWindowClickListener(this);
 
 
 		CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -129,12 +126,12 @@ public class MapsActivity extends FragmentActivity implements
 		CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
 		mMap.animateCamera(cameraUpdate);
 
-//		addMarker.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				ShowAddProblemClientMarkerPopUp();
-//			}
-//		});
+		addMarker.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ShowAddProblemClientMarkerPopUp();
+			}
+		});
 
 		ShowProblemClientMarker();
 
@@ -371,33 +368,33 @@ public class MapsActivity extends FragmentActivity implements
 		}
 	}
 
-	@Override
-	public void onInfoWindowClick(Marker marker) {
-		String m = marker.getId();
-		ShowPopUpUserAddedClient();
-		Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
-	}
+//	@Override
+//	public void onInfoWindowClick(Marker marker) {
+//		String m = marker.getId();
+//		ShowPopUpUserAddedClient();
+//		Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
+//	}
 
-	private void ShowPopUpUserAddedClient() {
-//		final AlertDialog.Builder popup = new AlertDialog.Builder(this);
-//		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_user_added_client, null);
+//	private void ShowPopUpUserAddedClient() {
+////		final AlertDialog.Builder popup = new AlertDialog.Builder(this);
+////		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_user_added_client, null);
+////
+////		final AlertDialog alertDialog = popup.create();
+////		alertDialog.setCanceledOnTouchOutside(true);
+////		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 //
-//		final AlertDialog alertDialog = popup.create();
-//		alertDialog.setCanceledOnTouchOutside(true);
-//		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
-		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-		assert inflater != null;
-		View popupView = inflater.inflate(R.layout.dialog_user_added_client, null);
-
-		// create the popup window
-		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-		boolean focusable = true; // lets taps outside the popup also dismiss it
-		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-		// show the popup window
-		// which view you pass in doesn't matter, it is only used for the window tolken
-		popupWindow.showAtLocation(popupView, Gravity.BOTTOM, 0, 30);
-	}
+//		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+//		assert inflater != null;
+//		View popupView = inflater.inflate(R.layout.dialog_user_added_client, null);
+//
+//		// create the popup window
+//		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+//		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//		boolean focusable = true; // lets taps outside the popup also dismiss it
+//		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+//
+//		// show the popup window
+//		// which view you pass in doesn't matter, it is only used for the window tolken
+//		popupWindow.showAtLocation(popupView, Gravity.BOTTOM, 0, 30);
+//	}
 }
