@@ -8,10 +8,14 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.lmbase.Model.ClusterMarker;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
@@ -41,6 +46,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,9 +56,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
-//		, GoogleMap.OnInfoWindowClickListener
-{
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+
+	private static final String TAG = "Map of Trouble Client";
 
 	private static final int DEFAULT_ZOOM = 10;
 	private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -63,18 +69,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	// not granted.
 	private final LatLng mDefaultLocation = new LatLng(55.751590, 37.617832);
 	private GoogleMap mMap;
-	private String finalAddress, finalRefinement, finalComment;
+	private String finalAddress, finalRefinement, finalComment, clientComment;
 	private EditText addressClient, commentClient, refinementClient;
 	private DatabaseReference troubleClient;
 	private String currentUserId;
 	private Button addMarker;
 	private Double clientLatitude, clientLongitude;
+	private ClusterManager<ClusterMarker> markerClusterManager;
+	private MyClusterManagerRenderer mClusterManagerRenderer;
 	// The entry point to the Fused Location Provider.
 	private FusedLocationProviderClient mFusedLocationProviderClient;
 	private boolean mLocationPermissionGranted;
 	// The geographical location where the device is currently located. That is, the last-known
 	// location retrieved by the Fused Location Provider.
 	private Location mLastKnownLocation;
+	private Map<ClusterMarker, Object> client = new HashMap<>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +125,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
 		mMap = googleMap;
-//		mMap.setOnInfoWindowClickListener(this);
+		markerClusterManager = new ClusterManager<>(getApplicationContext(), mMap);
+
+		mMap.setOnCameraIdleListener(markerClusterManager);
+		mMap.setOnMarkerClickListener(markerClusterManager);
+
+		markerClusterManager.getMarkerCollection().setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+			@Override
+			public View getInfoWindow(Marker marker) {
+				View info = getLayoutInflater().inflate(R.layout.info_window_marker,
+						(FrameLayout) findViewById(R.id.map), false);
+
+				TextView address = info.findViewById(R.id.address_client);
+				address.setText(marker.getTitle());
+
+				TextView comment = info.findViewById(R.id.client_comment);
+				comment.setText(marker.getSnippet());
+
+				return info;
+			}
+
+			@Override
+			public View getInfoContents(Marker marker) {
+				return null;
+			}
+		});
+
+//		markerClusterManager.getMarkerCollection().setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+//			@Override
+//			public void onInfoWindowClick(Marker marker) {
+//				clientComment = marker.getSnippet();
+//				ShowPopUpUserAddedClient();
+////				Log.d(TAG, "click Info window: " + marker);
+//			}
+//		});
 
 
 		CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -134,41 +176,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		});
 
 		ShowProblemClientMarker();
-
-		// Use a custom info window adapter to handle multiple lines of text in the
-		// info window contents.
-		mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-			@SuppressLint("SetTextI18n")
-			@Override
-			// Return null here, so that getInfoContents() is called next.
-			public View getInfoWindow(Marker arg0) {
-				View info = getLayoutInflater().inflate(R.layout.dialog_user_added_client,
-						(FrameLayout) findViewById(R.id.map), false);
-
-				TextView username = info.findViewById(R.id.username_map);
-				username.setText(arg0.getTitle());
-
-				TextView comment = info.findViewById(R.id.client_refinement);
-				comment.setText(arg0.getSnippet());
-				return info;
-			}
-
-			@Override
-			public View getInfoContents(Marker marker) {
-				// Inflate the layouts for the info window, title and snippet.
-				View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-						(FrameLayout) findViewById(R.id.map), false);
-
-				TextView title = infoWindow.findViewById(R.id.title);
-				title.setText(marker.getTitle());
-
-				TextView snippet = infoWindow.findViewById(R.id.snippet);
-				snippet.setText(marker.getSnippet());
-
-				return infoWindow;
-			}
-		});
 
 		// Prompt the user for permission.
 		getLocationPermission();
@@ -247,24 +254,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
 					for (DataSnapshot ds : dataSnapshot.getChildren()) {
-						Map<String, Object> map = (Map<String, Object>) ds.getValue();
+						Map<Marker, Object> map = (Map<Marker, Object>) ds.getValue();
 						assert map != null;
-						Object clientLat = map.get("clientLatitude");
-						Object clientLong = map.get("clientLongitude");
-						Object titleClient = map.get("clientAddress");
-						Object refinementInfo = map.get("clientRefinement");
-						Object infoClient = map.get("clientComment");
+//						Object clientLat = map.get("clientLatitude");
+//						Object clientLong = map.get("clientLongitude");
+//						Object titleClient = map.get("clientAddress");
+//						Object refinementInfo = map.get("clientRefinement");
+//						Object infoClient = map.get("clientComment");
 
-						double Lat = (double) clientLat;
-						double Lg = (double) clientLong;
-						String title = String.valueOf(titleClient);
-						String snipped = String.valueOf(infoClient);
-						String refinement = String.valueOf(refinementInfo);
+//						double Lat = (double) clientLat;
+//						double Lg = (double) clientLong;
 
-						mMap.addMarker(new MarkerOptions()
-								.position(new LatLng(Lat, Lg))
-								.title(title)).setSnippet(refinement + "\n" + snipped);
+//						String title = String.valueOf(titleClient);
+//						String snipped = String.valueOf(infoClient);
+//						String refinement = String.valueOf(refinementInfo);
+//						String snippet = refinement + "\n" + snipped;
+						ClusterMarker newMarker = new ClusterMarker(
+								(Double) map.get("clientLatitude"),
+								(Double) map.get("clientLongitude"),
+								(String) map.get("clientAddress"),
+								map.get("clientRefinement") + "\n" + map.get("clientComment")
+						);
+						markerClusterManager.addItem(newMarker);
+						client.put(newMarker, newMarker);
 					}
+//					Log.d(TAG, "markers: " + client);
+					markerClusterManager.setAnimation(true);
+					markerClusterManager.cluster();
 				} else {
 					Toast.makeText(MapsActivity.this, "Все клиенты молодцы!", Toast.LENGTH_SHORT).show();
 				}
@@ -368,28 +384,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 		}
 	}
 
-//	@Override
-//	public void onInfoWindowClick(Marker marker) {
-//		String m = marker.getId();
-//		ShowPopUpUserAddedClient();
-//		Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
-//	}
 
 //	private void ShowPopUpUserAddedClient() {
-////		final AlertDialog.Builder popup = new AlertDialog.Builder(this);
-////		@SuppressLint("InflateParams") View mView = getLayoutInflater().inflate(R.layout.dialog_user_added_client, null);
-////
-////		final AlertDialog alertDialog = popup.create();
-////		alertDialog.setCanceledOnTouchOutside(true);
-////		Objects.requireNonNull(alertDialog.getWindow()).setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 //
 //		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 //		assert inflater != null;
 //		View popupView = inflater.inflate(R.layout.dialog_user_added_client, null);
+//		TextView comment = popupView.findViewById(R.id.client_refinement);
+//		comment.setText(clientComment);
 //
 //		// create the popup window
 //		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
 //		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//
 //		boolean focusable = true; // lets taps outside the popup also dismiss it
 //		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 //

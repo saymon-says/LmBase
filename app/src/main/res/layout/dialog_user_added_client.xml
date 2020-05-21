@@ -1,52 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/maps_client_bg"
     android:padding="5dp">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userpic_maps_popup"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/anonymous"
-            app:civ_border_color="#FF000000"
-            app:civ_border_width="2dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/client_refinement"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/username_map"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:fontFamily="@font/roboto_medium"
-                android:text="username"
-                android:textColor="#020202"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/client_refinement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:fontFamily="@font/open_sans"
-                android:text="Задерка примерки. Неадекватное поведение"
-                android:textSize="13sp" />
-        </LinearLayout>
+            android:layout_marginStart="4dp"
+            android:fontFamily="@font/open_sans"
+            android:text="Задерка примерки. Неадекватное поведение"
+            android:textSize="14sp" />
     </LinearLayout>
 
 
