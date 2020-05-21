@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/nav_add_workshift"
@@ -19,7 +20,8 @@
             <item
                 android:id="@+id/nav_for_workshift"
                 android:icon="@drawable/statistics"
-                android:title="Смены" />
+                android:title="Смены"
+                app:actionViewClass="android.widget.TextView" />
         </menu>
     </item>
 
@@ -33,11 +35,13 @@
             <item
                 android:id="@+id/nav_for_list"
                 android:icon="@drawable/research"
-                android:title="Торговые представители" />
+                android:title="Торговые представители"
+                app:actionViewClass="android.widget.TextView" />
             <item
                 android:id="@+id/nav_for_google_maps"
                 android:icon="@drawable/maps"
-                android:title="Карта негативных клиентов" />
+                android:title="Карта клиентов"
+                app:actionViewClass="android.widget.TextView" />
         </menu>
     </item>
     <item android:title="">

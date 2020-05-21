@@ -2,8 +2,10 @@ package com.example.lmbase;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
@@ -43,20 +46,22 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
+	private static final String TAG = "MainActivity";
 	private DrawerLayout drawerLayout;
 	private CircleImageView navUserpic;
 	private TextView navUserName, ordersCount, deliveryCount, buyoutCount,
-			pointCount, fifteenExactTimeToday, sixtyExactTimeToday, upFineToday;
+			pointCount, fifteenExactTimeToday, sixtyExactTimeToday, upFineToday,
+			mWorkShiftTextView, mUsersTextView, mClientMapsTextView;
 	private EditText fifteenExactTime, sixtyExactTime, fines, benetonCount, workshiftAdd;
 	private FirebaseAuth mAuth;
 	private DatabaseReference pointerRef;
 	private DatabaseReference usersRef;
-	private DatabaseReference statisticRef, ordersCountRef;
+	private DatabaseReference statisticRef;
 	private String currentUserId, currentDateOrderList;
 	private Integer fifteenTime = 0;
 	private Integer sixtyTime = 0;
 	private Integer finesToday = 0;
-	private Integer resultBuyout = 0, countOfOrders = 1, resultDelivery = 0;
+	private Integer resultBuyout = 0, countOfOrders = 1, resultDelivery = 0, countWorkShifts = 0, countUsers = 0, countClient = 0;
 	private Integer benetonCounts = 0;
 	private Integer addedWorkshifts = 0;
 	private double pointFinesToday = 0.0, resultPoint = 0.0;
@@ -81,11 +86,19 @@ public class MainActivity extends AppCompatActivity {
 
 		pointerRef = FirebaseDatabase.getInstance().getReference().child("Pointers List");
 		usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-		ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
+		DatabaseReference troubleClientRef = FirebaseDatabase.getInstance().getReference().child("Trouble Client List");
+		DatabaseReference ordersCountRef = FirebaseDatabase.getInstance().getReference().child("Order List").child(currentUserId).child(currentDateOrderList);
 		statisticRef = FirebaseDatabase.getInstance().getReference().child("Statistic List").child(currentUserId);
 
 		drawerLayout = findViewById(R.id.drawer_layout);
 		NavigationView navigationView = findViewById(R.id.nav);
+		mWorkShiftTextView = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+				findItem(R.id.nav_for_workshift));
+		mClientMapsTextView = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+				findItem(R.id.nav_for_google_maps));
+		mUsersTextView = (TextView) MenuItemCompat.getActionView(navigationView.getMenu().
+				findItem(R.id.nav_for_list));
+
 		ordersCount = findViewById(R.id.text_orders_count);
 		deliveryCount = findViewById(R.id.text_delivery_count);
 		buyoutCount = findViewById(R.id.text_bayout_count);
@@ -142,6 +155,21 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				SendUserToSettingsActivity();
+			}
+		});
+
+		pointerRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					countWorkShifts = Math.toIntExact(dataSnapshot.getChildrenCount());
+				}
+				initializeCountDrawerWS();
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
 			}
 		});
 
@@ -211,6 +239,36 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		troubleClientRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					countClient = Math.toIntExact(dataSnapshot.getChildrenCount());
+				}
+				initializeCountDrawerCli();
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
+		usersRef.addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				if (dataSnapshot.exists()) {
+					countUsers = Math.toIntExact(dataSnapshot.getChildrenCount());
+				}
+				initializeCountDrawerUs();
+			}
+
+			@Override
+			public void onCancelled(@NonNull DatabaseError databaseError) {
+
+			}
+		});
+
 		usersRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -233,6 +291,7 @@ public class MainActivity extends AppCompatActivity {
 					} else {
 						Toast.makeText(MainActivity.this, "Добавь аватар", Toast.LENGTH_LONG).show();
 					}
+
 				}
 			}
 
@@ -250,6 +309,30 @@ public class MainActivity extends AppCompatActivity {
 				return false;
 			}
 		});
+	}
+
+	@SuppressLint("SetTextI18n")
+	private void initializeCountDrawerCli() {
+		mClientMapsTextView.setGravity(Gravity.CENTER_VERTICAL);
+		mClientMapsTextView.setTypeface(null, Typeface.BOLD);
+		mClientMapsTextView.setTextSize(14);
+		mClientMapsTextView.setText(countClient + "");
+	}
+
+	@SuppressLint("SetTextI18n")
+	private void initializeCountDrawerUs() {
+		mUsersTextView.setGravity(Gravity.CENTER_VERTICAL);
+		mUsersTextView.setTypeface(null, Typeface.BOLD);
+		mUsersTextView.setTextSize(14);
+		mUsersTextView.setText(countUsers + "");
+	}
+
+	@SuppressLint("SetTextI18n")
+	private void initializeCountDrawerWS() {
+		mWorkShiftTextView.setGravity(Gravity.CENTER_VERTICAL);
+		mWorkShiftTextView.setTypeface(null, Typeface.BOLD);
+		mWorkShiftTextView.setTextSize(14);
+		mWorkShiftTextView.setText(countWorkShifts + "");
 	}
 
 	private void CreateDateRange() throws ParseException {
