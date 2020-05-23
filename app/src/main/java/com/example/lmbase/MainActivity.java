@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -158,13 +159,14 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
-		pointerRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+		pointerRef.child(currentUserId).orderByKey().startAt(date1).endAt(date2).addValueEventListener(new ValueEventListener() {
 			@Override
 			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 				if (dataSnapshot.exists()) {
 					countWorkShifts = Math.toIntExact(dataSnapshot.getChildrenCount());
 				}
 				initializeCountDrawerWS();
+//				Log.d(TAG, "date: start " + date1 + "- end: " + date2);
 			}
 
 			@Override

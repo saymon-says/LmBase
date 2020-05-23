@@ -151,16 +151,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			}
 		});
 
-//		markerClusterManager.getMarkerCollection().setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-//			@Override
-//			public void onInfoWindowClick(Marker marker) {
-//				clientComment = marker.getSnippet();
-//				ShowPopUpUserAddedClient();
-////				Log.d(TAG, "click Info window: " + marker);
-//			}
-//		});
-
-
 		CameraPosition cameraPosition = new CameraPosition.Builder()
 				.target(mDefaultLocation)
 				.zoom(DEFAULT_ZOOM)
@@ -256,19 +246,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 					for (DataSnapshot ds : dataSnapshot.getChildren()) {
 						Map<Marker, Object> map = (Map<Marker, Object>) ds.getValue();
 						assert map != null;
-//						Object clientLat = map.get("clientLatitude");
-//						Object clientLong = map.get("clientLongitude");
-//						Object titleClient = map.get("clientAddress");
-//						Object refinementInfo = map.get("clientRefinement");
-//						Object infoClient = map.get("clientComment");
-
-//						double Lat = (double) clientLat;
-//						double Lg = (double) clientLong;
-
-//						String title = String.valueOf(titleClient);
-//						String snipped = String.valueOf(infoClient);
-//						String refinement = String.valueOf(refinementInfo);
-//						String snippet = refinement + "\n" + snipped;
 						ClusterMarker newMarker = new ClusterMarker(
 								(Double) map.get("clientLatitude"),
 								(Double) map.get("clientLongitude"),
@@ -278,7 +255,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 						markerClusterManager.addItem(newMarker);
 						client.put(newMarker, newMarker);
 					}
-//					Log.d(TAG, "markers: " + client);
 					markerClusterManager.setAnimation(true);
 					markerClusterManager.cluster();
 				} else {
@@ -383,25 +359,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 			Log.e("Exception: %s", Objects.requireNonNull(e.getMessage()));
 		}
 	}
-
-
-//	private void ShowPopUpUserAddedClient() {
-//
-//		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-//		assert inflater != null;
-//		View popupView = inflater.inflate(R.layout.dialog_user_added_client, null);
-//		TextView comment = popupView.findViewById(R.id.client_refinement);
-//		comment.setText(clientComment);
-//
-//		// create the popup window
-//		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-//		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-//
-//		boolean focusable = true; // lets taps outside the popup also dismiss it
-//		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-//
-//		// show the popup window
-//		// which view you pass in doesn't matter, it is only used for the window tolken
-//		popupWindow.showAtLocation(popupView, Gravity.BOTTOM, 0, 30);
-//	}
 }
