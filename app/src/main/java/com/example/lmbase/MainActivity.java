@@ -166,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
 					countWorkShifts = Math.toIntExact(dataSnapshot.getChildrenCount());
 				}
 				initializeCountDrawerWS();
-//				Log.d(TAG, "date: start " + date1 + "- end: " + date2);
 			}
 
 			@Override
